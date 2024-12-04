@@ -1,5 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:e_tutor/app/app.dart';
+import 'package:e_tutor/theme.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,6 +35,7 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       title: 'E-Tutor',
       debugShowCheckedModeBanner: false,
+      theme: theme,
       home: FlowBuilder(
         state: context.select((AppBloc bloc) => bloc.state.status),
         onGeneratePages: onGenerateAppViewPages

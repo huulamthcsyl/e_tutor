@@ -19,13 +19,32 @@ class SignUpForm extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            SizedBox(height: MediaQuery.sizeOf(context).height * 0.2,),
+            Text(
+              'Đăng ký',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
             _EmailInput(),
             _PasswordInput(),
             _ConfirmedPasswordInput(),
+            const SizedBox(height: 16),
             _SignUpButton(),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Đã có tài khoản?', 
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                _LoginButton(),
+              ],
+            )
           ],
         ),
       ),
@@ -65,7 +84,7 @@ class _PasswordInput extends StatelessWidget {
           onChanged: (password) => context.read<SignUpCubit>().passwordChanged(password),
           obscureText: true,
           decoration: InputDecoration(
-            labelText: 'Password',
+            labelText: 'Mật khẩu',
             helperText: '',
             errorText: state.password.displayError != null ? "Mật khẩu không hợp lệ" : null,
           ),
@@ -86,9 +105,9 @@ class _ConfirmedPasswordInput extends StatelessWidget {
           onChanged: (confirmedPassword) => context.read<SignUpCubit>().confirmedPasswordChanged(confirmedPassword),
           obscureText: true,
           decoration: InputDecoration(
-            labelText: 'Confirmed Password',
+            labelText: 'Xác nhận mật khẩu',
             helperText: '',
-            errorText: state.confirmedPassword.displayError != null ? "Mật khẩu không khớp" : null,
+            errorText: state.confirmedPassword.displayError != null ? "Mật khẩu xác nhận không khớp" : null,
           ),
         );
       },
@@ -107,10 +126,41 @@ class _SignUpButton extends StatelessWidget {
 
     return ElevatedButton(
       key: const Key('signUpForm_continue_raisedButton'),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(
+          isValid
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.primary.withOpacity(0.5),
+        ),
+        minimumSize: MaterialStateProperty.all(
+          Size(MediaQuery.sizeOf(context).width, 50),
+        ),
+      ),
       onPressed: isValid
         ? () => context.read<SignUpCubit>().signUpWithCredentials()
         : null,
-      child: const Text('Đăng ký'),
+      child: const Text(
+        'Đăng ký',
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class _LoginButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      key: const Key('signUpForm_login_textButton'),
+      onPressed: () => Navigator.of(context).pop(),
+      child: const Text(
+        'Đăng nhập',
+        style: TextStyle(
+          color: Colors.blue,
+        ),
+      ),
     );
   }
 }

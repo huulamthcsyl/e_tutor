@@ -20,13 +20,31 @@ class LoginForm extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            SizedBox(height: MediaQuery.sizeOf(context).height * 0.2,),
+            Text(
+              'Đăng nhập',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
             _EmailInput(),
             _PasswordInput(),
+            const SizedBox(height: 16),
             _LoginButton(),
-            _SignUpButton(),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Chưa có tài khoản?', 
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                _SignUpButton(),
+              ],
+            )
           ],
         ),
       ),
@@ -66,7 +84,7 @@ class _PasswordInput extends StatelessWidget {
           onChanged: (password) => context.read<LoginCubit>().passwordChanged(password),
           obscureText: true,
           decoration: InputDecoration(
-            labelText: 'Password',
+            labelText: 'Mật khẩu',
             helperText: '',
             errorText: state.password.displayError != null ? "Mật khẩu không hợp lệ" : null,
           ),
@@ -79,18 +97,35 @@ class _PasswordInput extends StatelessWidget {
 class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isInProgress = context.select((LoginCubit cubit) => cubit.state.status.isInProgress);
+
+    if (isInProgress) return const CircularProgressIndicator();
+
+    final isValid = context.select((LoginCubit cubit) => cubit.state.isValid);
     return BlocBuilder<LoginCubit, LoginState>(
-      buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return state.status.isInProgress
-          ? const CircularProgressIndicator()
-          : ElevatedButton(
-            key: const Key('loginForm_continue_raisedButton'),
-            onPressed: state.isValid
-              ? () => context.read<LoginCubit>().logInWithCredentials()
-              : null,
-            child: const Text('Đăng nhập'),
-          );
+        return ElevatedButton(
+          key: const Key('loginForm_continue_raisedButton'),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith((states) {
+              return isValid
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.primary.withOpacity(0.5);
+            }),
+            minimumSize: MaterialStateProperty.resolveWith((states) {
+              return const Size(double.infinity, 50);
+            }),
+          ),
+          onPressed: isValid
+            ? () => context.read<LoginCubit>().logInWithCredentials()
+            : null,
+          child: const Text(
+            'Đăng nhập',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
       },
     );
   }
@@ -102,7 +137,9 @@ class _SignUpButton extends StatelessWidget {
     return TextButton(
       key: const Key('loginForm_createAccount_flatButton'),
       onPressed: () => Navigator.of(context).push<void>(SignUpPage.route()),
-      child: const Text('Đăng ký'),
+      child: const Text(
+        'Đăng ký',
+      ),
     );
   }
 }
