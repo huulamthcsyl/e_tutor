@@ -1,3 +1,4 @@
+import 'package:e_tutor/class/class.dart';
 import 'package:e_tutor/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,7 @@ class LayoutView extends StatelessWidget {
             index: state.selectedTabIndex,
             children: const [
               HomePage(),
-              Center(child: Text('Search Page')),
+              ClassPage(),
               Center(child: Text('Profile Page')),
             ],
           ),

@@ -18,6 +18,8 @@ dependencies:
   formz: ^0.8.0
   form_inputs:
     path: packages/form_inputs
+  class_repository:
+    path: packages/class_repository
 
 dev_dependencies:
   flutter_test:

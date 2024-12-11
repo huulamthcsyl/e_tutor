@@ -1,0 +1,11 @@
+name: class_repository
+description: Dart package which manages class domain
+publish_to: none
+
+environment:
+  sdk: "^3.5.4"
+
+dependencies:
+  formz: ^0.8.0
+  equatable: ^2.0.7
+  cloud_firestore: ^5.5.0
