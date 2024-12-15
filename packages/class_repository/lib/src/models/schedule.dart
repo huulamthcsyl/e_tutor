@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 class Schedule extends Equatable {
-  final String startTime;
-  final String endTime;
+  final TimeOfDay startTime;
+  final TimeOfDay endTime;
 
   const Schedule({
     required this.startTime,
@@ -11,4 +12,11 @@ class Schedule extends Equatable {
 
   @override
   List<Object?> get props => [startTime, endTime];
+
+  factory Schedule.fromJson(Map<String, dynamic> json) {
+    return Schedule(
+      startTime: TimeOfDay.fromDateTime(DateTime.parse(json['startTime'])),
+      endTime: TimeOfDay.fromDateTime(DateTime.parse(json['endTime'])),
+    );
+  }
 }

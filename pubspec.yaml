@@ -20,6 +20,8 @@ dependencies:
     path: packages/form_inputs
   class_repository:
     path: packages/class_repository
+  time_picker_spinner_pop_up: ^2.0.0
+  const_date_time: ^1.1.0
 
 dev_dependencies:
   flutter_test:

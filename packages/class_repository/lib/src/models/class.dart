@@ -3,7 +3,7 @@ import 'package:class_repository/src/models/exam.dart';
 import 'package:equatable/equatable.dart';
 
 class Class extends Equatable {
-  final String id;
+  final String? id;
   final String? name;
   final String? description;
   final List<String>? members;
@@ -14,7 +14,7 @@ class Class extends Equatable {
   final bool? isActive;
 
   const Class({
-    required this.id,
+    this.id,
     this.name,
     this.description,
     this.members,

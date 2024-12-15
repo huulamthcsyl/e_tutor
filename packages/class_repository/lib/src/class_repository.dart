@@ -13,8 +13,8 @@ class ClassRepository {
   ClassRepository({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  Future<List<Class>> getClasses() {
-    return _firestore.collection('classes').get().then((snapshot) {
+  Stream<List<Class>> getClasses() {
+    return _firestore.collection('classes').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         final data = doc.data();
         return Class(
@@ -62,7 +62,12 @@ class ClassRepository {
       'description': newClass.description,
       'members': [],
       'tuition': null,
-      'schedules': [],
+      'schedules': newClass.schedules?.map((schedule) {
+        return {
+          'startTime': DateTime(2025, 1, 1, schedule.startTime.hour, schedule.startTime.minute).toString(),
+          'endTime': DateTime(2025, 1, 1, schedule.endTime.hour, schedule.endTime.minute).toString(),
+        };
+      }).toList(),
       'lessons': [],
       'exams': [],
       'isActive': true

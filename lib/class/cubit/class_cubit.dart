@@ -11,11 +11,19 @@ class ClassCubit extends Cubit<ClassState> {
 
   Future<void> getClasses() async {
     emit(state.copyWith(status: ClassStatus.loading));
-    try {
-      final classes = await _classRepository.getClasses();
-      emit(state.copyWith(status: ClassStatus.success, classes: classes));
-    } catch (e) {
-      emit(state.copyWith(status: ClassStatus.failure));
-    }
+    _classRepository.getClasses().listen(
+      (classes) {
+        emit(state.copyWith(
+          status: ClassStatus.success,
+          classes: classes,
+        ));
+      },
+      onError: (Object error) {
+        emit(state.copyWith(status: ClassStatus.failure));
+      },
+      onDone: () {
+        emit(state.copyWith(status: ClassStatus.success));
+      },
+    );
   }
 }
