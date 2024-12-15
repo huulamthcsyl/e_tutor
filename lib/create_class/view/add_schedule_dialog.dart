@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:class_repository/class_repository.dart';
 import 'package:e_tutor/create_class/create_class.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class AddScheduleDialog extends StatelessWidget {
         BlocProvider<CreateClassCubit>(
           create: (_) => CreateClassCubit(
             context.read<ClassRepository>(),
+            context.read<AuthenticationRepository>(),
           ),
         ),
       ],

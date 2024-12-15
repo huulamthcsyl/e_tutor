@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:class_repository/class_repository.dart';
 import 'package:e_tutor/class/class.dart';
 import 'package:e_tutor/class/view/class_view.dart';
@@ -26,6 +27,7 @@ class ClassPage extends StatelessWidget {
       body: BlocProvider(
         create: (_) => ClassCubit(
           context.read<ClassRepository>(),
+          context.read<AuthenticationRepository>(),
         )..getClasses(),
         child: const ClassView(),
       ),

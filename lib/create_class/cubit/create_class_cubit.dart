@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:class_repository/class_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +10,9 @@ part 'create_class_state.dart';
 
 class CreateClassCubit extends Cubit<CreateClassState> {
   final ClassRepository _classRepository;
+  final AuthenticationRepository _authenticationRepository;
 
-  CreateClassCubit(this._classRepository) : super(const CreateClassState());
+  CreateClassCubit(this._classRepository, this._authenticationRepository) : super(const CreateClassState());
 
   void nameChanged(String value) {
     final name = RequiredText.dirty(value);
@@ -53,6 +55,7 @@ class CreateClassCubit extends Cubit<CreateClassState> {
   void createClass() async {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    final user = await _authenticationRepository.user.first;
     try {
       await _classRepository.createClass(
         Class(
@@ -60,6 +63,7 @@ class CreateClassCubit extends Cubit<CreateClassState> {
           description: state.description,
           tuition: int.parse(state.tuition.value),
           schedules: state.schedules,
+          members: [user.id],
         ),
       );
       emit(state.copyWith(status: FormzSubmissionStatus.success));

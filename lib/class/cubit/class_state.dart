@@ -13,7 +13,7 @@ final class ClassState extends Equatable {
   });
 
   @override
-  List<Object> get props => [classes];
+  List<Object> get props => [status, classes];
 
   ClassState copyWith({
     ClassStatus? status,

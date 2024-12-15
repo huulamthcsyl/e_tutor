@@ -13,18 +13,16 @@ class ClassRepository {
   ClassRepository({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  Stream<List<Class>> getClasses() {
-    return _firestore.collection('classes').snapshots().map((snapshot) {
+  Stream<List<Class>> getClasses(String userId) {
+    return _firestore.collection('classes').where('members', arrayContains: userId).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         final data = doc.data();
         return Class(
           id: doc.id,
           name: data['name'],
           description: data['description'],
+          members: List<String>.from(data['members']),
           tuition: data['tuition']?.toInt(),
-          schedules: (data['schedules'] as List<dynamic>?)?.map((schedule) {
-            return Schedule.fromJson(schedule);
-          }).toList(),
         );
       }).toList();
     });
@@ -41,8 +39,7 @@ class ClassRepository {
         return Class(
           id: doc.id,
           name: data['name'],
-          members: List<String>.from(data['members']),
-          tuition: data['tuition']?.toDouble(),
+          tuition: data['tuition']?.toInt(),
         );
       }).toList();
     });
@@ -70,7 +67,7 @@ class ClassRepository {
     return _firestore.collection('classes').add({
       'name': newClass.name,
       'description': newClass.description,
-      'members': [],
+      'members': newClass.members,
       'tuition': newClass.tuition,
       'schedules': newClass.schedules?.map((schedule) {
         return {
