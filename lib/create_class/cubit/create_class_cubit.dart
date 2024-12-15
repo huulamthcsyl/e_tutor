@@ -58,7 +58,7 @@ class CreateClassCubit extends Cubit<CreateClassState> {
         Class(
           name: state.name.value,
           description: state.description,
-          tuition: double.parse(state.tuition.value),
+          tuition: int.parse(state.tuition.value),
           schedules: state.schedules,
         ),
       );

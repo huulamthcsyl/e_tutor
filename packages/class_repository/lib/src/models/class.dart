@@ -7,7 +7,7 @@ class Class extends Equatable {
   final String? name;
   final String? description;
   final List<String>? members;
-  final double? tuition;
+  final int? tuition;
   final List<Schedule>? schedules;
   final List<Lesson>? lessons;
   final List<Exam>? exams;

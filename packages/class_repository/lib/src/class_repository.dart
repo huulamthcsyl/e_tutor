@@ -1,4 +1,4 @@
-import 'package:class_repository/src/models/class.dart';
+import 'package:class_repository/class_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ClassFailure implements Exception {
@@ -20,6 +20,11 @@ class ClassRepository {
         return Class(
           id: doc.id,
           name: data['name'],
+          description: data['description'],
+          tuition: data['tuition']?.toInt(),
+          schedules: (data['schedules'] as List<dynamic>?)?.map((schedule) {
+            return Schedule.fromJson(schedule);
+          }).toList(),
         );
       }).toList();
     });
@@ -52,6 +57,11 @@ class ClassRepository {
       return Class(
         id: doc.id,
         name: data['name'],
+        description: data['description'],
+        tuition: data['tuition']?.toInt(),
+        schedules: (data['schedules'] as List<dynamic>?)?.map((schedule) {
+          return Schedule.fromJson(schedule);
+        }).toList(),
       );
     });
   }
@@ -61,7 +71,7 @@ class ClassRepository {
       'name': newClass.name,
       'description': newClass.description,
       'members': [],
-      'tuition': null,
+      'tuition': newClass.tuition,
       'schedules': newClass.schedules?.map((schedule) {
         return {
           'startTime': DateTime(2025, 1, 1, schedule.startTime.hour, schedule.startTime.minute).toString(),

@@ -126,16 +126,6 @@ class _SignUpButton extends StatelessWidget {
 
     return ElevatedButton(
       key: const Key('signUpForm_continue_raisedButton'),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
-          isValid
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.primary.withOpacity(0.5),
-        ),
-        minimumSize: MaterialStateProperty.all(
-          Size(MediaQuery.sizeOf(context).width, 50),
-        ),
-      ),
       onPressed: isValid
         ? () => context.read<SignUpCubit>().signUpWithCredentials()
         : null,
