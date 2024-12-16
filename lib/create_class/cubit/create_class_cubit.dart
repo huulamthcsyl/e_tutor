@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:form_inputs/form_inputs.dart';
+import 'package:const_date_time/const_date_time.dart';
 
 part 'create_class_state.dart';
 
@@ -36,10 +37,11 @@ class CreateClassCubit extends Cubit<CreateClassState> {
     ));
   }
 
-  void addSchedule(TimeOfDay startTime, TimeOfDay endTime) {
+  void addSchedule(TimeOfDay startTime, TimeOfDay endTime, DayInWeek day) {
     final schedule = Schedule(
       startTime: startTime,
       endTime: endTime,
+      day: day
     );
     emit(state.copyWith(
       schedules: List.of(state.schedules)..add(schedule),
@@ -49,6 +51,18 @@ class CreateClassCubit extends Cubit<CreateClassState> {
   void removeSchedule(Schedule schedule) {
     emit(state.copyWith(
       schedules: List.of(state.schedules)..remove(schedule),
+    ));
+  }
+
+  void startDateChanged(DateTime value) {
+    emit(state.copyWith(
+      startDate: value,
+    ));
+  }
+
+  void endDateChanged(DateTime value) {
+    emit(state.copyWith(
+      endDate: value,
     ));
   }
 
@@ -64,6 +78,9 @@ class CreateClassCubit extends Cubit<CreateClassState> {
           tuition: int.parse(state.tuition.value),
           schedules: state.schedules,
           members: [user.id],
+          createdAt: DateTime.now(),
+          startDate: state.startDate,
+          endDate: state.endDate
         ),
       );
       emit(state.copyWith(status: FormzSubmissionStatus.success));

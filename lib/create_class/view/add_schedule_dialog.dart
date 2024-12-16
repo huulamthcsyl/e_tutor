@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:class_repository/class_repository.dart';
 import 'package:e_tutor/create_class/create_class.dart';
+import 'package:e_tutor/utils/get_day_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
@@ -46,6 +47,13 @@ class AddScheduleDialog extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
+              Row(
+                children: [
+                  const Text('Ngày:'),
+                  const SizedBox(width: 16),
+                  _DayInput(),
+                ],
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -99,6 +107,37 @@ class _EndTimeInput extends StatelessWidget {
   }
 }
 
+class _DayInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddScheduleCubit, AddScheduleState>(
+      buildWhen: (previous, current) => previous.day != current.day,
+      builder: (context, state) {
+        return DropdownButton<DayInWeek>(
+          value: state.day,
+          onChanged: (value) {
+            context.read<AddScheduleCubit>().dayChanged(value ?? DayInWeek.Monday);
+          },
+          items: DayInWeek.values
+              .map(
+                (day) => DropdownMenuItem(
+                  value: day,
+                  child: Text(
+                    GetDayName.getDayName(day.index),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        );
+      },
+    );
+  }
+}
+
 class _CancelButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -121,7 +160,7 @@ class _AddButton extends StatelessWidget {
       builder: (context, state) {
         return ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop([state.startTime, state.endTime]);
+            Navigator.of(context).pop([state.startTime, state.endTime, state.day]);
           },
           child: const Text('Thêm'),
         );

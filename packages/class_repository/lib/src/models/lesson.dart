@@ -7,8 +7,8 @@ class Lesson extends Equatable {
   final bool? isPaid;
   final String? tutorFeedback;
   final String? studentFeedback;
-  final String? startTime;
-  final String? endTime;
+  final DateTime? startTime;
+  final DateTime? endTime;
 
   const Lesson({
     this.materials,

@@ -18,8 +18,12 @@ class CreateClassPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tạo lớp học'),
-        backgroundColor: Colors.transparent,
+        title: const Text(
+          'Tạo lớp học',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

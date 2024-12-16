@@ -12,6 +12,9 @@ class Class extends Equatable {
   final List<Lesson>? lessons;
   final List<Exam>? exams;
   final bool? isActive;
+  final DateTime? createdAt;
+  final DateTime? startDate;
+  final DateTime? endDate;
 
   const Class({
     this.id,
@@ -22,9 +25,25 @@ class Class extends Equatable {
     this.schedules,
     this.lessons,
     this.exams,
-    this.isActive
+    this.isActive,
+    this.createdAt,
+    this.startDate,
+    this.endDate,
   });
 
   @override
-  List<Object?> get props => [id, name, description, members, tuition, schedules, lessons, exams, isActive];
+  List<Object?> get props => [
+        id,
+        name,
+        description,
+        members,
+        tuition,
+        schedules,
+        lessons,
+        exams,
+        isActive,
+        createdAt,
+        endDate,
+        startDate,
+      ];
 }

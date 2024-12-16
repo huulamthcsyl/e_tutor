@@ -13,11 +13,17 @@ class ClassPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lớp học'),
-        backgroundColor: Colors.transparent,
+        title: const Text(
+          'Lớp học',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
             onPressed: () => Navigator.of(context).push<void>(
               CreateClassPage.route(),
             ),

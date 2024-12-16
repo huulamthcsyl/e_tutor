@@ -1,4 +1,6 @@
 import 'package:e_tutor/create_class/create_class.dart';
+import 'package:e_tutor/utils/format_time.dart';
+import 'package:e_tutor/utils/get_day_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -36,6 +38,10 @@ class CreateClassForm extends StatelessWidget {
             _TuitionInput(),
             const SizedBox(height: 16),
             _ScheduleList(),
+            const SizedBox(height: 16),
+            _StartDateInput(),
+            const SizedBox(height: 16),
+            _EndDateInput(),
             const SizedBox(height: 32),
             _CreateButton(),
           ],
@@ -138,6 +144,7 @@ class _ScheduleList extends StatelessWidget {
                       context.read<CreateClassCubit>().addSchedule(
                         TimeOfDay.fromDateTime(result[0]),
                         TimeOfDay.fromDateTime(result[1]),
+                        result[2],
                       );
                     }
                   },
@@ -155,7 +162,7 @@ class _ScheduleList extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      'Từ ${schedule.startTime.format(context)} đến ${schedule.endTime.format(context)}',
+                      '${GetDayName.getDayName(schedule.day.index)}, từ ${schedule.startTime.format(context)} đến ${schedule.endTime.format(context)}',
                     ),
                     const Spacer(),
                     IconButton(
@@ -169,6 +176,76 @@ class _ScheduleList extends StatelessWidget {
                   ],
                 ),
               )
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _StartDateInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreateClassCubit, CreateClassState>(
+      buildWhen: (previous, current) => previous.startDate != current.startDate,
+      builder: (context, state) {
+        return Row(
+          children: [
+            const Text(
+              'Ngày bắt đầu',
+              style: TextStyle(fontSize: 18),
+            ),
+            const Spacer(),
+            IconButton(
+              icon: const Icon(Icons.calendar_today),
+              onPressed: () async {
+                final result = await showDatePicker(
+                  context: context,
+                  initialDate: state.startDate,
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2100),
+                );
+                if (result != null) {
+                  context.read<CreateClassCubit>().startDateChanged(result);
+                }
+              },
+            ),
+            Text(FormatTime.formatDate(state.startDate)),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _EndDateInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreateClassCubit, CreateClassState>(
+      buildWhen: (previous, current) => previous.endDate != current.endDate,
+      builder: (context, state) {
+        return Row(
+          children: [
+            const Text(
+              'Ngày kết thúc',
+              style: TextStyle(fontSize: 18),
+            ),
+            const Spacer(),
+            IconButton(
+              icon: const Icon(Icons.calendar_today),
+              onPressed: () async {
+                final result = await showDatePicker(
+                  context: context,
+                  initialDate: state.endDate,
+                  firstDate: state.startDate,
+                  lastDate: DateTime(2100),
+                );
+                if (result != null) {
+                  context.read<CreateClassCubit>().endDateChanged(result);
+                }
+              },
+            ),
+            Text(FormatTime.formatDate(state.endDate)),
           ],
         );
       },
