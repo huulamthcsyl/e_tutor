@@ -134,4 +134,29 @@ class ClassRepository {
     }
     return lessons;
   }
+
+  Future<List<Lesson>> getLessonsInMonthOnDate(DateTime date, String userId) async {
+    final lessons = <Lesson>[];
+    final startOfMonth = DateTime(date.year, date.month, 1);
+    final endOfMonth = DateTime(date.year, date.month + 1, 0);
+    final snapshot = await _firestore.collection('classes').where('members', arrayContains: userId).get();
+    for (var doc in snapshot.docs) {
+      final data = doc.data();
+      final classLessons = (data['lessons'] as List<dynamic>?)?.map((lesson) {
+        return Lesson(
+          startTime: DateTime.parse(lesson['startTime']),
+          endTime: DateTime.parse(lesson['endTime']),
+        );
+      }).toList();
+      if (classLessons != null) {
+        for (var lesson in classLessons) {
+          if(lesson.startTime == null) continue;
+          if (lesson.startTime!.isAfter(startOfMonth) && lesson.endTime!.isBefore(endOfMonth)) {
+            lessons.add(lesson);
+          }
+        }
+      }
+    }
+    return lessons;
+  }
 }
