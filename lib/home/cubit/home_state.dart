@@ -3,8 +3,8 @@ part of 'home_cubit.dart';
 enum HomeStatus { initial, loading, success, failure }
 
 class HomeState extends Equatable {
-  final List<Lesson> lessons;
-  final List<Lesson> lessonsInSelectedDay;
+  final List<LessonResponse> lessons;
+  final List<LessonResponse> lessonsInSelectedDay;
   final DateTime selectedDay;
   final CalendarFormat calendarFormat;
   final HomeStatus status;
@@ -21,8 +21,8 @@ class HomeState extends Equatable {
   List<Object> get props => [lessons, lessonsInSelectedDay, selectedDay, calendarFormat, status];
 
   HomeState copyWith({
-    List<Lesson>? lessons,
-    List<Lesson>? lessonsInSelectedDay,
+    List<LessonResponse>? lessons,
+    List<LessonResponse>? lessonsInSelectedDay,
     DateTime? selectedDay,
     CalendarFormat? calendarFormat,
     HomeStatus? status,

@@ -38,7 +38,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   void getLessonsInDay(DateTime date) {
     final lessonsInSelectedDay = state.lessons
-        .where((lesson) => isSameDay(lesson.startTime, state.selectedDay))
+        .where((lesson) => isSameDay(lesson.lesson.startTime, state.selectedDay))
         .toList();
     emit(state.copyWith(lessonsInSelectedDay: lessonsInSelectedDay));
   }

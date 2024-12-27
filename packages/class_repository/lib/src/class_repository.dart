@@ -1,4 +1,5 @@
 import 'package:class_repository/class_repository.dart';
+import 'package:class_repository/src/response/response.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ClassFailure implements Exception {
@@ -135,25 +136,37 @@ class ClassRepository {
     return lessons;
   }
 
-  Future<List<Lesson>> getLessonsInMonthOnDate(DateTime date, String userId) async {
-    final lessons = <Lesson>[];
+  Future<List<LessonResponse>> getLessonsInMonthOnDate(DateTime date, String userId) async {
+    final lessons = <LessonResponse>[];
     final startOfMonth = DateTime(date.year, date.month, 1);
     final endOfMonth = DateTime(date.year, date.month + 1, 0);
     final snapshot = await _firestore.collection('classes').where('members', arrayContains: userId).get();
     for (var doc in snapshot.docs) {
       final data = doc.data();
-      final classLessons = (data['lessons'] as List<dynamic>?)?.map((lesson) {
-        return Lesson(
-          startTime: DateTime.parse(lesson['startTime']),
-          endTime: DateTime.parse(lesson['endTime']),
-        );
-      }).toList();
-      if (classLessons != null) {
-        for (var lesson in classLessons) {
-          if(lesson.startTime == null) continue;
-          if (lesson.startTime!.isAfter(startOfMonth) && lesson.endTime!.isBefore(endOfMonth)) {
-            lessons.add(lesson);
-          }
+      final classData = Class(
+        id: doc.id,
+        name: data['name'],
+        description: data['description'],
+        tuition: data['tuition']?.toInt(),
+        schedules: (data['schedules'] as List<dynamic>?)?.map((schedule) {
+          return Schedule.fromJson(schedule);
+        }).toList(),
+        lessons: (data['lessons'] as List<dynamic>?)?.map((lesson) {
+          return Lesson(
+            startTime: DateTime.parse(lesson['startTime']),
+            endTime: DateTime.parse(lesson['endTime']),
+          );
+        }).toList(),
+      );
+      for (var lesson in classData.lessons!) {
+        if (lesson.startTime == null) continue;
+        if (lesson.startTime!.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
+            lesson.endTime!.isBefore(endOfMonth.add(const Duration(days: 1)))) {
+          lessons.add(LessonResponse(
+            classId: classData.id ?? '',
+            className: classData.name ?? '',
+            lesson: lesson,
+          ));
         }
       }
     }

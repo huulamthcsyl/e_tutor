@@ -1,4 +1,5 @@
 import 'package:e_tutor/home/home.dart';
+import 'package:e_tutor/utils/format_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -54,7 +55,7 @@ class HomeView extends StatelessWidget {
                 ),
                 eventLoader: (day) {
                   return state.lessons
-                      .where((lesson) => isSameDay(lesson.startTime, day))
+                      .where((lesson) => isSameDay(lesson.lesson.startTime, day))
                       .toList();
                 },
                 onPageChanged: (focusedDay) {
@@ -83,9 +84,33 @@ class _EventList extends StatelessWidget {
           itemCount: state.lessonsInSelectedDay.length,
           itemBuilder: (context, index) {
             final lesson = state.lessonsInSelectedDay[index];
-            return ListTile(
-              title: Text(lesson.startTime.toString()),
-              subtitle: Text(lesson.endTime.toString()),
+            return Container(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                border: Border.all(color: Theme.of(context).colorScheme.primary),
+                borderRadius: BorderRadius.circular(8),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lesson.className,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${FormatTime.formatTime(lesson.lesson.startTime!)} - ${FormatTime.formatTime(lesson.lesson.endTime!)}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  )
+                ],
+              ),
             );
           },
         );
