@@ -129,6 +129,9 @@ class ClassRepository {
       final startTime = DateTime(date.year, date.month, date.day, schedule.startTime.hour, schedule.startTime.minute);
       final endTime = DateTime(date.year, date.month, date.day, schedule.endTime.hour, schedule.endTime.minute);
       lessons.add(Lesson(
+        materials: const [],
+        homeworks: const [],
+        isPaid: false,
         startTime: startTime,
         endTime: endTime,
       ));

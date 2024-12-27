@@ -1,4 +1,5 @@
 import 'package:e_tutor/home/home.dart';
+import 'package:e_tutor/lesson/lesson.dart';
 import 'package:e_tutor/utils/format_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,32 +85,37 @@ class _EventList extends StatelessWidget {
           itemCount: state.lessonsInSelectedDay.length,
           itemBuilder: (context, index) {
             final lesson = state.lessonsInSelectedDay[index];
-            return Container(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              margin: const EdgeInsets.only(bottom: 8),
-              decoration: BoxDecoration(
-                border: Border.all(color: Theme.of(context).colorScheme.primary),
-                borderRadius: BorderRadius.circular(8),
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            return GestureDetector(
+              onTap: () => Navigator.of(context).push<void>(
+                LessonPage.route(id: lesson.classId),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    lesson.className,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).colorScheme.primary),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      lesson.className,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '${FormatTime.formatTime(lesson.lesson.startTime!)} - ${FormatTime.formatTime(lesson.lesson.endTime!)}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                  )
-                ],
+                    const SizedBox(height: 8),
+                    Text(
+                      '${FormatTime.formatTime(lesson.lesson.startTime!)} - ${FormatTime.formatTime(lesson.lesson.endTime!)}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    )
+                  ],
+                ),
               ),
             );
           },
