@@ -3,6 +3,7 @@ import 'package:class_repository/class_repository.dart';
 import 'package:e_tutor/app/view/app.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -15,8 +16,8 @@ void main() async {
   final classRepository = ClassRepository();
   await authenticationRepository.user.first;
 
-  runApp(App(
+  initializeDateFormatting().then((_) => runApp(App(
     authenticationRepository: authenticationRepository,
     classRepository: classRepository,
-  ));
+  )));
 }
