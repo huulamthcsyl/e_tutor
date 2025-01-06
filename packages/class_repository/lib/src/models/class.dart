@@ -9,8 +9,6 @@ class Class extends Equatable {
   final List<String>? members;
   final int? tuition;
   final List<Schedule>? schedules;
-  final List<Lesson>? lessons;
-  final List<Exam>? exams;
   final bool? isActive;
   final DateTime? createdAt;
   final DateTime? startDate;
@@ -23,8 +21,6 @@ class Class extends Equatable {
     this.members,
     this.tuition,
     this.schedules,
-    this.lessons,
-    this.exams,
     this.isActive,
     this.createdAt,
     this.startDate,
@@ -39,8 +35,6 @@ class Class extends Equatable {
         members,
         tuition,
         schedules,
-        lessons,
-        exams,
         isActive,
         createdAt,
         endDate,

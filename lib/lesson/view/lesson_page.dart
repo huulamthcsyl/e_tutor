@@ -7,12 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class LessonPage extends StatelessWidget {
   const LessonPage({super.key});
 
-  static Route<void> route({String? id}) {
+  static Route<void> route({String? classId, String? lessonId}) {
     return MaterialPageRoute<void>(
       builder: (context) => BlocProvider(
         create: (context) => LessonCubit(
-          classRepository: RepositoryProvider.of<ClassRepository>(context),
-        )..getClassInfo(id ?? ''),
+          RepositoryProvider.of<ClassRepository>(context),
+        )..initialize(classId!, lessonId!),
         child: const LessonPage(),
       ),
     );

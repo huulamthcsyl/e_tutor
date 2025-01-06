@@ -22,7 +22,7 @@ class LessonView extends StatelessWidget {
                 children: [
                   _ClassInfo(classData: state.classData),
                   const SizedBox(height: 16),
-                  _MaterialInfo(lesson: state.lessonData.lesson),
+                  _MaterialInfo(lesson: state.lessonData),
                 ],
               ),
             );
@@ -113,59 +113,78 @@ class _MaterialInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(8),
-      padding: const EdgeInsets.all(8),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 7,
-            offset: const Offset(0, 3),
+    return BlocBuilder<LessonCubit, LessonState>(
+      builder: (context, state) {
+        return Container(
+          margin: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Tài liệu', 
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-          )),
-          const SizedBox(height: 8),
-          GestureDetector(
-            onTap: () {
-              context.read<LessonCubit>().uploadMaterial();
-            },
-            child: DottedBorder(
-              padding: const EdgeInsets.all(8),
-              color: Theme.of(context).colorScheme.primary,
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.file_upload,
-                    color: Colors.blue,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Upload tài liệu',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.primary,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Tài liệu', 
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                )
+              ),
+              for (final material in state.materials)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    Text(
+                      'Tên tài liệu: ${material}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () {
+                  context.read<LessonCubit>().uploadMaterial();
+                },
+                child: DottedBorder(
+                  padding: const EdgeInsets.all(8),
+                  color: Theme.of(context).colorScheme.primary,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.file_upload,
+                        color: Colors.blue,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Upload tài liệu',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ],
+                  )
+                ),
               )
-            ),
-          )
-        ],
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

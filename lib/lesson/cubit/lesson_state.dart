@@ -4,27 +4,31 @@ enum LessonStatus { initial, loading, success, failure }
 
 class LessonState extends Equatable {
 
-  final LessonResponse lessonData;
+  final Lesson lessonData;
   final Class classData;
   final LessonStatus status;
+  final List<String> materials;
 
   const LessonState({
-    this.lessonData = const LessonResponse(),
+    this.lessonData = const Lesson(),
     this.classData = const Class(),
     this.status = LessonStatus.initial,
+    this.materials = const [],
   });
 
   @override
-  List<Object> get props => [lessonData, classData, status];
+  List<Object> get props => [lessonData, classData, materials, status];
 
   LessonState copyWith({
-    LessonResponse? lessonData,
+    Lesson? lessonData,
     Class? classData,
+    List<String>? materials,
     LessonStatus? status,
   }) {
     return LessonState(
       lessonData: lessonData ?? this.lessonData,
       classData: classData ?? this.classData,
+      materials: materials ?? this.materials,
       status: status ?? this.status,
     );
   }

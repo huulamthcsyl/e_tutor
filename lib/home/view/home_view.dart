@@ -87,7 +87,10 @@ class _EventList extends StatelessWidget {
             final lesson = state.lessonsInSelectedDay[index];
             return GestureDetector(
               onTap: () => Navigator.of(context).push<void>(
-                LessonPage.route(id: lesson.classId),
+                LessonPage.route(
+                  classId: lesson.classId,
+                  lessonId: lesson.lesson.id
+                ),
               ),
               child: Container(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
