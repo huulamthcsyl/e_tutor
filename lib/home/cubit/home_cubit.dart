@@ -19,7 +19,6 @@ class HomeCubit extends Cubit<HomeState> {
       selectedDay: DateTime.now(),
     ));
     getLessonsInMonth(DateTime.now());
-    getLessonsInDay(DateTime.now());
   }
 
   Future<void> getLessonsInMonth(DateTime date) async {
@@ -31,6 +30,7 @@ class HomeCubit extends Cubit<HomeState> {
         lessons: lessons,
         status: HomeStatus.success,
       ));
+      getLessonsInDay(state.selectedDay);
     } on Exception {
       emit(state.copyWith(status: HomeStatus.failure));
     }
@@ -38,8 +38,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   void getLessonsInDay(DateTime date) {
     final lessonsInSelectedDay = state.lessons
-        .where((lesson) => isSameDay(lesson.lesson.startTime, state.selectedDay))
-        .toList();
+      .where((lesson) => isSameDay(lesson.lesson.startTime, state.selectedDay))
+      .toList();
     emit(state.copyWith(lessonsInSelectedDay: lessonsInSelectedDay));
   }
 

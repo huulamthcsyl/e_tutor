@@ -57,6 +57,8 @@ class LessonCubit extends Cubit<LessonState> {
 
   Future<void> uploadMaterial() async {
     FilePickerResult? file = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
       withData: true,
     );
     if (file != null) {

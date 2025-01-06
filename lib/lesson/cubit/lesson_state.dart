@@ -7,7 +7,7 @@ class LessonState extends Equatable {
   final Lesson lessonData;
   final Class classData;
   final LessonStatus status;
-  final List<String> materials;
+  final List<Material> materials;
 
   const LessonState({
     this.lessonData = const Lesson(),
@@ -22,7 +22,7 @@ class LessonState extends Equatable {
   LessonState copyWith({
     Lesson? lessonData,
     Class? classData,
-    List<String>? materials,
+    List<Material>? materials,
     LessonStatus? status,
   }) {
     return LessonState(
