@@ -174,9 +174,18 @@ class ClassRepository {
     await ref.putData(file);
   }
 
-  Future<List<String>> getMaterials(String classId, String lessonId) {
+  Future<List<Material>> getMaterials(String classId, String lessonId) {
     return _storage.ref().child('classes/$classId/lessons/$lessonId').listAll().then((result) {
-      return result.items.map((item) => item.name).toList();
+      return result.items.map((ref) {
+        return Material(
+          name: ref.name,
+          url: ref.fullPath,
+        );
+      }).toList();
     });
+  }
+
+  Future<String> getMaterialUrl(String url) {
+    return _storage.ref().child(url).getDownloadURL();
   }
 }

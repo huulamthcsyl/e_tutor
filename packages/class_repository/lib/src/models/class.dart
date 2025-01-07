@@ -1,5 +1,4 @@
 import 'package:class_repository/class_repository.dart';
-import 'package:class_repository/src/models/exam.dart';
 import 'package:equatable/equatable.dart';
 
 class Class extends Equatable {
