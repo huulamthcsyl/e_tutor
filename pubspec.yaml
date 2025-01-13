@@ -27,6 +27,8 @@ dependencies:
   file_picker: ^8.1.7
   dotted_border: ^2.1.0
   easy_pdf_viewer: ^1.0.8
+  profile_repository:
+    path: packages/profile_repository
 
 dev_dependencies:
   flutter_test:
