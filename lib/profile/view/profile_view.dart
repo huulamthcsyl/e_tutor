@@ -1,5 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:e_tutor/profile/cubit/profile_cubit.dart';
+import 'package:e_tutor/profile_update/view/profile_update_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -53,7 +54,9 @@ class _UpdateProfileButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to the update profile page
+        Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => const ProfileUpdatePage(),
+        ));
       },
       child: Container(
         width: double.infinity,
