@@ -8,6 +8,7 @@ class Class extends Equatable {
   final List<String>? members;
   final int? tuition;
   final List<Schedule>? schedules;
+  final List<String>? lessons;
   final bool? isActive;
   final DateTime? createdAt;
   final DateTime? startDate;
@@ -20,6 +21,7 @@ class Class extends Equatable {
     this.members,
     this.tuition,
     this.schedules,
+    this.lessons,
     this.isActive,
     this.createdAt,
     this.startDate,
@@ -28,15 +30,16 @@ class Class extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        description,
-        members,
-        tuition,
-        schedules,
-        isActive,
-        createdAt,
-        endDate,
-        startDate,
-      ];
+    id,
+    name,
+    description,
+    members,
+    tuition,
+    schedules,
+    lessons,
+    isActive,
+    createdAt,
+    endDate,
+    startDate,
+  ];
 }

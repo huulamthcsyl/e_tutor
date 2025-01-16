@@ -1,5 +1,6 @@
 import 'package:class_repository/class_repository.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:e_tutor/create_homework/view/create_homework_page.dart';
 import 'package:e_tutor/lesson/lesson.dart';
 import 'package:e_tutor/pdf_view/view/pdf_view_page.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,8 @@ class LessonView extends StatelessWidget {
                   _ClassInfo(classData: state.classData),
                   const SizedBox(height: 16),
                   _MaterialInfo(lesson: state.lessonData),
+                  const SizedBox(height: 16),
+                  _HomeworkInfo(lesson: state.lessonData),
                 ],
               ),
             );
@@ -141,7 +144,7 @@ class _MaterialInfo extends StatelessWidget {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   )),
-              for (final material in state.materials)
+              for (final material in state.lessonData.materials)
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).push<void>(
@@ -187,24 +190,127 @@ class _MaterialInfo extends StatelessWidget {
                   context.read<LessonCubit>().uploadMaterial();
                 },
                 child: DottedBorder(
-                    padding: const EdgeInsets.all(8),
-                    color: Theme.of(context).colorScheme.primary,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.file_upload,
-                          color: Colors.blue,
+                  padding: const EdgeInsets.all(8),
+                  color: Theme.of(context).colorScheme.primary,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.file_upload,
+                        color: Colors.blue,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Upload tài liệu',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Upload tài liệu',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                      ),
+                    ],
+                  )
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _HomeworkInfo extends StatelessWidget {
+  final Lesson lesson;
+
+  const _HomeworkInfo({required this.lesson});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LessonCubit, LessonState>(
+      builder: (context, state) {
+        return Container(
+          margin: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Bài tập',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )),
+              for (final homework in state.homeworks)
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 1,
+                        blurRadius: 7,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8),
+                      Text(
+                        homework.title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ],
-                    )),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push<void>(
+                    CreateHomeworkPage.route(
+                      lessonId: lesson.id,
+                    ),
+                  );
+                },
+                child: DottedBorder(
+                  padding: const EdgeInsets.all(8),
+                  color: Theme.of(context).colorScheme.primary,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.add_circle,
+                        color: Colors.blue,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Tạo bài tập',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ],
+                  )
+                ),
               )
             ],
           ),
