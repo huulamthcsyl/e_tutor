@@ -18,7 +18,7 @@ class CreateClassState extends Equatable {
     this.status = FormzSubmissionStatus.initial,
     this.schedules = const [],
     this.endDate = const ConstDateTime(2026),
-    this.startDate = const ConstDateTime(2025),
+    this.startDate = const ConstDateTime(2026),
   });
 
   @override

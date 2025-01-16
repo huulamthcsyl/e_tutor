@@ -1,5 +1,6 @@
 import 'package:e_tutor/class/class.dart';
 import 'package:e_tutor/home/home.dart';
+import 'package:e_tutor/profile/view/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:e_tutor/layout/layout.dart';
@@ -17,7 +18,7 @@ class LayoutView extends StatelessWidget {
             children: const [
               HomePage(),
               ClassPage(),
-              Center(child: Text('Profile Page')),
+              ProfilePage(),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
