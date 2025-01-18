@@ -111,6 +111,16 @@ class _LoginButton extends StatelessWidget {
       builder: (context, state) {
         return ElevatedButton(
           key: const Key('loginForm_continue_raisedButton'),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith((states) {
+              return isValid
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.primary.withOpacity(0.5);
+            }),
+            minimumSize: MaterialStateProperty.resolveWith((states) {
+              return const Size(double.infinity, 50);
+            }),
+          ),
           onPressed: isValid
             ? () => context.read<LoginCubit>().logInWithCredentials()
             : null,
