@@ -18,34 +18,38 @@ class SignUpForm extends StatelessWidget {
             );
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.sizeOf(context).height * 0.2,),
-            Text(
-              'Đăng ký',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            _EmailInput(),
-            _PasswordInput(),
-            _ConfirmedPasswordInput(),
-            const SizedBox(height: 16),
-            _SignUpButton(),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      child: Expanded(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               children: [
+                SizedBox(height: MediaQuery.sizeOf(context).height * 0.2,),
                 Text(
-                  'Đã có tài khoản?', 
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  'Đăng ký',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
-                _LoginButton(),
+                _EmailInput(),
+                _PasswordInput(),
+                _ConfirmedPasswordInput(),
+                const SizedBox(height: 16),
+                _SignUpButton(),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Đã có tài khoản?', 
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    _LoginButton(),
+                  ],
+                )
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );
