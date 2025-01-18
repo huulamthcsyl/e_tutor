@@ -237,7 +237,7 @@ class _EndDateInput extends StatelessWidget {
                 final result = await showDatePicker(
                   context: context,
                   initialDate: state.endDate,
-                  firstDate: state.startDate,
+                  firstDate: DateTime.now(),
                   lastDate: DateTime(2100),
                 );
                 if (result != null) {

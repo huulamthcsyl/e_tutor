@@ -18,8 +18,13 @@ class LessonCubit extends Cubit<LessonState> {
     try {
       final lessonData = await _classRepository.getLesson(classId, lessonId);
       final classData = await _classRepository.getClass(classId);
-      final materials = await _classRepository.getMaterials(classId, lessonId);
-      emit(state.copyWith(lessonData: lessonData, classData: classData, status: LessonStatus.success, materials: materials));
+      final homeworks = await _classRepository.getHomeworks(lessonData.homeworks);
+      emit(state.copyWith(
+        lessonData: lessonData, 
+        classData: classData, 
+        homeworks: homeworks,
+        status: LessonStatus.success,
+      ));
     } on ClassFailure {
       emit(state.copyWith(status: LessonStatus.failure));
     }
@@ -44,12 +49,12 @@ class LessonCubit extends Cubit<LessonState> {
       emit(state.copyWith(status: LessonStatus.failure));
     }
   }
-  
-  Future<void> getMaterials(String classId, String lessonId) async {
+
+  Future<void> getHomeworks(List<String> homeworkIds) async {
     emit(state.copyWith(status: LessonStatus.loading));
     try {
-      final materials = await _classRepository.getMaterials(classId, lessonId);
-      emit(state.copyWith(materials: materials, status: LessonStatus.success));
+      final homeworks = await _classRepository.getHomeworks(homeworkIds);
+      emit(state.copyWith(homeworks: homeworks, status: LessonStatus.success));
     } on ClassFailure {
       emit(state.copyWith(status: LessonStatus.failure));
     }
@@ -68,7 +73,7 @@ class LessonCubit extends Cubit<LessonState> {
         file.files.first.name,
         file.files.first.bytes!,
       );
+      await getLessonInfo(state.classData.id!, state.lessonData.id!);
     }
-    getMaterials(state.classData.id!, state.lessonData.id!);
   }
 }

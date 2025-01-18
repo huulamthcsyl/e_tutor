@@ -9,7 +9,11 @@ class LessonResponse extends Equatable {
   const LessonResponse({
     this.classId = '',
     this.className = '',
-    this.lesson = const Lesson(),
+    this.lesson = const Lesson(
+      classId: '',
+      materials: [],
+      homeworks: [],
+    ),
   });
 
   @override

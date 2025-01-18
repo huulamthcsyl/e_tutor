@@ -3,8 +3,9 @@ import 'package:equatable/equatable.dart';
 
 class Lesson extends Equatable {
   final String? id;
-  final List<String>? materials;
-  final List<Homework>? homeworks;
+  final String classId;
+  final List<Material> materials;
+  final List<String> homeworks;
   final bool? isPaid;
   final String? tutorFeedback;
   final String? studentFeedback;
@@ -13,8 +14,9 @@ class Lesson extends Equatable {
 
   const Lesson({
     this.id,
-    this.materials,
-    this.homeworks,
+    required this.classId,
+    required this.materials,
+    required this.homeworks,
     this.isPaid,
     this.tutorFeedback,
     this.studentFeedback,
@@ -23,5 +25,5 @@ class Lesson extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, materials, homeworks, isPaid, tutorFeedback, studentFeedback, startTime, endTime];
+  List<Object?> get props => [id, classId, materials, homeworks, isPaid, tutorFeedback, studentFeedback, startTime, endTime];
 }
