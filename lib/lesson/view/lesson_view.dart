@@ -156,6 +156,7 @@ class _MaterialInfo extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     margin: const EdgeInsets.symmetric(vertical: 8),
+                    width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
@@ -255,6 +256,7 @@ class _HomeworkInfo extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   margin: const EdgeInsets.symmetric(vertical: 8),
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
@@ -287,9 +289,12 @@ class _HomeworkInfo extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push<void>(
                     CreateHomeworkPage.route(
+                      classId: lesson.classId,
                       lessonId: lesson.id,
                     ),
-                  );
+                  ).then((value) {
+                    context.read<LessonCubit>().getLessonInfo(state.lessonData.classId, state.lessonData.id!);
+                  });
                 },
                 child: DottedBorder(
                   padding: const EdgeInsets.all(8),
