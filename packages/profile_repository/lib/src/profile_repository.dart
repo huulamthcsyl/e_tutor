@@ -77,7 +77,7 @@ class ProfileRepository {
   }
 
   Future<void> createProfile(Profile profile) {
-    return _firestore.collection('profiles').add({
+    return _firestore.collection('profiles').doc(profile.id).set({
       'name': profile.name,
       'birthDate': profile.birthDate,
       'address': profile.address,
