@@ -1,6 +1,7 @@
 import 'package:class_repository/class_repository.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/create_homework/view/create_homework_page.dart';
+import 'package:e_tutor/homework/view/homework_page.dart';
 import 'package:e_tutor/lesson/lesson.dart';
 import 'package:e_tutor/pdf_view/view/pdf_view_page.dart';
 import 'package:flutter/material.dart';
@@ -253,35 +254,42 @@ class _HomeworkInfo extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   )),
               for (final homework in state.homeworks)
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 1,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      Text(
-                        homework.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          overflow: TextOverflow.ellipsis,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push<void>(
+                      HomeworkPage.route(id: homework.id!),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 7,
+                          offset: const Offset(0, 3),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                    ],
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 8),
+                        Text(
+                          homework.title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
                   ),
                 ),
               const SizedBox(height: 8),
