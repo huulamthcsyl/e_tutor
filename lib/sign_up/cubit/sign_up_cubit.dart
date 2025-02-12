@@ -71,6 +71,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       final profile = Profile(
         id: uid,
         name: state.fullName.value,
+        role: state.role,
       );
       await _profileRepository.createProfile(profile);
       emit(state.copyWith(status: FormzSubmissionStatus.success));

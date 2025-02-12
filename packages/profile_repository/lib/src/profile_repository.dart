@@ -84,6 +84,7 @@ class ProfileRepository {
       'phoneNumber': profile.phoneNumber,
       'avatarUrl': profile.avatarUrl,
       'members': [],
+      'role': profile.role,
     });
   }
 
