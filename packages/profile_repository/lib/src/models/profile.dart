@@ -7,6 +7,7 @@ class Profile extends Equatable {
   final String? address;
   final String? phoneNumber;
   final String? avatarUrl;
+  final List<String>? members;
   final String? role;
 
   const Profile({
@@ -16,9 +17,10 @@ class Profile extends Equatable {
     this.address,
     this.phoneNumber,
     this.avatarUrl,
+    this.members,
     this.role,
   });
 
   @override
-  List<Object?> get props => [id, name, birthDate, address, phoneNumber, avatarUrl, role];
+  List<Object?> get props => [id, name, birthDate, address, phoneNumber, avatarUrl, members, role];
 }
