@@ -255,6 +255,7 @@ class _HomeworkInfo extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   margin: const EdgeInsets.symmetric(vertical: 8),
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),

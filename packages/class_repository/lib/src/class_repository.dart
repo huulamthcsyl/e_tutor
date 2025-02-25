@@ -222,8 +222,13 @@ class ClassRepository {
         return Homework(
           id: doc.id,
           title: data['title'],
-          materials: data['materials'],
-          studentWorks: data['studentWorks'],
+          materials: (data['materials'] as List<dynamic>).map((material) {
+            return Material(
+              name: material['name'],
+              url: material['url'],
+            );
+          }).toList(),
+          studentWorks: List<String>.from(data['studentWorks']),
           score: data['score'],
           feedback: data['feedback'],
           createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
