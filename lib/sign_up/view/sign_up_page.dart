@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:e_tutor/sign_up/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:profile_repository/profile_repository.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -16,6 +17,7 @@ class SignUpPage extends StatelessWidget {
         child: BlocProvider<SignUpCubit>(
           create: (context) => SignUpCubit(
             context.read<AuthenticationRepository>(),
+            context.read<ProfileRepository>(),
           ),
           child: const SignUpForm(),
         )

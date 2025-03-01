@@ -34,6 +34,8 @@ class ProfileRepository {
           address: data['address'],
           phoneNumber: data['phoneNumber'],
           avatarUrl: data['avatarUrl'],
+          members: List<String>.from(data['members']),
+          role: data['role'],
         );
       }).toList();
     });
@@ -54,6 +56,8 @@ class ProfileRepository {
           address: data['address'],
           phoneNumber: data['phoneNumber'],
           avatarUrl: data['avatarUrl'],
+          members: List<String>.from(data['members']),
+          role: data['role'],
         );
       }).toList();
     });
@@ -72,18 +76,21 @@ class ProfileRepository {
         address: data['address'],
         phoneNumber: data['phoneNumber'],
         avatarUrl: data['avatarUrl'],
+        members: List<String>.from(data['members']),
+        role: data['role'],
       );
     });
   }
 
   Future<void> createProfile(Profile profile) {
-    return _firestore.collection('profiles').add({
+    return _firestore.collection('profiles').doc(profile.id).set({
       'name': profile.name,
       'birthDate': profile.birthDate,
       'address': profile.address,
       'phoneNumber': profile.phoneNumber,
       'avatarUrl': profile.avatarUrl,
       'members': [],
+      'role': profile.role,
     });
   }
 
@@ -93,6 +100,9 @@ class ProfileRepository {
       'birthDate': profile.birthDate,
       'address': profile.address,
       'phoneNumber': profile.phoneNumber,
+      'avatarUrl': profile.avatarUrl,
+      'members': profile.members,
+      'role': profile.role,
     });
   }
 

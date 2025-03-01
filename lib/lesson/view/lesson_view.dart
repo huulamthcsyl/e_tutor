@@ -1,6 +1,7 @@
 import 'package:class_repository/class_repository.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/create_homework/view/create_homework_page.dart';
+import 'package:e_tutor/homework/view/homework_page.dart';
 import 'package:e_tutor/lesson/lesson.dart';
 import 'package:e_tutor/pdf_view/view/pdf_view_page.dart';
 import 'package:flutter/material.dart';
@@ -156,6 +157,7 @@ class _MaterialInfo extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     margin: const EdgeInsets.symmetric(vertical: 8),
+                    width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
@@ -252,10 +254,16 @@ class _HomeworkInfo extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   )),
               for (final homework in state.homeworks)
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  width: double.infinity,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push<void>(
+                      HomeworkPage.route(id: homework.id!),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
@@ -280,7 +288,7 @@ class _HomeworkInfo extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                    ],
+                    ],),
                   ),
                 ),
               const SizedBox(height: 8),
@@ -288,9 +296,12 @@ class _HomeworkInfo extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push<void>(
                     CreateHomeworkPage.route(
+                      classId: lesson.classId,
                       lessonId: lesson.id,
                     ),
-                  );
+                  ).then((value) {
+                    context.read<LessonCubit>().getLessonInfo(state.lessonData.classId, state.lessonData.id!);
+                  });
                 },
                 child: DottedBorder(
                   padding: const EdgeInsets.all(8),

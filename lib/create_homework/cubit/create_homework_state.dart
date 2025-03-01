@@ -1,6 +1,9 @@
 part of 'create_homework_cubit.dart';
 
 class CreateHomeworkState extends Equatable {
+  final String classId;
+  final String lessonId;
+  final String homeworkId;
   final RequiredText title;
   final List<Material> materials;
   final DateTime dueDate;
@@ -8,6 +11,9 @@ class CreateHomeworkState extends Equatable {
   final bool isValid;
 
   const CreateHomeworkState({
+    this.classId = '',
+    this.lessonId = '',
+    this.homeworkId = '',
     this.title = const RequiredText.pure(),
     this.materials = const [],
     this.dueDate = const ConstDateTime(2026),
@@ -16,9 +22,12 @@ class CreateHomeworkState extends Equatable {
   });
 
   @override
-  List<Object> get props => [title, materials, dueDate, status, isValid];
+  List<Object> get props => [classId, lessonId, homeworkId, title, materials, dueDate, status, isValid];
 
   CreateHomeworkState copyWith({
+    String? classId,
+    String? lessonId,
+    String? homeworkId,
     RequiredText? title,
     List<Material>? materials,
     DateTime? dueDate,
@@ -26,6 +35,9 @@ class CreateHomeworkState extends Equatable {
     bool? isValid,
   }) {
     return CreateHomeworkState(
+      classId: classId ?? this.classId,
+      lessonId: lessonId ?? this.lessonId,
+      homeworkId: homeworkId ?? this.homeworkId,
       title: title ?? this.title,
       materials: materials ?? this.materials,
       dueDate: dueDate ?? this.dueDate,

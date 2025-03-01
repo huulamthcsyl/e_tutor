@@ -1,5 +1,4 @@
 import 'package:class_repository/class_repository.dart';
-import 'package:class_repository/src/response/response.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:typed_data';
@@ -222,13 +221,18 @@ class ClassRepository {
         return Homework(
           id: doc.id,
           title: data['title'],
-          materials: (data['materials'] as List<dynamic>).map((material) {
+          materials: (data['materials'] as List<dynamic>?)?.map((material) {
             return Material(
               name: material['name'],
               url: material['url'],
             );
           }).toList(),
-          studentWorks: List<String>.from(data['studentWorks']),
+          studentWorks: (data['studentWorks'] as List<dynamic>?)?.map((work) {
+            return Material(
+              name: work['name'],
+              url: work['url'],
+            );
+          }).toList(),
           score: data['score'],
           feedback: data['feedback'],
           createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
@@ -238,22 +242,60 @@ class ClassRepository {
     }));
   }
 
-  Future<void> uploadHomeworkMaterial(String classId, String lessonId, String homeworkId, String fileName, Uint8List file) async {
+  Future<String> uploadHomeworkMaterial(String classId, String lessonId, String homeworkId, String fileName, Uint8List file) async {
     final ref = _storage.ref().child('classes/$classId/lessons/$lessonId/homeworks/$homeworkId/materials/$fileName');
     await ref.putData(file);
+    return ref.fullPath;
   }
 
-  Future<void> createHomework(String classId, String lessonId, Homework homework) {
-    return _firestore.collection('homeworks').add({
+  Future<void> createHomework(String classId, String lessonId, Homework homework) async {
+    await _firestore.collection('homeworks').doc(homework.id).set({
       'classId': classId,
       'lessonId': lessonId,
       'title': homework.title,
-      'materials': homework.materials,
+      'materials': homework.materials?.map((material) {
+        return {
+          'name': material.name,
+          'url': material.url,
+        };
+      }).toList(),
       'studentWorks': [],
       'score': null,
       'feedback': null,
       'createdAt': homework.createdAt?.toIso8601String(),
       'dueDate': homework.dueDate?.toIso8601String(),
+    });
+    _firestore.collection('lessons').doc(lessonId).update({
+      'homeworks': FieldValue.arrayUnion([homework.id])
+    });
+  }
+
+  Future<Homework> getHomework(String homeworkId) {
+    return _firestore.collection('homeworks').doc(homeworkId).get().then((doc) {
+      final data = doc.data();
+      if (data == null) {
+        throw ClassFailure('Không tìm thấy bài tập');
+      }
+      return Homework(
+        id: doc.id,
+        title: data['title'],
+        materials: (data['materials'] as List<dynamic>?)?.map((material) {
+          return Material(
+            name: material['name'],
+            url: material['url'],
+          );
+        }).toList(),
+        studentWorks: (data['studentWorks'] as List<dynamic>?)?.map((work) {
+          return Material(
+            name: work['name'],
+            url: work['url'],
+          );
+        }).toList(),
+        score: data['score'],
+        feedback: data['feedback'],
+        createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
+        dueDate: data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
+      );
     });
   }
 }

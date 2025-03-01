@@ -7,12 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CreateHomeworkPage extends StatelessWidget {
   const CreateHomeworkPage({super.key});
 
-  static Route<void> route({String? lessonId}) {
+  static Route<void> route({String? classId, String? lessonId}) {
     return MaterialPageRoute<void>(
       builder: (context) => BlocProvider(
         create: (context) => CreateHomeworkCubit(
           context.read<ClassRepository>(),
-        ),
+        )..initialize(classId, lessonId),
         child: const CreateHomeworkPage(),
       ),
     );

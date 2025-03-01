@@ -5,7 +5,7 @@ class Homework extends Equatable {
   final String? id;
   final String title;
   final List<Material>? materials;
-  final List<String>? studentWorks;
+  final List<Material>? studentWorks;
   final double? score;
   final String? feedback;
   final DateTime? createdAt;

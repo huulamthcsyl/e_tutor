@@ -19,33 +19,38 @@ class LoginForm extends StatelessWidget {
             );
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.sizeOf(context).height * 0.2,),
-            Text(
-              'Đăng nhập',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            _EmailInput(),
-            _PasswordInput(),
-            const SizedBox(height: 16),
-            _LoginButton(),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      child: Expanded(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               children: [
+                SizedBox(height: MediaQuery.sizeOf(context).height * 0.2,),
                 Text(
-                  'Chưa có tài khoản?', 
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  'Đăng nhập',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
-                _SignUpButton(),
+                const SizedBox(height: 16),
+                _EmailInput(),
+                _PasswordInput(),
+                const SizedBox(height: 16),
+                _LoginButton(),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Chưa có tài khoản?', 
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    _SignUpButton(),
+                  ],
+                )
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );
@@ -106,6 +111,16 @@ class _LoginButton extends StatelessWidget {
       builder: (context, state) {
         return ElevatedButton(
           key: const Key('loginForm_continue_raisedButton'),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith((states) {
+              return isValid
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.primary.withOpacity(0.5);
+            }),
+            minimumSize: MaterialStateProperty.resolveWith((states) {
+              return const Size(double.infinity, 50);
+            }),
+          ),
           onPressed: isValid
             ? () => context.read<LoginCubit>().logInWithCredentials()
             : null,

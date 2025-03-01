@@ -3,13 +3,15 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
+import 'package:profile_repository/profile_repository.dart';
 
 part 'sign_up_state.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {
-  SignUpCubit(this._authenticationRepository) : super(const SignUpState());
+  SignUpCubit(this._authenticationRepository, this._profileRepository) : super(const SignUpState());
 
   final AuthenticationRepository _authenticationRepository;
+  final ProfileRepository _profileRepository;
 
   void emailChanged(String value) {
     final email = Email.dirty(value);
@@ -43,14 +45,35 @@ class SignUpCubit extends Cubit<SignUpState> {
     ));
   }
 
+  void fullNameChanged(String value) {
+    final fullName = RequiredText.dirty(value);
+    emit(state.copyWith(
+      fullName: fullName,
+      isValid: Formz.validate([state.email, state.password, state.confirmedPassword, fullName]),
+    ));
+  }
+
+  void roleChanged(String role) {
+    emit(state.copyWith(
+      role: role,
+      isValid: Formz.validate([state.email, state.password, state.confirmedPassword, state.fullName]),
+    ));
+  }
+
   Future<void> signUpWithCredentials() async {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
-      await _authenticationRepository.signUp(
+      final uid = await _authenticationRepository.signUp(
         email: state.email.value,
         password: state.password.value,
       );
+      final profile = Profile(
+        id: uid,
+        name: state.fullName.value,
+        role: state.role,
+      );
+      await _profileRepository.createProfile(profile);
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } on SignUpWithEmailAndPasswordFailure catch (e) {
       emit(state.copyWith(
