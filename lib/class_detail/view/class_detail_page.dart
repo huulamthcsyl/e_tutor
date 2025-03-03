@@ -3,6 +3,7 @@ import 'package:e_tutor/class_detail/class_detail.dart';
 import 'package:e_tutor/class_detail/view/class_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:profile_repository/profile_repository.dart';
 
 class ClassDetailPage extends StatelessWidget {
   const ClassDetailPage({super.key});
@@ -12,6 +13,7 @@ class ClassDetailPage extends StatelessWidget {
       builder: (context) => BlocProvider(
         create: (context) => ClassDetailCubit(
           context.read<ClassRepository>(),
+          context.read<ProfileRepository>(),
         )..fetchClassDetail(id ?? ''),
         child: const ClassDetailPage(),
       ),

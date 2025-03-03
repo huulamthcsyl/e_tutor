@@ -63,6 +63,9 @@ class ClassRepository {
         schedules: (data['schedules'] as List<dynamic>?)?.map((schedule) {
           return Schedule.fromJson(schedule);
         }).toList(),
+        startDate: data['startDate'] != null ? DateTime.parse(data['startDate']) : null,
+        endDate: data['endDate'] != null ? DateTime.parse(data['endDate']) : null,
+        members: List<String>.from(data['members']),
       );
     });
   }
@@ -296,6 +299,12 @@ class ClassRepository {
         createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
         dueDate: data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
       );
+    });
+  }
+
+  Future<void> addMembersToClass(String classId, List<String> memberIds) {
+    return _firestore.collection('classes').doc(classId).update({
+      'members': FieldValue.arrayUnion(memberIds)
     });
   }
 }

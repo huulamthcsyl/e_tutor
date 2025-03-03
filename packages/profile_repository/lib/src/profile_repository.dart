@@ -19,10 +19,9 @@ class ProfileRepository {
       : _firestore = firestore ?? FirebaseFirestore.instance,
         _storage = storage ?? FirebaseStorage.instance;
 
-  Stream<List<Profile>> getProfiles(String userId) {
+  Stream<List<Profile>> getProfiles() {
     return _firestore
         .collection('profiles')
-        .where('members', arrayContains: userId)
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -44,7 +43,8 @@ class ProfileRepository {
   Stream<List<Profile>> searchProfiles(String query) {
     return _firestore
         .collection('profiles')
-        .where('name', isEqualTo: query)
+        .where('name', isGreaterThanOrEqualTo: query)
+        .where('name', isLessThan: '${query}z')
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -111,5 +111,9 @@ class ProfileRepository {
     await ref.putData(file);
     final url = await ref.getDownloadURL();
     await _firestore.collection('profiles').doc(id).update({'avatarUrl': url});
+  }
+
+  Future<List<Profile>> getProfilesByIds(List<String> ids) {
+    return Future.wait(ids.map((id) => getProfile(id)));
   }
 }
