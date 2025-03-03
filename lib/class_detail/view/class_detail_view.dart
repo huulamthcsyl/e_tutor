@@ -1,9 +1,12 @@
 import 'package:class_repository/class_repository.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/class_detail/class_detail.dart';
 import 'package:e_tutor/utils/format_currency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:profile_repository/profile_repository.dart';
+
+import '../widgets/add_member/view/add_member_dialog.dart';
 
 class ClassDetailView extends StatelessWidget {
   const ClassDetailView({super.key});
@@ -40,7 +43,7 @@ class ClassDetailView extends StatelessWidget {
                   const SizedBox(height: 8),
                   _ClassSchedules(schedules: state.classDetail.schedules),
                   const SizedBox(height: 8),
-                  _ClassMembers(members: state.members)
+                  _ClassMembers(members: state.members, classId: state.classDetail.id!),
                 ],
               ),
             );
@@ -158,9 +161,10 @@ class _ClassSchedules extends StatelessWidget {
 }
 
 class _ClassMembers extends StatelessWidget {
-  const _ClassMembers({super.key, required this.members});
+  const _ClassMembers({super.key, required this.members, required this.classId});
 
   final List<Profile>? members;
+  final String classId;
 
   @override
   Widget build(BuildContext context) {
@@ -192,33 +196,66 @@ class _ClassMembers extends StatelessWidget {
           const SizedBox(height: 8),
           if (members != null)
             for (final member in members!)
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundImage: NetworkImage(member.avatarUrl ?? ''),
-                  ),
-                  const SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        member.name ?? '',
-                        style: const TextStyle(
-                          fontSize: 16,
+              Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  spacing: 8,
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(member.avatarUrl ?? ''),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          member.name ?? '',
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      Text(
-                        member.role?.tutorRole() ?? '',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
+                        Text(
+                          member.role?.tutorRole() ?? '',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push<void>(
+                AddMemberDialog.route(classId),
+              ).then((value) {
+                context.read<ClassDetailCubit>().fetchClassDetail(classId);
+              });
+            },
+            child: DottedBorder(
+                padding: const EdgeInsets.all(8),
+                color: Theme.of(context).colorScheme.primary,
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.add_circle,
+                      color: Colors.blue,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Thêm thành viên',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                )
+            ),
+          )
         ],
       ),
     );

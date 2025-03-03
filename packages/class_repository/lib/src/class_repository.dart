@@ -301,4 +301,10 @@ class ClassRepository {
       );
     });
   }
+
+  Future<void> addMembersToClass(String classId, List<String> memberIds) {
+    return _firestore.collection('classes').doc(classId).update({
+      'members': FieldValue.arrayUnion(memberIds)
+    });
+  }
 }
