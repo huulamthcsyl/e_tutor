@@ -141,53 +141,68 @@ class _MaterialInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Tài liệu',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  )),
-              for (final material in state.lessonData.materials)
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push<void>(
-                      PdfViewPage.route(
-                        url: material.url,
-                      ),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                )
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: () {
+                  if (state.lessonData.materials.isEmpty) {
+                    return const Center(
+                      child: Text('Chưa có tài liệu nào'),
                     );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 1,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        Text(
-                          material.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            overflow: TextOverflow.ellipsis,
+                  }
+                  return Column(
+                    children: [
+                      for (final material in state.lessonData.materials)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push<void>(
+                              PdfViewPage.route(
+                                url: material.url,
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 1,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 8),
+                                Text(
+                                  material.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                  ),
-                ),
+                        )
+                    ],
+                  );
+                }()
+              ),
               const SizedBox(height: 8),
-              GestureDetector(
+              state.profile.role == 'tutor' ? GestureDetector(
                 onTap: () {
                   context.read<LessonCubit>().uploadMaterial();
                 },
@@ -211,7 +226,7 @@ class _MaterialInfo extends StatelessWidget {
                     ],
                   )
                 ),
-              )
+              ) : const SizedBox(),
             ],
           ),
         );
@@ -249,51 +264,66 @@ class _HomeworkInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Bài tập',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  )),
-              for (final homework in state.homeworks)
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push<void>(
-                      HomeworkPage.route(id: homework.id!),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                )
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: (){
+                  if(state.homeworks.isEmpty){
+                    return const Center(
+                      child: Text('Chưa có bài tập nào'),
                     );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 1,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        Text(
-                          homework.title,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            overflow: TextOverflow.ellipsis,
+                  }
+                  return Column(
+                    children: [
+                      for (final homework in state.homeworks)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push<void>(
+                              HomeworkPage.route(id: homework.id!),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 1,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 8),
+                                Text(
+                                  homework.title,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                  ),
-                ),
+                        )
+                    ],
+                  );
+                }()
+              ),
               const SizedBox(height: 8),
-              GestureDetector(
+              state.profile.role == 'tutor' ? GestureDetector(
                 onTap: () {
                   Navigator.of(context).push<void>(
                     CreateHomeworkPage.route(
@@ -324,7 +354,7 @@ class _HomeworkInfo extends StatelessWidget {
                     ],
                   )
                 ),
-              )
+              ) : const SizedBox(),
             ],
           ),
         );
