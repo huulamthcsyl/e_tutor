@@ -6,10 +6,12 @@ final class ClassState extends Equatable {
 
   final List<Class> classes;
   final ClassStatus status;
+  final Profile profile;
 
   const ClassState({
     this.status = ClassStatus.initial,
     this.classes = const [],
+    this.profile = const Profile(id: '')
   });
 
   @override
@@ -18,10 +20,12 @@ final class ClassState extends Equatable {
   ClassState copyWith({
     ClassStatus? status,
     List<Class>? classes,
+    Profile? profile
   }) {
     return ClassState(
       status: status ?? this.status,
       classes: classes ?? this.classes,
+      profile: profile ?? this.profile
     );
   }
 }

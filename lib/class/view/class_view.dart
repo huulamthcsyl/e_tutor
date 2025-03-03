@@ -1,8 +1,11 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:e_tutor/class/class.dart';
 import 'package:e_tutor/class_detail/class_detail.dart';
+import 'package:e_tutor/theme.dart';
 import 'package:e_tutor/utils/format_currency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:e_tutor/create_class/create_class.dart';
 
 class ClassView extends StatelessWidget {
   const ClassView({super.key});
@@ -15,62 +18,80 @@ class ClassView extends StatelessWidget {
           case ClassStatus.loading:
             return const Center(child: CircularProgressIndicator());
           case ClassStatus.success:
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                itemCount: state.classes.length,
-                itemBuilder: (context, index) {
-                  final _class = state.classes[index];
-                  return GestureDetector(
-                    onTap: () => Navigator.of(context).push<void>(
-                      ClassDetailPage.route(id: _class.id),
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text(
+                  'Danh sách lớp học',
+                  style: TextStyle(color: Colors.white),
+                ),
+                actions: state.profile.role == 'tutor' ? [
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () => Navigator.of(context).push<void>(
+                      CreateClassPage.route(),
                     ),
-                    child: Container(
-                      margin: const EdgeInsets.all(8),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 7,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
+                  ),
+                ] : null,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                iconTheme: const IconThemeData(color: Colors.white),
+              ),
+              body: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                  itemCount: state.classes.length,
+                  itemBuilder: (context, index) {
+                    final _class = state.classes[index];
+                    return GestureDetector(
+                      onTap: () => Navigator.of(context).push<void>(
+                        ClassDetailPage.route(id: _class.id),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _class.name ?? "",
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                      child: Container(
+                        margin: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 1,
+                              blurRadius: 7,
+                              offset: const Offset(0, 3),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          _class.description!.isNotEmpty
-                            ? Text(
-                               _class.description ?? "",
-                                style: const TextStyle(
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _class.name ?? "",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            _class.description!.isNotEmpty
+                              ? Text(
+                                 _class.description ?? "",
+                                  style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                              )
+                              : const SizedBox(),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Học phí: ${FormatCurrency.format(_class.tuition ?? 0)}đ / buổi',
+                              style: const TextStyle(
                                 fontSize: 16,
                               ),
-                            )
-                            : const SizedBox(),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Học phí: ${FormatCurrency.format(_class.tuition ?? 0)}đ / buổi',
-                            style: const TextStyle(
-                              fontSize: 16,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             );
           default:
