@@ -20,16 +20,22 @@ class HomeworkPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Thông tin bài tập',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: const HomeworkView(),
+    return BlocBuilder<HomeworkCubit, HomeworkState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              state.homework.title,
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            iconTheme: const IconThemeData(color: Colors.white),
+          ),
+          body: state.status == HomeworkStatus.loading
+              ? const Center(child: CircularProgressIndicator())
+              : HomeworkView(homework: state.homework),
+        );
+      },
     );
   }
 }

@@ -7,106 +7,101 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeworkView extends StatelessWidget {
-  const HomeworkView({super.key});
+  final class_repo.Homework homework;
+  const HomeworkView({super.key, required this.homework});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeworkCubit, HomeworkState>(builder: (context, state) {
-      switch (state.status) {
-        case HomeworkStatus.loading:
-          return const Center(child: CircularProgressIndicator());
-        case HomeworkStatus.success:
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Text(
-                      'Đến hạn: ',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(FormatTime.formatDate(state.homework.dueDate)),
-                  ],
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Text(
+                'Đến hạn: ',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 8),
-                if (state.homework.materials != null)
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 1,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Tài liệu:',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        for (final material in state.homework.materials!)
-                          _MaterialView(material: material),
-                      ],
+              ),
+              Text(FormatTime.formatDate(homework.dueDate)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          if (homework.materials != null)
+            Container(
+              padding: const EdgeInsets.all(8),
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 1,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Tài liệu:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                const SizedBox(height: 8),
-                if (state.homework.studentWorks != null)
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 1,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Bài làm:',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        for (final studentWork in state.homework.studentWorks!)
-                          _StudentWork(studentWork: studentWork),
-                      ],
-                    ),
-                  ),  
-              ],
+                  const SizedBox(width: 8),
+                  for (final material in homework.materials!)
+                    _MaterialView(material: material),
+                ],
+              ),
             ),
-          );
-        default:
-          return const Center(child: Text('Không thể tải tài liệu!'));
-      } 
-    });
+          const SizedBox(height: 8),
+          if (homework.studentWorks != null)
+            Container(
+              padding: const EdgeInsets.all(8),
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 1,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Bài làm:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  for (final studentWork in homework.studentWorks!)
+                    _StudentWork(studentWork: studentWork),
+                ],
+              ),
+            ),
+          const SizedBox(height: 8),
+          if (homework.submittedAt == null)
+            _SubmitButton(homework: homework),
+        ],
+      ),
+    );
   }
 }
 
@@ -175,6 +170,19 @@ class _StudentWork extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
       ),
+    );
+  }
+}
+
+class _SubmitButton extends StatelessWidget {
+  final class_repo.Homework homework;
+  const _SubmitButton({super.key, required this.homework});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {},
+      child: const Text('Nộp bài'),
     );
   }
 }

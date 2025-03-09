@@ -4,6 +4,7 @@ import 'package:e_tutor/create_homework/view/create_homework_page.dart';
 import 'package:e_tutor/homework/view/homework_page.dart';
 import 'package:e_tutor/lesson/lesson.dart';
 import 'package:e_tutor/pdf_view/view/pdf_view_page.dart';
+import 'package:e_tutor/utils/format_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +24,7 @@ class LessonView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _ClassInfo(classData: state.classData),
+                  _ClassInfo(classData: state.classData, lesson: state.lessonData),
                   const SizedBox(height: 16),
                   _MaterialInfo(lesson: state.lessonData),
                   const SizedBox(height: 16),
@@ -41,8 +42,9 @@ class LessonView extends StatelessWidget {
 
 class _ClassInfo extends StatelessWidget {
   final Class classData;
+  final Lesson lesson;
 
-  const _ClassInfo({required this.classData});
+  const _ClassInfo({required this.classData, required this.lesson});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +67,7 @@ class _ClassInfo extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Thông tin lớp học',
+          const Text('Thông tin buổi học',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -91,7 +93,7 @@ class _ClassInfo extends StatelessWidget {
           const SizedBox(height: 8),
           RichText(
               text: TextSpan(
-            text: 'Mô tả: ',
+            text: 'Thời gian: ',
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -99,7 +101,7 @@ class _ClassInfo extends StatelessWidget {
             ),
             children: [
               TextSpan(
-                text: classData.description ?? "",
+                text: '${FormatTime.formatTime(lesson.startTime)} - ${FormatTime.formatTime(lesson.endTime)}, ${FormatTime.formatDate(lesson.startTime)}',
                 style: const TextStyle(
                   fontWeight: FontWeight.normal,
                 ),
@@ -254,44 +256,7 @@ class _HomeworkInfo extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   )),
               for (final homework in state.homeworks)
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push<void>(
-                      HomeworkPage.route(id: homework.id!),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 1,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        Text(
-                          homework.title,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                  ),
-                ),
+                _HomeworkCard(homework: homework),
               const SizedBox(height: 8),
               GestureDetector(
                 onTap: () {
@@ -329,6 +294,101 @@ class _HomeworkInfo extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _HomeworkCard extends StatelessWidget {
+  final Homework homework;
+
+  const _HomeworkCard({required this.homework});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push<void>(
+          HomeworkPage.route(id: homework.id!),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 7,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 4),
+            Text(
+              homework.title,
+              style: const TextStyle(
+                fontSize: 16,
+                overflow: TextOverflow.ellipsis,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Hạn nộp: ${FormatTime.formatDate(homework.dueDate)}',
+              style: const TextStyle(
+                fontSize: 14,
+                overflow: TextOverflow.ellipsis,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 4),
+            homework.submittedAt != null
+              ? Row(
+                  children: [
+                    const Icon(
+                      Icons.check_circle,
+                      color: Colors.green,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Đã nộp: ${FormatTime.formatDate(homework.submittedAt)}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ],
+                )
+              : const Row(
+                  children: [
+                    Icon(
+                      Icons.access_time_filled_sharp,
+                      color: Colors.red,
+                      size: 16,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'Chưa nộp',
+                      style: TextStyle(
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                )
+          ],
+        ),
+      ),
     );
   }
 }
