@@ -11,6 +11,7 @@ class Homework extends Equatable {
   final DateTime? createdAt;
   final DateTime? dueDate;
   final DateTime? submittedAt;
+  final String? status;
 
   const Homework({
     this.id,
@@ -21,9 +22,10 @@ class Homework extends Equatable {
     this.feedback,
     this.createdAt,
     this.dueDate,
+    this.status,
     this.submittedAt,
   });
 
   @override
-  List<Object?> get props => [title, materials, studentWorks, score, feedback, createdAt, dueDate, submittedAt];
+  List<Object?> get props => [title, materials, studentWorks, score, feedback, createdAt, dueDate, status, submittedAt];
 }

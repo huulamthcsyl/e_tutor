@@ -3,6 +3,7 @@ import 'package:e_tutor/homework/cubit/homework_cubit.dart';
 import 'package:e_tutor/homework/view/homework_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:profile_repository/profile_repository.dart';
 
 class HomeworkPage extends StatelessWidget {
   const HomeworkPage({super.key});
@@ -12,6 +13,7 @@ class HomeworkPage extends StatelessWidget {
       builder: (_) => BlocProvider(
         create: (context) => HomeworkCubit(
           RepositoryProvider.of<ClassRepository>(context),
+          RepositoryProvider.of<ProfileRepository>(context),
         )..initialize(id),
         child: const HomeworkPage(),
       ),
@@ -33,7 +35,7 @@ class HomeworkPage extends StatelessWidget {
           ),
           body: state.status == HomeworkStatus.loading
               ? const Center(child: CircularProgressIndicator())
-              : HomeworkView(homework: state.homework),
+              : HomeworkView(homework: state.homework, user: state.user),
         );
       },
     );

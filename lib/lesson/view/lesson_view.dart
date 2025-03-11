@@ -349,7 +349,7 @@ class _HomeworkCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            homework.submittedAt != null
+            homework.status == 'submitted'
               ? Row(
                   children: [
                     const Icon(

@@ -237,6 +237,7 @@ class ClassRepository {
           feedback: data['feedback'],
           createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
           dueDate: data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
+          status: data['status'],
         );
       });
     }));
@@ -264,6 +265,7 @@ class ClassRepository {
       'feedback': null,
       'createdAt': homework.createdAt?.toIso8601String(),
       'dueDate': homework.dueDate?.toIso8601String(),
+      'status': 'pending',
     });
     _firestore.collection('lessons').doc(lessonId).update({
       'homeworks': FieldValue.arrayUnion([homework.id])
@@ -295,6 +297,7 @@ class ClassRepository {
         feedback: data['feedback'],
         createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
         dueDate: data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
+        status: data['status'],
       );
     });
   }

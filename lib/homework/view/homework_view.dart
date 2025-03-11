@@ -5,10 +5,12 @@ import 'package:e_tutor/utils/format_time.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:profile_repository/profile_repository.dart';
 
 class HomeworkView extends StatelessWidget {
   final class_repo.Homework homework;
-  const HomeworkView({super.key, required this.homework});
+  final Profile user;
+  const HomeworkView({super.key, required this.homework, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +99,7 @@ class HomeworkView extends StatelessWidget {
               ),
             ),
           const SizedBox(height: 8),
-          if (homework.submittedAt == null)
+          if (homework.status == 'pending' && user.role == 'student')
             _SubmitButton(homework: homework),
         ],
       ),
