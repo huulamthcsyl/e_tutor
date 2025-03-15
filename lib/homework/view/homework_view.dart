@@ -1,10 +1,8 @@
 import 'package:class_repository/class_repository.dart' as class_repo;
-import 'package:e_tutor/homework/cubit/homework_cubit.dart';
 import 'package:e_tutor/pdf_view/view/pdf_view_page.dart';
 import 'package:e_tutor/utils/format_time.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:profile_repository/profile_repository.dart';
 
 class HomeworkView extends StatelessWidget {
@@ -109,7 +107,7 @@ class HomeworkView extends StatelessWidget {
 
 class _MaterialView extends StatelessWidget {
   final class_repo.Material material;
-  const _MaterialView({super.key, required this.material});
+  const _MaterialView({required this.material});
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +144,7 @@ class _MaterialView extends StatelessWidget {
 
 class _StudentWork extends StatelessWidget {
   final class_repo.Material studentWork;
-  const _StudentWork({super.key, required this.studentWork});
+  const _StudentWork({required this.studentWork});
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +176,7 @@ class _StudentWork extends StatelessWidget {
 
 class _SubmitButton extends StatelessWidget {
   final class_repo.Homework homework;
-  const _SubmitButton({super.key, required this.homework});
+  const _SubmitButton({required this.homework});
 
   @override
   Widget build(BuildContext context) {
