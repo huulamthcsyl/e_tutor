@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as date_picker;
 
 import '../../pdf_view/view/pdf_view_page.dart';
 import '../../utils/format_time.dart';
@@ -174,21 +175,23 @@ class _DueDateInput extends StatelessWidget {
             const Text('Hạn nộp bài: '),
             TextButton(
               onPressed: () async {
-                final date = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2100),
+                date_picker.DatePicker.showDateTimePicker(
+                  context,
+                  showTitleActions: true,
+                  minTime: DateTime.now(),
+                  maxTime: DateTime.now().add(const Duration(days: 365)),
+                  onConfirm: (date) {
+                    context.read<CreateHomeworkCubit>().updateDueDate(date);
+                  },
+                  currentTime: state.dueDate,
+                  locale: date_picker.LocaleType.vi,
                 );
-                if (date != null) {
-                  context.read<CreateHomeworkCubit>().updateDueDate(date);
-                }
               },
               child: Row(
                 children: [
                   const Icon(Icons.calendar_today),
                   const SizedBox(width: 8),
-                  Text(FormatTime.formatDate(state.dueDate)),
+                  Text(FormatTime.formatDateTime(state.dueDate)),
                 ],
               )
             ),

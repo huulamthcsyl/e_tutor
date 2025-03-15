@@ -344,7 +344,7 @@ class _HomeworkCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Hạn nộp: ${FormatTime.formatDate(homework.dueDate)}',
+              'Hạn nộp: ${FormatTime.formatDateTime(homework.dueDate)}',
               style: const TextStyle(
                 fontSize: 14,
                 overflow: TextOverflow.ellipsis,
@@ -362,7 +362,7 @@ class _HomeworkCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Đã nộp: ${FormatTime.formatDate(homework.submittedAt)}',
+                        'Đã nộp: ${FormatTime.formatDateTime(homework.submittedAt)}',
                         style: const TextStyle(
                           fontSize: 14,
                           overflow: TextOverflow.ellipsis,

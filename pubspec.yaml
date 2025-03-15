@@ -30,6 +30,7 @@ dependencies:
   profile_repository:
     path: packages/profile_repository
   random_string: ^2.3.1
+  flutter_datetime_picker_plus: ^2.2.0
 
 dev_dependencies:
   flutter_test:
