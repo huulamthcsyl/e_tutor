@@ -7,6 +7,7 @@ import 'package:e_tutor/pdf_view/view/pdf_view_page.dart';
 import 'package:e_tutor/utils/format_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:profile_repository/profile_repository.dart';
 
 class LessonView extends StatelessWidget {
   const LessonView({super.key});
@@ -27,9 +28,9 @@ class LessonView extends StatelessWidget {
                   _ClassInfo(
                       classData: state.classData, lesson: state.lessonData),
                   const SizedBox(height: 16),
-                  _MaterialInfo(lesson: state.lessonData),
+                  _MaterialInfo(lesson: state.lessonData, user: state.user,),
                   const SizedBox(height: 16),
-                  _HomeworkInfo(lesson: state.lessonData),
+                  _HomeworkInfo(lesson: state.lessonData, user: state.user,),
                 ],
               ),
             );
@@ -118,8 +119,9 @@ class _ClassInfo extends StatelessWidget {
 
 class _MaterialInfo extends StatelessWidget {
   final Lesson lesson;
+  final Profile user;
 
-  const _MaterialInfo({required this.lesson});
+  const _MaterialInfo({required this.lesson, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -145,75 +147,94 @@ class _MaterialInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Tài liệu',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  )),
-              for (final material in state.lessonData.materials)
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push<void>(
-                      PdfViewPage.route(
-                        url: material.url,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                )
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: (){
+                  if (state.lessonData.materials.isEmpty) {
+                    return const Text(
+                      'Chưa có tài liệu',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
                       ),
                     );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 1,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        Text(
-                          material.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            overflow: TextOverflow.ellipsis,
+                  }
+                  return Column(
+                    children: [
+                      for (final material in state.lessonData.materials)
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push<void>(
+                            PdfViewPage.route(
+                              url: material.url,
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 1,
+                                blurRadius: 7,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 8),
+                              Text(
+                                material.name,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                  ),
-                ),
-              const SizedBox(height: 8),
+                      ),
+                    ],
+                  );
+                }(),
+              ),
               GestureDetector(
                 onTap: () {
                   context.read<LessonCubit>().uploadMaterial();
                 },
-                child: DottedBorder(
-                    padding: const EdgeInsets.all(8),
-                    color: Theme.of(context).colorScheme.primary,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.file_upload,
-                          color: Colors.blue,
+                child: user.role == "tutor" ? DottedBorder(
+                  padding: const EdgeInsets.all(8),
+                  color: Theme.of(context).colorScheme.primary,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.file_upload,
+                        color: Colors.blue,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Upload tài liệu',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Upload tài liệu',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ],
-                    )),
+                      ),
+                    ],
+                  )
+                ) : const SizedBox(),
               )
             ],
           ),
@@ -225,8 +246,9 @@ class _MaterialInfo extends StatelessWidget {
 
 class _HomeworkInfo extends StatelessWidget {
   final Lesson lesson;
+  final Profile user;
 
-  const _HomeworkInfo({required this.lesson});
+  const _HomeworkInfo({required this.lesson, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -252,13 +274,32 @@ class _HomeworkInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Bài tập',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  )),
-              for (final homework in state.homeworks)
-                _HomeworkCard(homework: homework),
-              const SizedBox(height: 8),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                )
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: (){
+                  if (state.homeworks.isEmpty) {
+                    return const Text(
+                      'Chưa có bài tập',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    );
+                  }
+                  return Column(
+                    children: [
+                      for (final homework in state.homeworks)
+                      _HomeworkCard(homework: homework),
+                      const SizedBox(height: 8),
+                    ],
+                  );
+                }(),
+              ),
               GestureDetector(
                 onTap: () {
                   Navigator.of(context)
@@ -273,25 +314,26 @@ class _HomeworkInfo extends StatelessWidget {
                         state.lessonData.classId, state.lessonData.id!);
                   });
                 },
-                child: DottedBorder(
-                    padding: const EdgeInsets.all(8),
-                    color: Theme.of(context).colorScheme.primary,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.add_circle,
-                          color: Colors.blue,
+                child: user.role == "tutor" ? DottedBorder(
+                  padding: const EdgeInsets.all(8),
+                  color: Theme.of(context).colorScheme.primary,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.add_circle,
+                        color: Colors.blue,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Tạo bài tập',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Tạo bài tập',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ],
-                    )),
+                      ),
+                    ],
+                  )
+                ) : const SizedBox(),
               )
             ],
           ),

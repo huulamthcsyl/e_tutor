@@ -1,16 +1,20 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:class_repository/class_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:profile_repository/profile_repository.dart';
 
 part 'lesson_state.dart';
 
 class LessonCubit extends Cubit<LessonState> {
 
   final ClassRepository _classRepository;
+  final AuthenticationRepository _authenticationRepository;
+  final ProfileRepository _profileRepository;
 
   LessonCubit(
-    this._classRepository,
+    this._classRepository, this._authenticationRepository, this._profileRepository
   ) : super(const LessonState());
   
   Future<void> initialize(String classId, String lessonId) async {
@@ -19,10 +23,13 @@ class LessonCubit extends Cubit<LessonState> {
       final lessonData = await _classRepository.getLesson(classId, lessonId);
       final classData = await _classRepository.getClass(classId);
       final homeworks = await _classRepository.getHomeworks(lessonData.homeworks);
+      final user = await _authenticationRepository.user.first;
+      final profile = await _profileRepository.getProfile(user.id);
       emit(state.copyWith(
         lessonData: lessonData, 
         classData: classData, 
         homeworks: homeworks,
+        user: profile,
         status: LessonStatus.success,
       ));
     } on ClassFailure {
