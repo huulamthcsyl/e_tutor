@@ -1,14 +1,19 @@
 import 'package:class_repository/class_repository.dart' as class_repo;
+import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/pdf_view/view/pdf_view_page.dart';
 import 'package:e_tutor/utils/format_time.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:profile_repository/profile_repository.dart';
+
+import '../cubit/homework_cubit.dart';
 
 class HomeworkView extends StatelessWidget {
   final class_repo.Homework homework;
   final Profile user;
-  const HomeworkView({super.key, required this.homework, required this.user});
+  final List<class_repo.Material> studentWorks;
+  const HomeworkView({super.key, required this.homework, required this.user, required this.studentWorks});
 
   @override
   Widget build(BuildContext context) {
@@ -108,19 +113,47 @@ class HomeworkView extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: (){
-                      if (homework.studentWorks!.isEmpty) {
+                      if (studentWorks.isEmpty) {
                         return const Text('Chưa có bài làm');
                       }
                       return ListView.builder(
                         shrinkWrap: true,
-                        itemCount: homework.studentWorks!.length,
+                        itemCount: studentWorks.length,
                         itemBuilder: (context, index) {
-                          final studentWork = homework.studentWorks![index];
+                          final studentWork = studentWorks[index];
                           return _StudentWork(studentWork: studentWork);
                         },
                       );
                     }(),
                   ),
+                  const SizedBox(height: 8),
+                  user.role == "student"
+                    ? GestureDetector(
+                      onTap: () {
+                        context.read<HomeworkCubit>().uploadStudentWork();
+                      },
+                      child: DottedBorder(
+                        padding: const EdgeInsets.all(8),
+                        color: Theme.of(context).colorScheme.primary,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.file_upload,
+                              color: Colors.blue,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Tải bài làm',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ],
+                        )
+                      ),
+                    )
+                    : Container(),
                 ],
               ),
             ),
@@ -209,7 +242,10 @@ class _SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        context.read<HomeworkCubit>().submit();
+        Navigator.of(context).pop();
+      },
       child: const Text('Nộp bài'),
     );
   }

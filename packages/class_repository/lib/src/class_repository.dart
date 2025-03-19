@@ -314,4 +314,22 @@ class ClassRepository {
       'members': FieldValue.arrayUnion(memberIds)
     });
   }
+
+  Future<String> uploadStudentWork(String homeworkId, String fileName, Uint8List file) async {
+    final ref = _storage.ref().child('homeworks/$homeworkId/studentWorks/$fileName');
+    await ref.putData(file);
+    return ref.fullPath;
+  }
+
+  Future<void> submitHomework(String homeworkId, List<Material> studentWorks) {
+    return _firestore.collection('homeworks').doc(homeworkId).update({
+      'studentWorks': studentWorks.map((work) {
+        return {
+          'name': work.name,
+          'url': work.url,
+        };
+      }).toList(),
+      'status': 'submitted',
+    });
+  }
 }

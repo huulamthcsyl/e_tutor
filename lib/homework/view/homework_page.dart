@@ -1,4 +1,5 @@
-import 'package:class_repository/class_repository.dart';
+import 'package:authentication_repository/authentication_repository.dart';
+import 'package:class_repository/class_repository.dart' as class_repo;
 import 'package:e_tutor/create_homework/view/create_homework_page.dart';
 import 'package:e_tutor/homework/cubit/homework_cubit.dart';
 import 'package:e_tutor/homework/view/homework_view.dart';
@@ -13,8 +14,9 @@ class HomeworkPage extends StatelessWidget {
     return MaterialPageRoute<void>(
       builder: (_) => BlocProvider(
         create: (context) => HomeworkCubit(
-          RepositoryProvider.of<ClassRepository>(context),
+          RepositoryProvider.of<class_repo.ClassRepository>(context),
           RepositoryProvider.of<ProfileRepository>(context),
+          RepositoryProvider.of<AuthenticationRepository>(context),
         )..initialize(id),
         child: const HomeworkPage(),
       ),
@@ -33,7 +35,7 @@ class HomeworkPage extends StatelessWidget {
             ),
             backgroundColor: Theme.of(context).colorScheme.primary,
             iconTheme: const IconThemeData(color: Colors.white),
-            actions: [
+            actions: state.user.role == "tutor" ? [
               IconButton(
                 icon: const Icon(Icons.edit),
                 onPressed: () {
@@ -48,11 +50,11 @@ class HomeworkPage extends StatelessWidget {
                   });
                 },
               ),
-            ],
+            ] : [],
           ),
           body: state.status == HomeworkStatus.loading
               ? const Center(child: CircularProgressIndicator())
-              : HomeworkView(homework: state.homework, user: state.user),
+              : HomeworkView(homework: state.homework, user: state.user, studentWorks: state.studentWorks),
         );
       },
     );
