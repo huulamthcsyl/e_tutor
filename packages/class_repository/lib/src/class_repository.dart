@@ -198,7 +198,7 @@ class ClassRepository {
   }
 
   Future<void> uploadLessonMaterial(String classId, Lesson lesson, String fileName, Uint8List file) async {
-    final ref = _storage.ref().child('classes/$classId/lessons/${lesson.id}/materials/$fileName');
+    final ref = _storage.ref().child('lessons/${lesson.id}/materials/$fileName');
     await ref.putData(file);
     _firestore.collection('lessons').doc(lesson.id).update({
       'materials': FieldValue.arrayUnion([
@@ -224,6 +224,8 @@ class ClassRepository {
         return Homework(
           id: doc.id,
           title: data['title'],
+          classId: data['classId'],
+          lessonId: data['lessonId'],
           materials: (data['materials'] as List<dynamic>?)?.map((material) {
             return Material(
               name: material['name'],
@@ -246,8 +248,8 @@ class ClassRepository {
     }));
   }
 
-  Future<String> uploadHomeworkMaterial(String classId, String lessonId, String homeworkId, String fileName, Uint8List file) async {
-    final ref = _storage.ref().child('classes/$classId/lessons/$lessonId/homeworks/$homeworkId/materials/$fileName');
+  Future<String> uploadHomeworkMaterial(String homeworkId, String fileName, Uint8List file) async {
+    final ref = _storage.ref().child('homeworks/$homeworkId/materials/$fileName');
     await ref.putData(file);
     return ref.fullPath;
   }
@@ -284,6 +286,8 @@ class ClassRepository {
       return Homework(
         id: doc.id,
         title: data['title'],
+        classId: data['classId'],
+        lessonId: data['lessonId'],
         materials: (data['materials'] as List<dynamic>?)?.map((material) {
           return Material(
             name: material['name'],

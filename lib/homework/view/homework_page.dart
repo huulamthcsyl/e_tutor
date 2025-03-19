@@ -1,4 +1,5 @@
 import 'package:class_repository/class_repository.dart';
+import 'package:e_tutor/create_homework/view/create_homework_page.dart';
 import 'package:e_tutor/homework/cubit/homework_cubit.dart';
 import 'package:e_tutor/homework/view/homework_view.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,22 @@ class HomeworkPage extends StatelessWidget {
             ),
             backgroundColor: Theme.of(context).colorScheme.primary,
             iconTheme: const IconThemeData(color: Colors.white),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    CreateHomeworkPage.route(
+                      classId: state.homework.classId,
+                      lessonId: state.homework.lessonId,
+                      homework: state.homework,
+                    ),
+                  ).then((value) {
+                    context.read<HomeworkCubit>().initialize(state.homework.id!);
+                  });
+                },
+              ),
+            ],
           ),
           body: state.status == HomeworkStatus.loading
               ? const Center(child: CircularProgressIndicator())

@@ -15,11 +15,15 @@ class CreateHomeworkCubit extends Cubit<CreateHomeworkState> {
 
   CreateHomeworkCubit(this._classRepository) : super(const CreateHomeworkState());
 
-  void initialize(String? classId, String? lessonId) {
+  void initialize(String? classId, String? lessonId, Homework? homework) {
     emit(state.copyWith(
-      classId: classId,
-      lessonId: lessonId,
-      homeworkId: randomAlphaNumeric(20)
+      classId: classId ?? '',
+      lessonId: lessonId ?? '',
+      homeworkId: homework?.id ?? randomAlphaNumeric(20),
+      title: homework != null ? RequiredText.dirty(homework.title) : const RequiredText.pure(),
+      materials: homework?.materials ?? [],
+      dueDate: homework?.dueDate ?? const ConstDateTime(2026),
+      isValid: true,
     ));
   }
 
@@ -47,8 +51,6 @@ class CreateHomeworkCubit extends Cubit<CreateHomeworkState> {
     );
     if (file != null) {
       final path = await _classRepository.uploadHomeworkMaterial(
-        state.classId,
-        state.lessonId,
         state.homeworkId,
         file.files.first.name,
         file.files.first.bytes!,
@@ -75,6 +77,7 @@ class CreateHomeworkCubit extends Cubit<CreateHomeworkState> {
           title: state.title.value,
           materials: state.materials,
           dueDate: state.dueDate,
+          createdAt: DateTime.now(),
         ),
       );
       emit(state.copyWith(status: FormzSubmissionStatus.success));

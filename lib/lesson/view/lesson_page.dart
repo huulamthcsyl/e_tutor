@@ -28,10 +28,12 @@ class LessonPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Thông tin buổi học',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+          ),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
-        centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: const LessonView(),
