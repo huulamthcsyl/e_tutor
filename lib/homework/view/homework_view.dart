@@ -25,7 +25,7 @@ class HomeworkView extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(FormatTime.formatDate(homework.dueDate)),
+              Text(FormatTime.formatDateTime(homework.dueDate)),
             ],
           ),
           const SizedBox(height: 8),
@@ -57,8 +57,22 @@ class HomeworkView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  for (final material in homework.materials!)
-                    _MaterialView(material: material),
+                  SizedBox(
+                    width: double.infinity,
+                    child: (){
+                      if (homework.materials!.isEmpty) {
+                        return const Text('Không có tài liệu');
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: homework.materials!.length,
+                        itemBuilder: (context, index) {
+                          final material = homework.materials![index];
+                          return _MaterialView(material: material);
+                        },
+                      );
+                    }(),
+                  ),
                 ],
               ),
             ),
@@ -91,8 +105,22 @@ class HomeworkView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  for (final studentWork in homework.studentWorks!)
-                    _StudentWork(studentWork: studentWork),
+                  SizedBox(
+                    width: double.infinity,
+                    child: (){
+                      if (homework.studentWorks!.isEmpty) {
+                        return const Text('Chưa có bài làm');
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: homework.studentWorks!.length,
+                        itemBuilder: (context, index) {
+                          final studentWork = homework.studentWorks![index];
+                          return _StudentWork(studentWork: studentWork);
+                        },
+                      );
+                    }(),
+                  ),
                 ],
               ),
             ),

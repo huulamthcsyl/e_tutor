@@ -47,7 +47,8 @@ class _TitleInput extends StatelessWidget {
     return BlocBuilder<CreateHomeworkCubit, CreateHomeworkState>(
       buildWhen: (previous, current) => previous.title != current.title,
       builder: (context, state) {
-        return TextField(
+        return TextFormField(
+          initialValue: state.title.value,
           onChanged: (title) {
             context.read<CreateHomeworkCubit>().updateTitle(title);
           },

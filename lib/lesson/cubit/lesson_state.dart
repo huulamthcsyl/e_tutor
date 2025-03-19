@@ -8,6 +8,7 @@ class LessonState extends Equatable {
   final Class classData;
   final LessonStatus status;
   final List<Homework> homeworks;
+  final Profile user;
 
   const LessonState({
     this.lessonData = const Lesson(
@@ -18,22 +19,27 @@ class LessonState extends Equatable {
     this.classData = const Class(),
     this.status = LessonStatus.initial,
     this.homeworks = const [],
+    this.user = const Profile(
+      id: '',
+    ),
   });
 
   @override
-  List<Object> get props => [lessonData, classData, status, homeworks];
+  List<Object> get props => [lessonData, classData, status, homeworks, user];
 
   LessonState copyWith({
     Lesson? lessonData,
     Class? classData,
     LessonStatus? status,
     List<Homework>? homeworks,
+    Profile? user,
   }) {
     return LessonState(
       lessonData: lessonData ?? this.lessonData,
       classData: classData ?? this.classData,
       status: status ?? this.status,
       homeworks: homeworks ?? this.homeworks,
+      user: user ?? this.user,
     );
   }
 }
