@@ -243,6 +243,7 @@ class ClassRepository {
           createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
           dueDate: data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
           status: data['status'],
+          submittedAt: data['submittedAt'] != null ? DateTime.parse(data['submittedAt']) : null,
         );
       });
     }));
@@ -305,6 +306,7 @@ class ClassRepository {
         createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
         dueDate: data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
         status: data['status'],
+        submittedAt: data['submittedAt'] != null ? DateTime.parse(data['submittedAt']) : null,
       );
     });
   }
@@ -330,6 +332,7 @@ class ClassRepository {
         };
       }).toList(),
       'status': 'submitted',
+      'submittedAt': DateTime.now().toIso8601String(),
     });
   }
 }

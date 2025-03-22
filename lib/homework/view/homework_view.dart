@@ -34,6 +34,21 @@ class HomeworkView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
+          homework.submittedAt != null
+            ? Row(
+              children: [
+                const Text(
+                  'Đã nộp: ',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(FormatTime.formatDateTime(homework.submittedAt!)),
+              ],
+            )
+            : Container(),
+          const SizedBox(height: 8),
           if (homework.materials != null)
             Container(
               padding: const EdgeInsets.all(8),
@@ -121,13 +136,12 @@ class HomeworkView extends StatelessWidget {
                         itemCount: studentWorks.length,
                         itemBuilder: (context, index) {
                           final studentWork = studentWorks[index];
-                          return _StudentWork(studentWork: studentWork);
+                          return _StudentWork(studentWork: studentWork, status: homework.status);
                         },
                       );
                     }(),
                   ),
-                  const SizedBox(height: 8),
-                  user.role == "student"
+                  user.role == "student" && homework.status == 'pending'
                     ? GestureDetector(
                       onTap: () {
                         context.read<HomeworkCubit>().uploadStudentWork();
@@ -205,31 +219,48 @@ class _MaterialView extends StatelessWidget {
 
 class _StudentWork extends StatelessWidget {
   final class_repo.Material studentWork;
-  const _StudentWork({required this.studentWork});
+  final String? status;
+  const _StudentWork({required this.studentWork, required this.status});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 7,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Text(
-        studentWork.name,
-        style: const TextStyle(
-          fontSize: 16,
-          overflow: TextOverflow.ellipsis,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(PdfViewPage.route(url: studentWork.url));
+      },
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 7,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
+        child: Row(
+          children: [
+            Text(
+              studentWork.name,
+              style: const TextStyle(
+                fontSize: 16,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const Spacer(),
+            status == "pending" ? IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                context.read<HomeworkCubit>().deleteStudentWork(studentWork);
+              },
+            ) : Container(),
+          ],
+        )
       ),
     );
   }

@@ -58,4 +58,10 @@ class HomeworkCubit extends Cubit<HomeworkState> {
     );
     emit(state.copyWith(status: HomeworkStatus.success));
   }
+
+  void deleteStudentWork(Material material) {
+    emit(state.copyWith(status: HomeworkStatus.loading));
+    final studentWorks = state.studentWorks.where((work) => work != material).toList();
+    emit(state.copyWith(studentWorks: studentWorks, status: HomeworkStatus.success));
+  }
 }
