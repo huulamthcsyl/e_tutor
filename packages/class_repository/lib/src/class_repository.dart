@@ -335,4 +335,12 @@ class ClassRepository {
       'submittedAt': DateTime.now().toIso8601String(),
     });
   }
+
+  Future<void> gradeHomework(String homeworkId, double score, String feedback) {
+    return _firestore.collection('homeworks').doc(homeworkId).update({
+      'score': score,
+      'feedback': feedback,
+      'status': 'graded',
+    });
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:class_repository/class_repository.dart' as class_repo;
 import 'package:dotted_border/dotted_border.dart';
+import 'package:e_tutor/homework/widgets/grade_homework/views/grade_homework_dialog.dart';
 import 'package:e_tutor/pdf_view/view/pdf_view_page.dart';
 import 'package:e_tutor/utils/format_time.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +97,6 @@ class HomeworkView extends StatelessWidget {
                 ],
               ),
             ),
-          const SizedBox(height: 8),
           if (homework.studentWorks != null)
             Container(
               padding: const EdgeInsets.all(8),
@@ -171,9 +171,12 @@ class HomeworkView extends StatelessWidget {
                 ],
               ),
             ),
-          const SizedBox(height: 8),
+          if (homework.status == 'graded')
+            _GradeInfo(homework: homework),
           if (homework.status == 'pending' && user.role == 'student')
             _SubmitButton(homework: homework),
+          if (homework.status == 'submitted' && user.role == 'tutor')
+            _GradeButton(homework: homework),
         ],
       ),
     );
@@ -266,6 +269,60 @@ class _StudentWork extends StatelessWidget {
   }
 }
 
+class _GradeInfo extends StatelessWidget {
+  final class_repo.Homework homework;
+  const _GradeInfo({required this.homework});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 1,
+            blurRadius: 7,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Kết quả:',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Row(
+            children: [
+              const Text('Điểm:'),
+              const SizedBox(width: 8),
+              Text(homework.score.toString()),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Phản hồi:'),
+              const SizedBox(width: 16),
+              Text(homework.feedback ?? ""),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _SubmitButton extends StatelessWidget {
   final class_repo.Homework homework;
   const _SubmitButton({required this.homework});
@@ -278,6 +335,26 @@ class _SubmitButton extends StatelessWidget {
         Navigator.of(context).pop();
       },
       child: const Text('Nộp bài'),
+    );
+  }
+}
+
+class _GradeButton extends StatelessWidget {
+  final class_repo.Homework homework;
+  const _GradeButton({required this.homework});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        await showDialog(
+          context: context,
+          builder: (_) => GradeHomeworkDialog(homework: homework),
+        ).then((value) {
+          context.read<HomeworkCubit>().initialize(homework.id!);
+        });
+      },
+      child: const Text('Chấm điểm'),
     );
   }
 }
