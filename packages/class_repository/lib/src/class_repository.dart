@@ -243,6 +243,7 @@ class ClassRepository {
           createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
           dueDate: data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
           status: data['status'],
+          submittedAt: data['submittedAt'] != null ? DateTime.parse(data['submittedAt']) : null,
         );
       });
     }));
@@ -305,6 +306,7 @@ class ClassRepository {
         createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
         dueDate: data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
         status: data['status'],
+        submittedAt: data['submittedAt'] != null ? DateTime.parse(data['submittedAt']) : null,
       );
     });
   }
@@ -312,6 +314,33 @@ class ClassRepository {
   Future<void> addMembersToClass(String classId, List<String> memberIds) {
     return _firestore.collection('classes').doc(classId).update({
       'members': FieldValue.arrayUnion(memberIds)
+    });
+  }
+
+  Future<String> uploadStudentWork(String homeworkId, String fileName, Uint8List file) async {
+    final ref = _storage.ref().child('homeworks/$homeworkId/studentWorks/$fileName');
+    await ref.putData(file);
+    return ref.fullPath;
+  }
+
+  Future<void> submitHomework(String homeworkId, List<Material> studentWorks) {
+    return _firestore.collection('homeworks').doc(homeworkId).update({
+      'studentWorks': studentWorks.map((work) {
+        return {
+          'name': work.name,
+          'url': work.url,
+        };
+      }).toList(),
+      'status': 'submitted',
+      'submittedAt': DateTime.now().toIso8601String(),
+    });
+  }
+
+  Future<void> gradeHomework(String homeworkId, double score, String feedback) {
+    return _firestore.collection('homeworks').doc(homeworkId).update({
+      'score': score,
+      'feedback': feedback,
+      'status': 'graded',
     });
   }
 }
