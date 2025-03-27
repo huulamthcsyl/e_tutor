@@ -343,4 +343,70 @@ class ClassRepository {
       'status': 'graded',
     });
   }
+
+  Future<LessonResponse> getUpcomingLesson(String classId) async {
+    final snapshot = await _firestore.collection('lessons')
+      .where('classId', isEqualTo: classId)
+      .where('startTime', isGreaterThanOrEqualTo: DateTime.now().toIso8601String())
+      .orderBy('startTime')
+      .limit(1)
+      .get();
+    if (snapshot.docs.isEmpty) {
+      return LessonResponse(classId: classId, className: '', lesson: Lesson(
+        classId: classId,
+        materials: const [],
+        homeworks: const [],
+      ));
+    }
+    final classData = await getClass(classId);
+    final doc = snapshot.docs.first;
+    final data = doc.data();
+    return LessonResponse(
+      classId: classId,
+      className: classData.name ?? "",
+      lesson: Lesson(
+        id: doc.id,
+        classId: classId,
+        materials: (data['materials'] as List<dynamic>).map((material) {
+          return Material(
+            name: material['name'],
+            url: material['url'],
+          );
+        }).toList(),
+        homeworks: List<String>.from(data['homeworks']),
+        isPaid: data['isPaid'],
+        tutorFeedback: data['tutorFeedback'],
+        studentFeedback: data['studentFeedback'],
+        startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
+        endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
+      )
+    );
+  }
+
+  Future<List<Lesson>> getLessonsInRange(String classId, DateTime start, DateTime end) async {
+    final snapshot = await _firestore.collection('lessons')
+      .where('classId', isEqualTo: classId)
+      .where('startTime', isGreaterThanOrEqualTo: start.toIso8601String())
+      .where('endTime', isLessThanOrEqualTo: end.toIso8601String())
+      .get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return Lesson(
+        id: doc.id,
+        classId: classId,
+        materials: (data['materials'] as List<dynamic>).map((material) {
+          return Material(
+            name: material['name'],
+            url: material['url'],
+          );
+        }).toList(),
+        homeworks: List<String>.from(data['homeworks']),
+        isPaid: data['isPaid'],
+        tutorFeedback: data['tutorFeedback'],
+        studentFeedback: data['studentFeedback'],
+        startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
+        endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
+      );
+    }).toList();
+  }
 }

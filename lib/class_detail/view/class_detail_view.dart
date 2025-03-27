@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:profile_repository/profile_repository.dart';
 
+import '../../class_lesson/view/class_lesson_page.dart';
+import '../../lesson/view/lesson_page.dart';
+import '../../utils/format_time.dart';
 import '../widgets/add_member/view/add_member_dialog.dart';
 
 class ClassDetailView extends StatelessWidget {
@@ -44,6 +47,8 @@ class ClassDetailView extends StatelessWidget {
                   _ClassSchedules(schedules: state.classDetail.schedules),
                   const SizedBox(height: 8),
                   _ClassMembers(members: state.members, classId: state.classDetail.id!),
+                  const SizedBox(height: 8),
+                  _UpcomingLesson(lesson: state.upcomingLesson)
                 ],
               ),
             );
@@ -247,6 +252,117 @@ class _ClassMembers extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       'Thêm thành viên',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                )
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _UpcomingLesson extends StatelessWidget {
+  const _UpcomingLesson({super.key, required this.lesson});
+
+  final LessonResponse lesson;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 7,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Buổi học sắp tới',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: () => Navigator.of(context).push<void>(
+              LessonPage.route(
+                classId: lesson.classId,
+                lessonId: lesson.lesson.id,
+              ),
+            ),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lesson.className,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${FormatTime.formatTime(lesson.lesson.startTime!)} - ${FormatTime.formatTime(lesson.lesson.endTime!)}, ${FormatTime.formatDate(lesson.lesson.startTime!)}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push<void>(
+                ClassLessonPage.route(id: lesson.classId),
+              );
+            },
+            child: DottedBorder(
+                padding: const EdgeInsets.all(8),
+                color: Theme.of(context).colorScheme.primary,
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Colors.blue,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Xem tất cả',
                       style: TextStyle(
                         fontSize: 16,
                         color: Theme.of(context).colorScheme.primary,
