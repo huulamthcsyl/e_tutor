@@ -409,4 +409,23 @@ class ClassRepository {
       );
     }).toList();
   }
+
+  Future<Lesson> createLesson(String classId, DateTime startTime, DateTime endTime) async {
+    final doc = await _firestore.collection('lessons').add({
+      'classId': classId,
+      'startTime': startTime.toIso8601String(),
+      'endTime': endTime.toIso8601String(),
+      'materials': [],
+      'homeworks': [],
+      'isPaid': false,
+    });
+    return Lesson(
+      id: doc.id,
+      classId: classId,
+      materials: const [],
+      homeworks: const [],
+      startTime: startTime,
+      endTime: endTime,
+    );
+  }
 }

@@ -349,7 +349,9 @@ class _UpcomingLesson extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push<void>(
                 ClassLessonPage.route(id: lesson.classId),
-              );
+              ).then((value) {
+                context.read<ClassDetailCubit>().fetchClassDetail(lesson.classId);
+              });
             },
             child: DottedBorder(
                 padding: const EdgeInsets.all(8),

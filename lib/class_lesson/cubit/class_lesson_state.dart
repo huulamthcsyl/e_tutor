@@ -9,6 +9,7 @@ class ClassLessonState extends Equatable {
   final ClassLessonStateStatus status;
   final DateTime startTime;
   final DateTime endTime;
+  final Profile user;
 
   final now = DateTime.now();
 
@@ -18,10 +19,13 @@ class ClassLessonState extends Equatable {
     this.status = ClassLessonStateStatus.initial,
     this.startTime = const ConstDateTime(0),
     this.endTime = const ConstDateTime(0),
+    this.user = const Profile(
+      id: ''
+    ),
   });
 
   @override
-  List<Object> get props => [classId, lessons, status, startTime, endTime];
+  List<Object> get props => [classId, lessons, status, startTime, endTime, user];
 
   ClassLessonState copyWith({
     String? classId,
@@ -29,6 +33,7 @@ class ClassLessonState extends Equatable {
     ClassLessonStateStatus? status,
     DateTime? startTime,
     DateTime? endTime,
+    Profile? user,
   }) {
     return ClassLessonState(
       classId: classId ?? this.classId,
@@ -36,6 +41,7 @@ class ClassLessonState extends Equatable {
       status: status ?? this.status,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
+      user: user ?? this.user,
     );
   }
 }
