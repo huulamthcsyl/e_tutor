@@ -1,15 +1,23 @@
 import 'package:equatable/equatable.dart';
 
+import '../../class_repository.dart';
+
 class Exam extends Equatable {
-  final List<String>? materials;
+  final String? id;
+  final String? classId;
+  final String? title;
+  final List<Material>? materials;
   final List<String>? studentWorks;
   final double? score;
   final String? feedback;
-  final String? startTime;
-  final String? endTime;
-  final String? returnTime;
+  final DateTime? startTime;
+  final DateTime? endTime;
+  final DateTime? returnTime;
 
   const Exam({
+    this.id,
+    this.title,
+    this.classId,
     this.materials,
     this.studentWorks,
     this.score,
@@ -20,5 +28,5 @@ class Exam extends Equatable {
   });
 
   @override
-  List<Object?> get props => [materials, studentWorks, score, feedback, startTime, endTime, returnTime];
+  List<Object?> get props => [id, classId, title, materials, studentWorks, score, feedback, startTime, endTime, returnTime];
 }

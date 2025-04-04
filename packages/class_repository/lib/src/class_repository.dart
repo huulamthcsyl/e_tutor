@@ -428,4 +428,57 @@ class ClassRepository {
       endTime: endTime,
     );
   }
+
+  Future<void> createExam(String classId, String lessonId, Exam exam) async {
+    await _firestore.collection('exams').add({
+      'classId': classId,
+      'lessonId': lessonId,
+      'materials': exam.materials?.map((material) {
+        return {
+          'name': material.name,
+          'url': material.url,
+        };
+      }).toList(),
+      'studentWorks': [],
+      'score': null,
+      'feedback': null,
+      'startTime': exam.startTime?.toIso8601String(),
+      'endTime': exam.endTime?.toIso8601String(),
+      'returnTime': exam.returnTime?.toIso8601String(),
+    });
+  }
+
+  Future<Exam> getRecentExam(String classId) async {
+    final snapshot = await _firestore.collection('exams')
+      .where('classId', isEqualTo: classId)
+      .where('startTime', isLessThanOrEqualTo: DateTime.now().toIso8601String())
+      .orderBy('startTime', descending: true)
+      .limit(1)
+      .get();
+    if (snapshot.docs.isEmpty) {
+      return Exam(
+        classId: classId,
+        materials: const [],
+        studentWorks: const [],
+      );
+    }
+    final doc = snapshot.docs.first;
+    final data = doc.data();
+    return Exam(
+      id: doc.id,
+      classId: classId,
+      materials: (data['materials'] as List<dynamic>).map((material) {
+        return Material(
+          name: material['name'],
+          url: material['url'],
+        );
+      }).toList(),
+      studentWorks: List<String>.from(data['studentWorks']),
+      score: data['score'],
+      feedback: data['feedback'],
+      startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
+      endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
+      returnTime: data['returnTime'] != null ? DateTime.parse(data['returnTime']) : null,
+    );
+  }
 }

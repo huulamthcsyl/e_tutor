@@ -18,11 +18,13 @@ class ClassDetailCubit extends Cubit<ClassDetailState> {
       final classDetail = await _classRepository.getClass(id);
       final members = await _profileRepository.getProfilesByIds(classDetail.members ?? []);
       final upComingLesson = await _classRepository.getUpcomingLesson(id);
+      final recentExam = await _classRepository.getRecentExam(id);
       emit(state.copyWith(
         status: ClassDetailStatus.success,
         classDetail: classDetail,
         members: members,
         upcomingLesson: upComingLesson,
+        recentExam: recentExam,
       ));
     } catch (e) {
       emit(state.copyWith(status: ClassDetailStatus.failure));

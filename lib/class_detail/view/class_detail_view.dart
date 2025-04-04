@@ -1,6 +1,7 @@
 import 'package:class_repository/class_repository.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/class_detail/class_detail.dart';
+import 'package:e_tutor/create_exam/view/create_exam_page.dart';
 import 'package:e_tutor/utils/format_currency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +49,9 @@ class ClassDetailView extends StatelessWidget {
                   const SizedBox(height: 8),
                   _ClassMembers(members: state.members, classId: state.classDetail.id!),
                   const SizedBox(height: 8),
-                  _UpcomingLesson(lesson: state.upcomingLesson)
+                  _UpcomingLesson(lesson: state.upcomingLesson),
+                  const SizedBox(height: 8),
+                  _RecentExam(exam: state.recentExam),
                 ],
               ),
             );
@@ -300,7 +303,7 @@ class _UpcomingLesson extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          GestureDetector(
+          lesson.lesson.id != null ? GestureDetector(
             onTap: () => Navigator.of(context).push<void>(
               LessonPage.route(
                 classId: lesson.classId,
@@ -343,6 +346,11 @@ class _UpcomingLesson extends StatelessWidget {
                 ],
               ),
             ),
+          ) : const Text(
+            'Không có buổi học nào trong thời gian tới',
+            style: TextStyle(
+              fontSize: 16,
+            ),
           ),
           const SizedBox(height: 8),
           GestureDetector(
@@ -351,6 +359,90 @@ class _UpcomingLesson extends StatelessWidget {
                 ClassLessonPage.route(id: lesson.classId),
               ).then((value) {
                 context.read<ClassDetailCubit>().fetchClassDetail(lesson.classId);
+              });
+            },
+            child: DottedBorder(
+                padding: const EdgeInsets.all(8),
+                color: Theme.of(context).colorScheme.primary,
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Colors.blue,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Xem tất cả',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                )
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _RecentExam extends StatelessWidget {
+  const _RecentExam({super.key, required this.exam});
+
+  final Exam exam;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 7,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Bài kiểm tra gần nhất',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          exam.id != null ? Container(
+            child: Text(
+              'Bài kiểm tra ${exam.id}',
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ) : const Text(
+            'Không có bài kiểm tra nào',
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push<void>(
+                CreateExamPage.route(
+                  classId: exam.classId,
+                ),
+              ).then((value) {
+
               });
             },
             child: DottedBorder(
