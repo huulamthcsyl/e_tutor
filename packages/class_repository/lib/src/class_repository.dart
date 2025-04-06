@@ -432,6 +432,7 @@ class ClassRepository {
   Future<void> createExam(String classId, Exam exam) async {
     await _firestore.collection('exams').add({
       'classId': classId,
+      'title': exam.title,
       'materials': exam.materials?.map((material) {
         return {
           'name': material.name,
@@ -444,6 +445,7 @@ class ClassRepository {
       'startTime': exam.startTime?.toIso8601String(),
       'endTime': exam.endTime?.toIso8601String(),
       'returnTime': exam.returnTime?.toIso8601String(),
+      'status': 'pending',
     });
   }
 
@@ -466,6 +468,7 @@ class ClassRepository {
     return Exam(
       id: doc.id,
       classId: classId,
+      title: data['title'],
       materials: (data['materials'] as List<dynamic>).map((material) {
         return Material(
           name: material['name'],
