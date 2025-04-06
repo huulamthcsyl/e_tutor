@@ -38,21 +38,23 @@ class ClassDetailView extends StatelessWidget {
           }
 
           if (state.status == ClassDetailStatus.success) {
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ClassInfo(classDetail: state.classDetail),
-                  const SizedBox(height: 8),
-                  _ClassSchedules(schedules: state.classDetail.schedules),
-                  const SizedBox(height: 8),
-                  _ClassMembers(members: state.members, classId: state.classDetail.id!),
-                  const SizedBox(height: 8),
-                  _UpcomingLesson(lesson: state.upcomingLesson),
-                  const SizedBox(height: 8),
-                  _RecentExam(exam: state.recentExam),
-                ],
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _ClassInfo(classDetail: state.classDetail),
+                    const SizedBox(height: 8),
+                    _ClassSchedules(schedules: state.classDetail.schedules),
+                    const SizedBox(height: 8),
+                    _ClassMembers(members: state.members, classId: state.classDetail.id!),
+                    const SizedBox(height: 8),
+                    _UpcomingLesson(lesson: state.upcomingLesson),
+                    const SizedBox(height: 8),
+                    _RecentExam(exam: state.recentExam),
+                  ],
+                ),
               ),
             );
           }
@@ -439,10 +441,10 @@ class _RecentExam extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push<void>(
                 CreateExamPage.route(
-                  classId: exam.classId,
+                  classId: exam.classId!,
                 ),
               ).then((value) {
-
+                context.read<ClassDetailCubit>().fetchClassDetail(exam.classId!);
               });
             },
             child: DottedBorder(

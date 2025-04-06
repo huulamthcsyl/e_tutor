@@ -429,10 +429,9 @@ class ClassRepository {
     );
   }
 
-  Future<void> createExam(String classId, String lessonId, Exam exam) async {
+  Future<void> createExam(String classId, Exam exam) async {
     await _firestore.collection('exams').add({
       'classId': classId,
-      'lessonId': lessonId,
       'materials': exam.materials?.map((material) {
         return {
           'name': material.name,
@@ -480,5 +479,11 @@ class ClassRepository {
       endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
       returnTime: data['returnTime'] != null ? DateTime.parse(data['returnTime']) : null,
     );
+  }
+
+  Future<String> uploadExamMaterial(String examId, String fileName, Uint8List file) async {
+    final ref = _storage.ref().child('exams/$examId/materials/$fileName');
+    await ref.putData(file);
+    return ref.fullPath;
   }
 }
