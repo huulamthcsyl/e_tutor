@@ -1,6 +1,7 @@
 import 'package:class_repository/class_repository.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/class_detail/class_detail.dart';
+import 'package:e_tutor/class_exam/class_exam.dart';
 import 'package:e_tutor/create_exam/view/create_exam_page.dart';
 import 'package:e_tutor/utils/format_currency.dart';
 import 'package:flutter/material.dart';
@@ -506,7 +507,7 @@ class _RecentExam extends StatelessWidget {
           GestureDetector(
             onTap: () {
               Navigator.of(context).push<void>(
-                CreateExamPage.route(
+                ClassExamPage.route(
                   classId: exam.classId!,
                 ),
               ).then((value) {

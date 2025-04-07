@@ -489,4 +489,32 @@ class ClassRepository {
     await ref.putData(file);
     return ref.fullPath;
   }
+
+  Future<List<Exam>> getExamsInRange(String classId, DateTime start, DateTime end) async {
+    final snapshot = await _firestore.collection('exams')
+      .where('classId', isEqualTo: classId)
+      .where('startTime', isGreaterThanOrEqualTo: start.toIso8601String())
+      .where('endTime', isLessThanOrEqualTo: end.toIso8601String())
+      .get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return Exam(
+        id: doc.id,
+        classId: classId,
+        title: data['title'],
+        materials: (data['materials'] as List<dynamic>).map((material) {
+          return Material(
+            name: material['name'],
+            url: material['url'],
+          );
+        }).toList(),
+        studentWorks: List<String>.from(data['studentWorks']),
+        score: data['score'],
+        feedback: data['feedback'],
+        startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
+        endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
+        returnTime: data['returnTime'] != null ? DateTime.parse(data['returnTime']) : null,
+      );
+    }).toList();
+  }
 }
