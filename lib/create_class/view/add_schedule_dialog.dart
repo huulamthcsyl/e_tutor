@@ -4,6 +4,7 @@ import 'package:e_tutor/create_class/create_class.dart';
 import 'package:e_tutor/utils/get_day_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:profile_repository/profile_repository.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
 class AddScheduleDialog extends StatelessWidget {
@@ -20,6 +21,7 @@ class AddScheduleDialog extends StatelessWidget {
           create: (_) => CreateClassCubit(
             context.read<ClassRepository>(),
             context.read<AuthenticationRepository>(),
+            context.read<ProfileRepository>(),
           ),
         ),
       ],

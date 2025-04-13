@@ -6,14 +6,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:const_date_time/const_date_time.dart';
+import 'package:profile_repository/profile_repository.dart';
+import 'package:random_string/random_string.dart';
 
 part 'create_class_state.dart';
 
 class CreateClassCubit extends Cubit<CreateClassState> {
   final ClassRepository _classRepository;
   final AuthenticationRepository _authenticationRepository;
+  final ProfileRepository _profileRepository;
 
-  CreateClassCubit(this._classRepository, this._authenticationRepository) : super(const CreateClassState());
+  CreateClassCubit(this._classRepository, this._authenticationRepository, this._profileRepository) : super(const CreateClassState());
+
+  void initialize() async {
+    final startDate = DateTime.now();
+    final endDate = DateTime.now().add(const Duration(days: 30));
+    final classId = randomAlphaNumeric(20);
+    final user = await _authenticationRepository.user.first;
+    final profile = await _profileRepository.getProfile(user.id);
+    emit(state.copyWith(
+      classId: classId,
+      startDate: startDate,
+      endDate: endDate,
+      schedules: [],
+      status: FormzSubmissionStatus.initial,
+      members: [profile],
+    ));
+  }
 
   void nameChanged(String value) {
     final name = RequiredText.dirty(value);
@@ -66,10 +85,24 @@ class CreateClassCubit extends Cubit<CreateClassState> {
     ));
   }
 
+  void addMembers(List<Profile> members) {
+    final currentMembersIds = state.members.map((e) => e.id).toList();
+    final newMembers = members.where((member) => !currentMembersIds.contains(member.id)).toList();
+    emit(state.copyWith(
+      members: List.of(state.members)..addAll(newMembers),
+    ));
+  }
+
+  void removeMember(Profile member) {
+    emit(state.copyWith(
+      members: List.of(state.members)..remove(member),
+    ));
+  }
+
   void createClass() async {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    final user = await _authenticationRepository.user.first;
+    final memberIds = state.members.map((member) => member.id).toList();
     try {
       await _classRepository.createClass(
         Class(
@@ -77,10 +110,10 @@ class CreateClassCubit extends Cubit<CreateClassState> {
           description: state.description,
           tuition: int.parse(state.tuition.value),
           schedules: state.schedules,
-          members: [user.id],
+          members: memberIds,
           createdAt: DateTime.now(),
           startDate: state.startDate,
-          endDate: state.endDate
+          endDate: state.endDate,
         ),
       );
       emit(state.copyWith(status: FormzSubmissionStatus.success));

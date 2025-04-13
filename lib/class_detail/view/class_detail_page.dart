@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:class_repository/class_repository.dart';
 import 'package:e_tutor/class_detail/class_detail.dart';
 import 'package:e_tutor/class_detail/view/class_detail_view.dart';
@@ -14,6 +15,7 @@ class ClassDetailPage extends StatelessWidget {
         create: (context) => ClassDetailCubit(
           context.read<ClassRepository>(),
           context.read<ProfileRepository>(),
+          context.read<AuthenticationRepository>(),
         )..fetchClassDetail(id ?? ''),
         child: const ClassDetailPage(),
       ),
@@ -22,16 +24,6 @@ class ClassDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Thông tin lớp học',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: const ClassDetailView(),
-    );
+    return const ClassDetailView();
   }
 }
