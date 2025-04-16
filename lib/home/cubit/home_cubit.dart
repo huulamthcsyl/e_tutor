@@ -3,6 +3,7 @@ import 'package:class_repository/class_repository.dart';
 import 'package:const_date_time/const_date_time.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notification_repository/notification_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 part 'home_state.dart';
@@ -10,11 +11,16 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   final ClassRepository classRepository;
   final AuthenticationRepository authenticationRepository;
+  final NotificationRepository notificationRepository;
 
-  HomeCubit(this.classRepository, this.authenticationRepository)
+  HomeCubit(this.classRepository, this.authenticationRepository, this.notificationRepository)
       : super(const HomeState());
 
-  void initialize() {
+  void initialize() async {
+    final user = await authenticationRepository.user.first;
+    notificationRepository.getNotificationCount(user.id).listen((count) {
+      emit(state.copyWith(notificationCount: count));
+    });
     emit(state.copyWith(
       selectedDay: DateTime.now(),
     ));

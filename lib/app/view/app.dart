@@ -5,6 +5,7 @@ import 'package:e_tutor/theme.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notification_repository/notification_repository.dart';
 import 'package:profile_repository/profile_repository.dart';
 
 class App extends StatelessWidget {
@@ -13,13 +14,15 @@ class App extends StatelessWidget {
       required AuthenticationRepository authenticationRepository, 
       required ClassRepository classRepository,
       required ProfileRepository profileRepository,
+      required NotificationRepository notificationRepository,
       super.key
     })
-    : _authenticationRepository = authenticationRepository, _classRepository = classRepository, _profileRepository = profileRepository;
+    : _authenticationRepository = authenticationRepository, _classRepository = classRepository, _profileRepository = profileRepository, _notificationRepository = notificationRepository;
 
   final AuthenticationRepository _authenticationRepository;
   final ClassRepository _classRepository;
   final ProfileRepository _profileRepository;
+  final NotificationRepository _notificationRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,8 @@ class App extends StatelessWidget {
       providers: [
         RepositoryProvider.value(value: _authenticationRepository),
         RepositoryProvider.value(value: _classRepository),
-        RepositoryProvider.value(value: _profileRepository)
+        RepositoryProvider.value(value: _profileRepository),
+        RepositoryProvider.value(value: _notificationRepository),
       ],
       child: BlocProvider(
         create: (_) => AppBloc(
