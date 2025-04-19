@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CreateExamPage extends StatelessWidget {
   const CreateExamPage({super.key});
 
-  static Route<void> route({required String classId}) {
-    return MaterialPageRoute<void>(
+  static Route<String> route({required String classId}) {
+    return MaterialPageRoute<String>(
       builder: (context) => BlocProvider(
         create: (context) => CreateExamCubit(
           context.read<ClassRepository>(),

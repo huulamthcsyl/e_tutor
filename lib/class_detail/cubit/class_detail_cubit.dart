@@ -28,7 +28,7 @@ class ClassDetailCubit extends Cubit<ClassDetailState> {
         classDetail: classDetail,
         members: members,
         upcomingLesson: upComingLesson,
-        user: profile
+        user: profile,
         recentExam: recentExam,
       ));
     } catch (e) {

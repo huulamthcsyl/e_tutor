@@ -25,11 +25,8 @@ class LessonView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _ClassInfo(
-                      classData: state.classData, lesson: state.lessonData),
-                  const SizedBox(height: 16),
+                  _ClassInfo(classData: state.classData, lesson: state.lessonData),
                   _MaterialInfo(lesson: state.lessonData, user: state.user,),
-                  const SizedBox(height: 16),
                   _HomeworkInfo(lesson: state.lessonData, user: state.user,),
                 ],
               ),

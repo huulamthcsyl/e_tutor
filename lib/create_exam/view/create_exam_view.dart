@@ -17,7 +17,7 @@ class CreateExamView extends StatelessWidget {
     return BlocListener<CreateExamCubit, CreateExamState>(
       listener: (context, state) {
         if (state.status == FormzSubmissionStatus.success) {
-          Navigator.of(context).pop();
+          Navigator.of(context).pop('success');
         }
       },
       child: Padding(

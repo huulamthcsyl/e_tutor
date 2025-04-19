@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:class_repository/class_repository.dart';
 import 'package:const_date_time/const_date_time.dart';
+import 'package:e_tutor/utils/notification_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:form_inputs/form_inputs.dart';
@@ -80,6 +81,13 @@ class CreateExamCubit extends Cubit<CreateExamState> {
           exam,
         );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
+        await NotificationService().sendNotificationToClass(
+          classId: state.classId,
+          title: 'Bài kiểm tra mới',
+          body: 'Bài kiểm tra "${state.title.value}" đã được tạo',
+          documentId: state.examId,
+          documentType: 'exam',
+        );
       } catch (_) {
         emit(state.copyWith(status: FormzSubmissionStatus.failure));
       }

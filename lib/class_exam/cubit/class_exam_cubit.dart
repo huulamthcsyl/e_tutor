@@ -14,10 +14,11 @@ class ClassExamCubit extends Cubit<ClassExamState> {
   void initialize(String classId) async {
     emit(state.copyWith(status: ClassExamStatus.loading));
     try {
-      final startTime = DateTime.now().subtract(const Duration(days: 30));
-      final endTime = DateTime.now();
+      final startTime = DateTime.now().subtract(const Duration(days: 15));
+      final endTime = DateTime.now().add(const Duration(days: 15));
       final exams = await _classRepository.getExamsInRange(classId, startTime, endTime);
       emit(state.copyWith(
+        classId: classId,
         status: ClassExamStatus.loaded,
         exams: exams,
         startTime: startTime,
@@ -28,11 +29,18 @@ class ClassExamCubit extends Cubit<ClassExamState> {
     }
   }
 
-  void startTimeChanged(DateTime startTime) {
-    emit(state.copyWith(startTime: startTime));
-  }
-
-  void endTimeChanged(DateTime endTime) {
-    emit(state.copyWith(endTime: endTime));
+  void updateRange(DateTime startTime, DateTime endTime) async {
+    emit(state.copyWith(status: ClassExamStatus.loading));
+    try {
+      final exams = await _classRepository.getExamsInRange(state.classId, startTime, endTime);
+      emit(state.copyWith(
+        status: ClassExamStatus.loaded,
+        exams: exams,
+        startTime: startTime,
+        endTime: endTime,
+      ));
+    } catch (e) {
+      emit(state.copyWith(status: ClassExamStatus.error));
+    }
   }
 }

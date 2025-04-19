@@ -47,22 +47,32 @@ class ClassDetailView extends StatelessWidget {
             );
           }
           if (state.status == ClassDetailStatus.success) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _ClassInfo(classDetail: state.classDetail),
-                    const SizedBox(height: 8),
-                    _ClassSchedules(schedules: state.classDetail.schedules),
-                    const SizedBox(height: 8),
-                    _ClassMembers(members: state.members, classId: state.classDetail.id!),
-                    const SizedBox(height: 8),
-                    _UpcomingLesson(lesson: state.upcomingLesson),
-                    const SizedBox(height: 8),
-                    _RecentExam(exam: state.recentExam),
-                  ],
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text(
+                  'Chi tiết lớp học',
+                  style: TextStyle(color: Colors.white),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                iconTheme: const IconThemeData(color: Colors.white),
+              ),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _ClassInfo(classDetail: state.classDetail),
+                      const SizedBox(height: 8),
+                      _ClassSchedules(schedules: state.classDetail.schedules),
+                      const SizedBox(height: 8),
+                      _ClassMembers(members: state.members, classId: state.classDetail.id!),
+                      const SizedBox(height: 8),
+                      _UpcomingLesson(lesson: state.upcomingLesson),
+                      const SizedBox(height: 8),
+                      _RecentExam(exam: state.recentExam),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -291,40 +301,34 @@ class _UpcomingLesson extends StatelessWidget {
                 lessonId: lesson.lesson.id,
               ),
             ),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              margin: const EdgeInsets.only(bottom: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).push<void>(
+                LessonPage.route(
+                  classId: lesson.classId,
+                  lessonId: lesson.lesson.id,
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    lesson.className,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
+              child: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      lesson.className,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '${FormatTime.formatTime(lesson.lesson.startTime!)} - ${FormatTime.formatTime(lesson.lesson.endTime!)}, ${FormatTime.formatDate(lesson.lesson.startTime!)}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                  )
-                ],
+                    const SizedBox(height: 8),
+                    Text(
+                      '${FormatTime.formatTime(lesson.lesson.startTime!)} - ${FormatTime.formatTime(lesson.lesson.endTime!)}, ${FormatTime.formatDate(lesson.lesson.startTime!)}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ) : const Text(
@@ -402,21 +406,8 @@ class _RecentExam extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          exam.id != null ? Container(
+          exam.id != null ? SizedBox(
             width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
