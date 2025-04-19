@@ -21,4 +21,24 @@ class NotificationDoc extends Equatable {
 
   @override
   List<Object> get props => [id, title, body, documentId, documentType, isRead, createdAt];
+
+  NotificationDoc copyWith({
+    String? id,
+    String? title,
+    String? body,
+    String? documentId,
+    String? documentType,
+    bool? isRead,
+    DateTime? createdAt,
+  }) {
+    return NotificationDoc(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      documentId: documentId ?? this.documentId,
+      documentType: documentType ?? this.documentType,
+      isRead: isRead ?? this.isRead,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }

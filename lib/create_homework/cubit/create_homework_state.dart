@@ -9,6 +9,7 @@ class CreateHomeworkState extends Equatable {
   final DateTime dueDate;
   final FormzSubmissionStatus status;
   final bool isValid;
+  final String className;
 
   const CreateHomeworkState({
     this.classId = '',
@@ -19,10 +20,11 @@ class CreateHomeworkState extends Equatable {
     this.dueDate = const ConstDateTime(2026),
     this.status = FormzSubmissionStatus.initial,
     this.isValid = false,
+    this.className = '',
   });
 
   @override
-  List<Object> get props => [classId, lessonId, homeworkId, title, materials, dueDate, status, isValid];
+  List<Object> get props => [classId, lessonId, homeworkId, title, materials, dueDate, status, isValid, className];
 
   CreateHomeworkState copyWith({
     String? classId,
@@ -33,6 +35,7 @@ class CreateHomeworkState extends Equatable {
     DateTime? dueDate,
     FormzSubmissionStatus? status,
     bool? isValid,
+    String? className,
   }) {
     return CreateHomeworkState(
       classId: classId ?? this.classId,
@@ -43,6 +46,7 @@ class CreateHomeworkState extends Equatable {
       dueDate: dueDate ?? this.dueDate,
       status: status ?? this.status,
       isValid: isValid ?? this.isValid,
+      className: className ?? this.className,
     );
   }
 }

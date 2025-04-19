@@ -50,4 +50,33 @@ class NotificationRepository {
       throw Exception('Failed to get notifications: $e');
     }
   }
+
+  Future<String> sendNotification(NotificationRequest request) async {
+    try {
+      final response = await _firestore.collection('notifications').add({
+        'userId': request.userId,
+        'title': request.title,
+        'body': request.body,
+        'documentId': request.documentId,
+        'documentType': request.documentType,
+        'isRead': false,
+        'createdAt': DateTime.now().toIso8601String(),
+        'status': 'pending',
+      });
+      return response.id;
+    } catch (e) {
+      throw Exception('Failed to send notification: $e');
+    }
+  }
+
+  Future<void> markNotificationAsRead(String notificationId) async {
+    try {
+      await _firestore
+          .collection('notifications')
+          .doc(notificationId)
+          .update({'isRead': true});
+    } catch (e) {
+      throw Exception('Failed to mark notification as read: $e');
+    }
+  }
 }

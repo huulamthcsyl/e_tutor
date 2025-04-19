@@ -1,5 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:class_repository/class_repository.dart';
+import 'package:e_tutor/utils/notification_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -117,6 +118,13 @@ class CreateClassCubit extends Cubit<CreateClassState> {
         ),
       );
       emit(state.copyWith(status: FormzSubmissionStatus.success));
+      await NotificationService().sendNotifications(
+        userIds: memberIds,
+        title: 'Tạo lớp học mới',
+        body: 'Bạn vừa được thêm vào lớp học ${state.name.value}',
+        documentId: state.classId,
+        documentType: 'class'
+      );
     } on Exception {
       emit(state.copyWith(status: FormzSubmissionStatus.failure));
     }

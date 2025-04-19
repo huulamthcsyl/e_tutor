@@ -25,4 +25,18 @@ class NotificationCubit extends Cubit<NotificationState> {
       emit(state.copyWith(status: NotificationStatus.failure));
     }
   }
+
+  void markNotificationAsRead(String notificationId) async {
+    await _notificationRepository.markNotificationAsRead(notificationId);
+    final notifications = state.notifications.map((notification) {
+      if (notification.id == notificationId) {
+        return notification.copyWith(isRead: true);
+      }
+      return notification;
+    }).toList();
+    emit(state.copyWith(
+      notifications: notifications,
+      status: NotificationStatus.success,
+    ));
+  }
 }
