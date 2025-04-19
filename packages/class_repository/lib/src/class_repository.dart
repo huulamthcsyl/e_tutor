@@ -256,7 +256,7 @@ class ClassRepository {
   }
 
   Future<void> createHomework(String classId, String lessonId, Homework homework) async {
-    await _firestore.collection('homeworks').doc(homework.id).set({
+    final doc = await _firestore.collection('homeworks').doc(homework.id).set({
       'classId': classId,
       'lessonId': lessonId,
       'title': homework.title,

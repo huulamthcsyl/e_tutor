@@ -11,7 +11,6 @@ import 'package:profile_repository/profile_repository.dart';
 import '../../class_lesson/view/class_lesson_page.dart';
 import '../../lesson/view/lesson_page.dart';
 import '../../utils/format_time.dart';
-import '../widgets/add_member/view/add_member_dialog.dart';
 
 class ClassDetailView extends StatelessWidget {
   const ClassDetailView({super.key});
@@ -33,11 +32,20 @@ class ClassDetailView extends StatelessWidget {
       child: BlocBuilder<ClassDetailCubit, ClassDetailState>(
         builder: (context, state) {
           if (state.status == ClassDetailStatus.loading) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text(
+                  'Chi tiết lớp học',
+                  style: TextStyle(color: Colors.white),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                iconTheme: const IconThemeData(color: Colors.white),
+              ),
+              body: const Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           }
-
           if (state.status == ClassDetailStatus.success) {
             return SingleChildScrollView(
               child: Padding(
@@ -237,36 +245,6 @@ class _ClassMembers extends StatelessWidget {
                   ],
                 ),
               ),
-          const SizedBox(height: 8),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push<void>(
-                AddMemberDialog.route(classId),
-              ).then((value) {
-                context.read<ClassDetailCubit>().fetchClassDetail(classId);
-              });
-            },
-            child: DottedBorder(
-                padding: const EdgeInsets.all(8),
-                color: Theme.of(context).colorScheme.primary,
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.add_circle,
-                      color: Colors.blue,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Thêm thành viên',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ],
-                )
-            ),
-          )
         ],
       ),
     );
@@ -365,24 +343,24 @@ class _UpcomingLesson extends StatelessWidget {
               });
             },
             child: DottedBorder(
-                padding: const EdgeInsets.all(8),
-                color: Theme.of(context).colorScheme.primary,
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.arrow_forward_rounded,
-                      color: Colors.blue,
+              padding: const EdgeInsets.all(8),
+              color: Theme.of(context).colorScheme.primary,
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Colors.blue,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Xem tất cả',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Xem tất cả',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ],
-                )
+                  ),
+                ],
+              )
             ),
           )
         ],

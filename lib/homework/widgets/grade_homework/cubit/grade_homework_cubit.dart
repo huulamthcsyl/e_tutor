@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:class_repository/class_repository.dart';
+import 'package:e_tutor/utils/notification_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -23,11 +24,18 @@ class GradeHomeworkCubit extends Cubit<GradeHomeworkState> {
     emit(state.copyWith(feedback: value));
   }
 
-  void gradeHomework() {
-    _classRepository.gradeHomework(
+  void gradeHomework() async {
+    await _classRepository.gradeHomework(
       state.homework.id!,
       state.score,
       state.feedback,
+    );
+    await NotificationService().sendNotificationToClass(
+      classId: state.homework.classId!,
+      title: 'Trả điểm bài tập',
+      body: 'Bài tập ${state.homework.title} đã được trả điểm',
+      documentId: state.homework.id!,
+      documentType: 'homework',
     );
   }
 }

@@ -31,6 +31,9 @@ dependencies:
     path: packages/profile_repository
   random_string: ^2.3.1
   flutter_datetime_picker_plus: ^2.2.0
+  firebase_messaging: ^15.2.5
+  notification_repository:
+    path: packages/notification_repository
 
 dev_dependencies:
   flutter_test:

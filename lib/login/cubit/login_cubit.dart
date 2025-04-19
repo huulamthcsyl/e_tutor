@@ -1,15 +1,19 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:form_inputs/form_inputs.dart';
+import 'package:notification_repository/notification_repository.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final AuthenticationRepository _authenticationRepository;
+  final NotificationRepository _notificationRepository;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-  LoginCubit(this._authenticationRepository) : super(const LoginState());
+  LoginCubit(this._authenticationRepository, this._notificationRepository) : super(const LoginState());
 
   void emailChanged(String value) {
     final email = Email.dirty(value);
@@ -35,6 +39,12 @@ class LoginCubit extends Cubit<LoginState> {
         email: state.email.value,
         password: state.password.value,
       );
+      // Send FCM device token to the server
+      final user = await _authenticationRepository.user.first;
+      final token = await _firebaseMessaging.getToken();
+      if (token != null) {
+        await _notificationRepository.sendFCMDeviceToken(user.id, token);
+      }
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } on LoginInWithEmailAndPasswordFailure catch (e) {
       emit(state.copyWith(

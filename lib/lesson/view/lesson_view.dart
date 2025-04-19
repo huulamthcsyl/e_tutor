@@ -307,6 +307,7 @@ class _HomeworkInfo extends StatelessWidget {
                     CreateHomeworkPage.route(
                       classId: lesson.classId,
                       lessonId: lesson.id,
+                      className: state.classData.name
                     ),
                   )
                       .then((value) {

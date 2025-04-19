@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:e_tutor/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notification_repository/notification_repository.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -16,6 +17,7 @@ class LoginPage extends StatelessWidget {
         child: BlocProvider(
           create: (context) => LoginCubit(
             context.read<AuthenticationRepository>(),
+            context.read<NotificationRepository>(),
           ),
           child: const LoginForm(),
         ),

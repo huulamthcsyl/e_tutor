@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:class_repository/class_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,8 +10,9 @@ class ClassDetailCubit extends Cubit<ClassDetailState> {
 
   final ClassRepository _classRepository;
   final ProfileRepository _profileRepository;
+  final AuthenticationRepository _authenticationRepository;
 
-  ClassDetailCubit(this._classRepository, this._profileRepository) : super(const ClassDetailState());
+  ClassDetailCubit(this._classRepository, this._profileRepository, this._authenticationRepository) : super(const ClassDetailState());
 
   void fetchClassDetail(String id) async {
     emit(state.copyWith(status: ClassDetailStatus.loading));
@@ -19,11 +21,14 @@ class ClassDetailCubit extends Cubit<ClassDetailState> {
       final members = await _profileRepository.getProfilesByIds(classDetail.members ?? []);
       final upComingLesson = await _classRepository.getUpcomingLesson(id);
       final recentExam = await _classRepository.getRecentExam(id);
+      final user = await _authenticationRepository.user.first;
+      final profile = await _profileRepository.getProfile(user.id);
       emit(state.copyWith(
         status: ClassDetailStatus.success,
         classDetail: classDetail,
         members: members,
         upcomingLesson: upComingLesson,
+        user: profile
         recentExam: recentExam,
       ));
     } catch (e) {

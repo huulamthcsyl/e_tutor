@@ -1,5 +1,6 @@
 import 'package:class_repository/class_repository.dart';
 import 'package:const_date_time/const_date_time.dart';
+import 'package:e_tutor/utils/notification_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,15 +16,16 @@ class CreateHomeworkCubit extends Cubit<CreateHomeworkState> {
 
   CreateHomeworkCubit(this._classRepository) : super(const CreateHomeworkState());
 
-  void initialize(String? classId, String? lessonId, Homework? homework) {
+  void initialize(String? classId, String? lessonId, Homework? homework, String? className) {
     emit(state.copyWith(
       classId: classId ?? '',
       lessonId: lessonId ?? '',
       homeworkId: homework?.id ?? randomAlphaNumeric(20),
       title: homework != null ? RequiredText.dirty(homework.title) : const RequiredText.pure(),
       materials: homework?.materials ?? [],
-      dueDate: homework?.dueDate ?? const ConstDateTime(2026),
+      dueDate: homework?.dueDate ?? DateTime.now(),
       isValid: true,
+      className: className
     ));
   }
 
@@ -81,6 +83,13 @@ class CreateHomeworkCubit extends Cubit<CreateHomeworkState> {
         ),
       );
       emit(state.copyWith(status: FormzSubmissionStatus.success));
+      await NotificationService().sendNotificationToClass(
+        classId: state.classId,
+        title: 'Bài tập mới',
+        body: 'Một bài tập mới đã được thêm cho lớp ${state.className}',
+        documentId: state.homeworkId,
+        documentType: 'homework',
+      );
     } on ClassFailure {
       emit(state.copyWith(status: FormzSubmissionStatus.failure));
     }

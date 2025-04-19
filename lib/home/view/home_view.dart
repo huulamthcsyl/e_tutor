@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../notification/notification.dart';
+
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
@@ -12,63 +14,88 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              TableCalendar(
-                firstDay: DateTime.utc(2010, 1, 1),
-                lastDay: DateTime.utc(2030, 12, 31),
-                focusedDay: state.selectedDay,
-                selectedDayPredicate: (day) {
-                  return isSameDay(state.selectedDay, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  context.read<HomeCubit>().selectedDayChanged(selectedDay);
-                },
-                calendarFormat: state.calendarFormat,
-                onFormatChanged: (format) {
-                  context.read<HomeCubit>().calendarFormatChanged(format);
-                },
-                locale: 'vi_VN',
-                availableCalendarFormats: const {
-                  CalendarFormat.month: 'Tháng',
-                  CalendarFormat.week: 'Tuần',
-                  CalendarFormat.twoWeeks: '2 Tuần',
-                },
-                startingDayOfWeek: StartingDayOfWeek.monday,
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  markerDecoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  todayTextStyle: const TextStyle(color: Colors.white),
-                  selectedTextStyle: const TextStyle(color: Colors.white),
-                  outsideDaysVisible: false,
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('eTutor'),
+            actions: [
+              Badge(
+                offset: const Offset(-6, 6),
+                backgroundColor: Colors.red,
+                label: Text(
+                  state.notificationCount.toString(),
+                  style: const TextStyle(color: Colors.white),
                 ),
-                eventLoader: (day) {
-                  return state.lessons
-                      .where((lesson) => isSameDay(lesson.lesson.startTime, day))
-                      .toList();
-                },
-                onPageChanged: (focusedDay) {
-                  context.read<HomeCubit>().selectedDayChanged(focusedDay);
-                  context.read<HomeCubit>().getLessonsInMonth(focusedDay);
-                },
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: _EventList(),
-              ),
+                child: IconButton(
+                  icon: const Icon(Icons.notifications),
+                  onPressed: () {
+                    Navigator.of(context).push<void>(
+                      NotificationPage.route(),
+                    );
+                  },
+                ),
+              )
             ],
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Colors.white,
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                TableCalendar(
+                  firstDay: DateTime.utc(2010, 1, 1),
+                  lastDay: DateTime.utc(2030, 12, 31),
+                  focusedDay: state.selectedDay,
+                  selectedDayPredicate: (day) {
+                    return isSameDay(state.selectedDay, day);
+                  },
+                  onDaySelected: (selectedDay, focusedDay) {
+                    context.read<HomeCubit>().selectedDayChanged(selectedDay);
+                  },
+                  calendarFormat: state.calendarFormat,
+                  onFormatChanged: (format) {
+                    context.read<HomeCubit>().calendarFormatChanged(format);
+                  },
+                  locale: 'vi_VN',
+                  availableCalendarFormats: const {
+                    CalendarFormat.month: 'Tháng',
+                    CalendarFormat.week: 'Tuần',
+                    CalendarFormat.twoWeeks: '2 Tuần',
+                  },
+                  startingDayOfWeek: StartingDayOfWeek.monday,
+                  calendarStyle: CalendarStyle(
+                    todayDecoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary,
+                      shape: BoxShape.circle,
+                    ),
+                    selectedDecoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    markerDecoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    todayTextStyle: const TextStyle(color: Colors.white),
+                    selectedTextStyle: const TextStyle(color: Colors.white),
+                    outsideDaysVisible: false,
+                  ),
+                  eventLoader: (day) {
+                    return state.lessons
+                        .where((lesson) => isSameDay(lesson.lesson.startTime, day))
+                        .toList();
+                  },
+                  onPageChanged: (focusedDay) {
+                    context.read<HomeCubit>().selectedDayChanged(focusedDay);
+                    context.read<HomeCubit>().getLessonsInMonth(focusedDay);
+                  },
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: _EventList(),
+                ),
+              ],
+            ),
           ),
         );
       },

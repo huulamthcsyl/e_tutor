@@ -1,15 +1,16 @@
 import 'package:class_repository/class_repository.dart';
-import 'package:e_tutor/class_detail/widgets/add_member/add_member.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:profile_repository/profile_repository.dart';
+
+import '../cubit/add_member_cubit.dart';
 
 class AddMemberDialog extends StatelessWidget {
 
   const AddMemberDialog({super.key});
 
-  static Route<void> route(String classId) {
-    return MaterialPageRoute<void>(
+  static Route<List<Profile>> route(String classId) {
+    return MaterialPageRoute<List<Profile>>(
       builder: (context) => BlocProvider(
         create: (context) => AddMemberCubit(
           context.read<ProfileRepository>(),
@@ -75,26 +76,25 @@ class _MemberList extends StatelessWidget {
       builder: (context, state) {
         return Column(
           children: state.members
-              .map(
-                (member) =>
-                GestureDetector(
-                  onTap: () {
-                    context.read<AddMemberCubit>().toggleMember(member);
-                  },
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: state.selectedMembers.contains(member),
-                        onChanged: (_) {
-                          context.read<AddMemberCubit>().toggleMember(member);
-                        },
-                      ),
-                      Text(member.name ?? ''),
-                    ],
-                  ),
-                )
-          )
-              .toList(),
+            .map(
+              (member) =>
+              GestureDetector(
+                onTap: () {
+                  context.read<AddMemberCubit>().toggleMember(member);
+                },
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: state.selectedMembers.contains(member),
+                      onChanged: (_) {
+                        context.read<AddMemberCubit>().toggleMember(member);
+                      },
+                    ),
+                    Text(member.name ?? ''),
+                  ],
+                ),
+              )
+          ).toList(),
         );
       },
     );
@@ -121,7 +121,6 @@ class _Button extends StatelessWidget {
         const SizedBox(width: 16),
         ElevatedButton(
           onPressed: () {
-            context.read<AddMemberCubit>().addMembers();
             Navigator.of(context).pop(selectedMembers);
           },
           child: const Text('Thêm'),

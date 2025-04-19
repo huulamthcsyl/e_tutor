@@ -1,9 +1,13 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/create_class/create_class.dart';
 import 'package:e_tutor/utils/format_time.dart';
 import 'package:e_tutor/utils/get_day_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:profile_repository/profile_repository.dart';
+
+import '../widgets/add_member/view/add_member_dialog.dart';
 
 class CreateClassForm extends StatelessWidget {
   const CreateClassForm({super.key});
@@ -26,25 +30,29 @@ class CreateClassForm extends StatelessWidget {
           Navigator.of(context).pop();
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-            _NameInput(),
-            const SizedBox(height: 16),
-            _DescriptionInput(),
-            const SizedBox(height: 16),
-            _TuitionInput(),
-            const SizedBox(height: 16),
-            _ScheduleList(),
-            const SizedBox(height: 16),
-            _StartDateInput(),
-            const SizedBox(height: 16),
-            _EndDateInput(),
-            const SizedBox(height: 32),
-            _CreateButton(),
-          ],
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              _NameInput(),
+              const SizedBox(height: 16),
+              _DescriptionInput(),
+              const SizedBox(height: 16),
+              _TuitionInput(),
+              const SizedBox(height: 16),
+              _ScheduleList(),
+              const SizedBox(height: 16),
+              _StartDateInput(),
+              const SizedBox(height: 16),
+              _EndDateInput(),
+              const SizedBox(height: 16),
+              _ClassMembers(),
+              const SizedBox(height: 32),
+              _CreateButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -166,7 +174,10 @@ class _ScheduleList extends StatelessWidget {
                     ),
                     const Spacer(),
                     IconButton(
-                      icon: const Icon(Icons.delete),
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
                       onPressed: () {
                         context
                             .read<CreateClassCubit>()
@@ -253,6 +264,104 @@ class _EndDateInput extends StatelessWidget {
   }
 }
 
+class _ClassMembers extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreateClassCubit, CreateClassState>(
+      builder: (context, state) {
+        return SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Thành viên lớp học',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 8),
+                for (final member in state.members)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(member.avatarUrl ?? ''),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              member.name ?? '',
+                              style: const TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              member.role?.tutorRole() ?? '',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () {
+                            context.read<CreateClassCubit>().removeMember(member);
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red
+                          )
+                        )
+                      ],
+                    ),
+                  ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push<List<Profile>>(
+                    AddMemberDialog.route(state.classId),
+                  ).then((value) {
+                    if (value != null) {
+                      context.read<CreateClassCubit>().addMembers(value);
+                    }
+                  });
+                },
+                child: DottedBorder(
+                  padding: const EdgeInsets.all(8),
+                  color: Theme.of(context).colorScheme.primary,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.add_circle,
+                        color: Colors.blue,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Thêm thành viên',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ],
+                  )
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _CreateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -262,11 +371,28 @@ class _CreateButton extends StatelessWidget {
     if (isInProgress) return const CircularProgressIndicator();
 
     final isValid =
-        context.select((CreateClassCubit cubit) => cubit.state.isValid);
+        context.select((CreateClassCubit cubit) => cubit.state.isValid &&
+            cubit.state.members.isNotEmpty &&
+            cubit.state.schedules.isNotEmpty);
     return ElevatedButton(
       onPressed:
           isValid ? () => context.read<CreateClassCubit>().createClass() : null,
       child: const Text('Tạo lớp học'),
     );
+  }
+}
+
+extension on String {
+  String tutorRole() {
+    switch (this) {
+      case 'tutor':
+        return 'Gia sư';
+      case 'student':
+        return 'Học sinh';
+      case 'parent':
+        return 'Phụ huynh';
+      default:
+        return '';
+    }
   }
 }
