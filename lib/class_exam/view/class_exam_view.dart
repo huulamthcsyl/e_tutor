@@ -111,12 +111,55 @@ class ClassExamView extends StatelessWidget {
                         itemCount: state.exams.length,
                         itemBuilder: (context, index) {
                           final exam = state.exams[index];
-                          return ListTile(
-                            title: Text(exam.title ?? ""),
-                            subtitle: Text('Thời gian bắt đầu: ${FormatTime.formatDateTime(exam.startTime)}'),
+                          return GestureDetector(
                             onTap: () {
-                              // Handle exam tap
+
                             },
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              margin: const EdgeInsets.only(bottom: 8),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    exam.title ?? '',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.access_time,
+                                        color: Colors.blue,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        '${FormatTime.formatTime(exam.startTime)} - ${FormatTime.formatTime(exam.endTime)}, ${FormatTime.formatDate(exam.startTime)}',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
                           );
                         },
                       ),
