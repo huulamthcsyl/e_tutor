@@ -25,6 +25,7 @@ class HomeCubit extends Cubit<HomeState> {
       selectedDay: DateTime.now(),
     ));
     getLessonsInMonth(DateTime.now());
+    getExamsInMonth(DateTime.now());
   }
 
   Future<void> getLessonsInMonth(DateTime date) async {
@@ -49,9 +50,32 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(lessonsInSelectedDay: lessonsInSelectedDay));
   }
 
+  Future<void> getExamsInMonth(DateTime date) async {
+    emit(state.copyWith(status: HomeStatus.initial));
+    final user = await authenticationRepository.user.first;
+    try {
+      final exams = await classRepository.getExamsInMonthOnDate(date, user.id);
+      emit(state.copyWith(
+        exams: exams,
+        status: HomeStatus.success,
+      ));
+      getExamsInDay(state.selectedDay);
+    } on Exception {
+      emit(state.copyWith(status: HomeStatus.failure));
+    }
+  }
+
+  void getExamsInDay(DateTime date) {
+    final examsInSelectedDay = state.exams
+      .where((exam) => isSameDay(exam.startTime, state.selectedDay))
+      .toList();
+    emit(state.copyWith(examsInSelectedDay: examsInSelectedDay));
+  }
+
   void selectedDayChanged(DateTime selectedDay) {
     emit(state.copyWith(selectedDay: selectedDay));
     getLessonsInDay(selectedDay);
+    getExamsInDay(selectedDay);
   }
 
   void calendarFormatChanged(CalendarFormat calendarFormat) {

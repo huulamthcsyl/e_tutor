@@ -517,4 +517,40 @@ class ClassRepository {
       );
     }).toList();
   }
+
+  Future<List<Exam>> getExamsInMonthOnDate(DateTime date, String userId) async {
+    final exams = <Exam>[];
+    final startOfMonth = DateTime(date.year, date.month, 1);
+    final endOfMonth = DateTime(date.year, date.month + 1, 0);
+    final snapshot = await _firestore.collection('classes').where('members', arrayContains: userId).get();
+    for (var doc in snapshot.docs) {
+      final classData = doc.data();
+      final examSnapshot = await _firestore.collection('exams')
+        .where('classId', isEqualTo: doc.id)
+        .where('startTime', isGreaterThanOrEqualTo: startOfMonth.toIso8601String())
+        .where('endTime', isLessThanOrEqualTo: endOfMonth.toIso8601String())
+        .get();
+      for (var examDoc in examSnapshot.docs) {
+        final examData = examDoc.data();
+        exams.add(Exam(
+          id: examDoc.id,
+          classId: doc.id,
+          title: examData['title'],
+          materials: (examData['materials'] as List<dynamic>).map((material) {
+            return Material(
+              name: material['name'],
+              url: material['url'],
+            );
+          }).toList(),
+          studentWorks: List<String>.from(examData['studentWorks']),
+          score: examData['score'],
+          feedback: examData['feedback'],
+          startTime: examData['startTime'] != null ? DateTime.parse(examData['startTime']) : null,
+          endTime: examData['endTime'] != null ? DateTime.parse(examData['endTime']) : null,
+          returnTime: examData['returnTime'] != null ? DateTime.parse(examData['returnTime']) : null,
+        ));
+      }
+    }
+    return exams;
+  }
 }

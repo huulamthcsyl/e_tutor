@@ -9,6 +9,8 @@ class HomeState extends Equatable {
   final CalendarFormat calendarFormat;
   final HomeStatus status;
   final int notificationCount;
+  final List<Exam> exams;
+  final List<Exam> examsInSelectedDay;
 
   const HomeState({
     this.lessons = const [],
@@ -17,10 +19,12 @@ class HomeState extends Equatable {
     this.calendarFormat = CalendarFormat.week,
     this.status = HomeStatus.success,
     this.notificationCount = 0,
+    this.exams = const [],
+    this.examsInSelectedDay = const [],
   });
 
   @override
-  List<Object> get props => [lessons, lessonsInSelectedDay, selectedDay, calendarFormat, notificationCount, status];
+  List<Object> get props => [lessons, lessonsInSelectedDay, selectedDay, calendarFormat, notificationCount, status, exams, examsInSelectedDay];
 
   HomeState copyWith({
     List<LessonResponse>? lessons,
@@ -29,6 +33,8 @@ class HomeState extends Equatable {
     CalendarFormat? calendarFormat,
     HomeStatus? status,
     int? notificationCount,
+    List<Exam>? exams,
+    List<Exam>? examsInSelectedDay,
   }) {
     return HomeState(
       lessons: lessons ?? this.lessons,
@@ -37,6 +43,8 @@ class HomeState extends Equatable {
       calendarFormat: calendarFormat ?? this.calendarFormat,
       status: status ?? this.status,
       notificationCount: notificationCount ?? this.notificationCount,
+      exams: exams ?? this.exams,
+      examsInSelectedDay: examsInSelectedDay ?? this.examsInSelectedDay,
     );
   }
 }
