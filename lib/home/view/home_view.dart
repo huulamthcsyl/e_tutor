@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../exam/view/exam_page.dart';
 import '../../notification/notification.dart';
 
 class HomeView extends StatelessWidget {
@@ -198,7 +199,11 @@ class _ExamList extends StatelessWidget {
             for (final exam in state.examsInSelectedDay)
               GestureDetector(
                 onTap: () {
-
+                  Navigator.of(context).push<void>(
+                    ExamPage.route(
+                      examId: exam.id!,
+                    ),
+                  );
                 },
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),

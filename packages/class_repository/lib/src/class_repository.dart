@@ -553,4 +553,58 @@ class ClassRepository {
     }
     return exams;
   }
+
+  Future<Exam> getExamById(String examId) {
+    return _firestore.collection('exams').doc(examId).get().then((doc) {
+      final data = doc.data();
+      if (data == null) {
+        throw ClassFailure('Không tìm thấy bài thi');
+      }
+      return Exam(
+        id: doc.id,
+        classId: data['classId'],
+        title: data['title'],
+        materials: (data['materials'] as List<dynamic>).map((material) {
+          return Material(
+            name: material['name'],
+            url: material['url'],
+          );
+        }).toList(),
+        studentWorks: List<String>.from(data['studentWorks']),
+        score: data['score'],
+        feedback: data['feedback'],
+        startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
+        endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
+        returnTime: data['returnTime'] != null ? DateTime.parse(data['returnTime']) : null,
+        status: data['status'],
+      );
+    });
+  }
+
+  Future<String> uploadExamStudentWork(String examId, String fileName, Uint8List file) async {
+    final ref = _storage.ref().child('exams/$examId/studentWorks/$fileName');
+    await ref.putData(file);
+    return ref.fullPath;
+  }
+
+  Future<void> submitExam(String examId, List<Material> studentWorks) {
+    return _firestore.collection('exams').doc(examId).update({
+      'studentWorks': studentWorks.map((work) {
+        return {
+          'name': work.name,
+          'url': work.url,
+        };
+      }).toList(),
+      'status': 'submitted',
+      'submittedAt': DateTime.now().toIso8601String(),
+    });
+  }
+
+  Future<void> gradeExam(String examId, double score, String feedback) {
+    return _firestore.collection('exams').doc(examId).update({
+      'score': score,
+      'feedback': feedback,
+      'status': 'graded',
+    });
+  }
 }

@@ -13,6 +13,7 @@ class Exam extends Equatable {
   final DateTime? startTime;
   final DateTime? endTime;
   final DateTime? returnTime;
+  final DateTime? submittedAt;
   final String? status;
 
   const Exam({
@@ -26,9 +27,10 @@ class Exam extends Equatable {
     this.startTime,
     this.endTime,
     this.returnTime,
+    this.submittedAt,
     this.status
   });
 
   @override
-  List<Object?> get props => [id, classId, title, materials, studentWorks, score, feedback, startTime, endTime, returnTime, status];
+  List<Object?> get props => [id, classId, title, materials, studentWorks, score, feedback, startTime, endTime, returnTime, status, submittedAt];
 }
