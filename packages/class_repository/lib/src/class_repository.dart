@@ -605,6 +605,7 @@ class ClassRepository {
       'score': score,
       'feedback': feedback,
       'status': 'graded',
+      'returnTime': DateTime.now().toIso8601String(),
     });
   }
 }

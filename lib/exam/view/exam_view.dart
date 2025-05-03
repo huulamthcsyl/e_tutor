@@ -369,8 +369,14 @@ class _ActionButton extends StatelessWidget {
                 color: Colors.white,
               ),
             ) : state.user.role == "tutor" ?
-            const Text(
+            state.exam.status == 'submitted' ? const Text(
               "Chấm điểm",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            ) :  const Text(
+              "Đã chấm điểm",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.white,
