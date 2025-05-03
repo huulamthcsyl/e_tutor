@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../class_detail/class_detail.dart';
+import '../../exam/view/exam_page.dart';
 import '../../homework/homework.dart';
 import '../cubit/notification_cubit.dart';
 
@@ -38,6 +39,11 @@ class NotificationView extends StatelessWidget {
                     case 'homework':
                       Navigator.of(context).push(
                         HomeworkPage.route(id: notification.documentId),
+                      );
+                      break;
+                    case 'exam':
+                      Navigator.of(context).push(
+                        ExamPage.route(examId: notification.documentId),
                       );
                       break;
                   }
