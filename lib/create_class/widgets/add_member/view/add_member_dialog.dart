@@ -90,7 +90,30 @@ class _MemberList extends StatelessWidget {
                         context.read<AddMemberCubit>().toggleMember(member);
                       },
                     ),
-                    Text(member.name ?? ''),
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(member.avatarUrl ?? ''),
+                    ),
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          member.name ?? "",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(
+                          member.role!.tutorRole(),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               )
@@ -127,5 +150,20 @@ class _Button extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+extension on String {
+  String tutorRole() {
+    switch (this) {
+      case 'tutor':
+        return 'Gia sư';
+      case 'student':
+        return 'Học sinh';
+      case 'parent':
+        return 'Phụ huynh';
+      default:
+        return '';
+    }
   }
 }
