@@ -35,4 +35,24 @@ class ClassDetailCubit extends Cubit<ClassDetailState> {
       emit(state.copyWith(status: ClassDetailStatus.failure));
     }
   }
+
+  void addMembersToClass(String classId, List<Profile> members) async {
+    emit(state.copyWith(status: ClassDetailStatus.loading));
+    try {
+      await _classRepository.addMembersToClass(classId, members.map((e) => e.id).toList());
+      emit(state.copyWith(status: ClassDetailStatus.success));
+    } catch (e) {
+      emit(state.copyWith(status: ClassDetailStatus.failure));
+    }
+  }
+
+  void removeMemberFromClass(String classId, String memberId) async {
+    emit(state.copyWith(status: ClassDetailStatus.loading));
+    try {
+      await _classRepository.removeMemberFromClass(classId, memberId);
+      emit(state.copyWith(status: ClassDetailStatus.success));
+    } catch (e) {
+      emit(state.copyWith(status: ClassDetailStatus.failure));
+    }
+  }
 }

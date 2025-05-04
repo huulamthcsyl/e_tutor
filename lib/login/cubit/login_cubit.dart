@@ -45,7 +45,6 @@ class LoginCubit extends Cubit<LoginState> {
       if (token != null) {
         await _notificationRepository.sendFCMDeviceToken(user.id, token);
       }
-      emit(state.copyWith(status: FormzSubmissionStatus.success));
     } on LoginInWithEmailAndPasswordFailure catch (e) {
       emit(state.copyWith(
         status: FormzSubmissionStatus.failure,

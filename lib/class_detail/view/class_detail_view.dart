@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:profile_repository/profile_repository.dart';
 
 import '../../class_lesson/view/class_lesson_page.dart';
+import '../../create_class/widgets/add_member/view/add_member_dialog.dart';
 import '../../lesson/view/lesson_page.dart';
 import '../../utils/format_time.dart';
 
@@ -66,7 +67,7 @@ class ClassDetailView extends StatelessWidget {
                       const SizedBox(height: 8),
                       _ClassSchedules(schedules: state.classDetail.schedules),
                       const SizedBox(height: 8),
-                      _ClassMembers(members: state.members, classId: state.classDetail.id!),
+                      _ClassMembers(members: state.members, classId: state.classDetail.id!, user: state.user),
                       const SizedBox(height: 8),
                       _UpcomingLesson(lesson: state.upcomingLesson),
                       const SizedBox(height: 8),
@@ -190,10 +191,11 @@ class _ClassSchedules extends StatelessWidget {
 }
 
 class _ClassMembers extends StatelessWidget {
-  const _ClassMembers({super.key, required this.members, required this.classId});
+  const _ClassMembers({super.key, required this.members, required this.classId, required this.user});
 
   final List<Profile>? members;
   final String classId;
+  final Profile user;
 
   @override
   Widget build(BuildContext context) {
@@ -215,12 +217,34 @@ class _ClassMembers extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Thành viên lớp học',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            children: [
+              const Text(
+                'Thành viên lớp học',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Spacer(),
+              user.role == 'tutor' ? IconButton(
+                onPressed: () {
+                  Navigator.of(context).push<List<Profile>>(
+                    AddMemberDialog.route(
+                      classId
+                    ),
+                  ).then((value) {
+                    if (value != null) {
+                      context.read<ClassDetailCubit>()
+                        .addMembersToClass(classId, value);
+                      context.read<ClassDetailCubit>()
+                        .fetchClassDetail(classId);
+                    }
+                  });
+                },
+                icon: const Icon(Icons.add),
+              ) : const SizedBox.shrink(),
+            ],
           ),
           const SizedBox(height: 8),
           if (members != null)
@@ -252,6 +276,57 @@ class _ClassMembers extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const Spacer(),
+                    user.role == 'tutor' ? IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Xóa thành viên'),
+                              content: RichText(
+                                text: TextSpan(
+                                  text: 'Bạn có chắc chắn muốn xóa ',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: member.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const TextSpan(
+                                      text: ' khỏi lớp học này?',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Hủy'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    context.read<ClassDetailCubit>().removeMemberFromClass(classId, member.id!);
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Xóa'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    ) : const SizedBox.shrink(),
                   ],
                 ),
               ),

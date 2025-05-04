@@ -629,4 +629,10 @@ class ClassRepository {
       'returnTime': DateTime.now().toIso8601String(),
     });
   }
+
+  Future<void> removeMemberFromClass(String classId, String memberId) {
+    return _firestore.collection('classes').doc(classId).update({
+      'members': FieldValue.arrayRemove([memberId])
+    });
+  }
 }
