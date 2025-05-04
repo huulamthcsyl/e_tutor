@@ -26,10 +26,10 @@ class ExamCubit extends Cubit<ExamState> {
       } else {
         if (exam.startTime != null && exam.endTime != null) {
           emit(state.copyWith(
-            actionStatus: exam.startTime!.isBefore(DateTime.now())
-                ? ActionStatus.todo
+            actionStatus: exam.startTime!.isAfter(DateTime.now())
+                ? ActionStatus.notStarted
                 :
-            (exam.endTime!.isAfter(DateTime.now())
+            (exam.endTime!.isBefore(DateTime.now())
                 ? ActionStatus.ended
                 : ActionStatus.todo),
           ));
@@ -39,6 +39,7 @@ class ExamCubit extends Cubit<ExamState> {
         status: ExamStatus.success,
         exam: exam,
         user: currentUser,
+        studentWorks: exam.studentWorks ?? [],
       ));
     } catch (e) {
       emit(state.copyWith(status: ExamStatus.failure));

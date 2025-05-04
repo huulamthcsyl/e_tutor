@@ -7,7 +7,7 @@ class Exam extends Equatable {
   final String? classId;
   final String? title;
   final List<Material>? materials;
-  final List<String>? studentWorks;
+  final List<Material>? studentWorks;
   final double? score;
   final String? feedback;
   final DateTime? startTime;

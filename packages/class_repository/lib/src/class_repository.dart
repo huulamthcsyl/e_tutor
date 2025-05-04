@@ -475,7 +475,12 @@ class ClassRepository {
           url: material['url'],
         );
       }).toList(),
-      studentWorks: List<String>.from(data['studentWorks']),
+      studentWorks: (data['studentWorks'] as List<dynamic>).map((work) {
+        return Material(
+          name: work['name'],
+          url: work['url'],
+        );
+      }).toList(),
       score: data['score'],
       feedback: data['feedback'],
       startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
@@ -508,7 +513,12 @@ class ClassRepository {
             url: material['url'],
           );
         }).toList(),
-        studentWorks: List<String>.from(data['studentWorks']),
+        studentWorks: (data['studentWorks'] as List<dynamic>).map((work) {
+          return Material(
+            name: work['name'],
+            url: work['url'],
+          );
+        }).toList(),
         score: data['score'],
         feedback: data['feedback'],
         startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
@@ -542,7 +552,12 @@ class ClassRepository {
               url: material['url'],
             );
           }).toList(),
-          studentWorks: List<String>.from(examData['studentWorks']),
+          studentWorks: (examData['studentWorks'] as List<dynamic>).map((work) {
+            return Material(
+              name: work['name'],
+              url: work['url'],
+            );
+          }).toList(),
           score: examData['score'],
           feedback: examData['feedback'],
           startTime: examData['startTime'] != null ? DateTime.parse(examData['startTime']) : null,
@@ -570,13 +585,19 @@ class ClassRepository {
             url: material['url'],
           );
         }).toList(),
-        studentWorks: List<String>.from(data['studentWorks']),
+        studentWorks: (data['studentWorks'] as List<dynamic>).map((work) {
+          return Material(
+            name: work['name'],
+            url: work['url'],
+          );
+        }).toList(),
         score: data['score'],
         feedback: data['feedback'],
         startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
         endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
         returnTime: data['returnTime'] != null ? DateTime.parse(data['returnTime']) : null,
         status: data['status'],
+        submittedAt: data['submittedAt'] != null ? DateTime.parse(data['submittedAt']) : null,
       );
     });
   }

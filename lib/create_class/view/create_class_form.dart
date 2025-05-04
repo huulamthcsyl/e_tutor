@@ -170,7 +170,7 @@ class _ScheduleList extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      '${GetDayName.getDayName(schedule.day.index)}, từ ${schedule.startTime.format(context)} đến ${schedule.endTime.format(context)}',
+                      '${GetDayName.getDayName(schedule.day.index)}, ${schedule.startTime.format(context)} - ${schedule.endTime.format(context)}',
                     ),
                     const Spacer(),
                     IconButton(
