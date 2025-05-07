@@ -635,4 +635,31 @@ class ClassRepository {
       'members': FieldValue.arrayRemove([memberId])
     });
   }
+
+  Future<List<Lesson>> getUnpaidLessons(String classId) async {
+    final snapshot = await _firestore.collection('lessons')
+      .where('classId', isEqualTo: classId)
+      .where('isPaid', isEqualTo: false)
+      .where('startTime', isLessThanOrEqualTo: DateTime.now().toIso8601String())
+      .get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return Lesson(
+        id: doc.id,
+        classId: classId,
+        materials: (data['materials'] as List<dynamic>).map((material) {
+          return Material(
+            name: material['name'],
+            url: material['url'],
+          );
+        }).toList(),
+        homeworks: List<String>.from(data['homeworks']),
+        isPaid: data['isPaid'],
+        tutorFeedback: data['tutorFeedback'],
+        studentFeedback: data['studentFeedback'],
+        startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
+        endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
+      );
+    }).toList();
+  }
 }
