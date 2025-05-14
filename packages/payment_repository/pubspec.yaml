@@ -1,0 +1,10 @@
+name: notification_repository
+description: Dart package which manages the notification domain.
+publish_to: none
+
+environment:
+  sdk: "^3.5.4"
+
+dependencies:
+  cloud_firestore: ^5.5.0
+  equatable: ^2.0.7
