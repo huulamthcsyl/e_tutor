@@ -15,36 +15,62 @@ class ProfileUpdateForm extends StatelessWidget {
           Navigator.of(context).pop();
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _NameInput(),
-            const SizedBox(height: 16),
-            _BirthDateInput(),
-            const SizedBox(height: 16),
-            _AddressInput(),
-            const SizedBox(height: 16),
-            _PhoneNumberInput(),
-            const SizedBox(height: 16),
-            _UpdateButton(),
-          ],
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              _NameInput(),
+              const SizedBox(height: 16),
+              _BirthDateInput(),
+              const SizedBox(height: 16),
+              _AddressInput(),
+              const SizedBox(height: 16),
+              _PhoneNumberInput(),
+              const SizedBox(height: 16),
+              _BankAccountInput(),
+              const SizedBox(height: 16),
+              _UpdateButton(),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _NameInput extends StatelessWidget {
+class _NameInput extends StatefulWidget {
+  @override
+  State<_NameInput> createState() => _NameInputState();
+}
+
+class _NameInputState extends State<_NameInput> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileUpdateCubit, ProfileUpdateState>(
       buildWhen: (previous, current) => previous.name != current.name,
       builder: (context, state) {
+        if (_controller.text != state.name) {
+          _controller.text = state.name;
+        }
         return TextFormField(
           key: const Key('profileUpdateForm_nameInput_textField'),
+          controller: _controller,
           onChanged: (name) => context.read<ProfileUpdateCubit>().nameChanged(name),
-          initialValue: state.name,
           decoration: const InputDecoration(
             labelText: 'Họ và tên',
           ),
@@ -90,16 +116,38 @@ class _BirthDateInput extends StatelessWidget {
   }
 }
 
-class _AddressInput extends StatelessWidget {
+class _AddressInput extends StatefulWidget {
+  @override
+  State<_AddressInput> createState() => _AddressInputState();
+}
+
+class _AddressInputState extends State<_AddressInput> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileUpdateCubit, ProfileUpdateState>(
       buildWhen: (previous, current) => previous.address != current.address,
       builder: (context, state) {
+        if (_controller.text != state.address) {
+          _controller.text = state.address;
+        }
         return TextFormField(
           key: const Key('profileUpdateForm_addressInput_textField'),
+          controller: _controller,
           onChanged: (address) => context.read<ProfileUpdateCubit>().addressChanged(address),
-          initialValue: state.address,
           decoration: const InputDecoration(
             labelText: 'Địa chỉ',
           ),
@@ -109,20 +157,82 @@ class _AddressInput extends StatelessWidget {
   }
 }
 
-class _PhoneNumberInput extends StatelessWidget {
+class _PhoneNumberInput extends StatefulWidget {
+  @override
+  State<_PhoneNumberInput> createState() => _PhoneNumberInputState();
+}
+
+class _PhoneNumberInputState extends State<_PhoneNumberInput> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileUpdateCubit, ProfileUpdateState>(
       buildWhen: (previous, current) => previous.phoneNumber != current.phoneNumber,
       builder: (context, state) {
+        if (_controller.text != state.phoneNumber) {
+          _controller.text = state.phoneNumber;
+        }
         return TextFormField(
           key: const Key('profileUpdateForm_phoneNumberInput_textField'),
+          controller: _controller,
           onChanged: (phoneNumber) => context.read<ProfileUpdateCubit>().phoneNumberChanged(phoneNumber),
-          initialValue: state.phoneNumber,
           decoration: const InputDecoration(
             labelText: 'Số điện thoại',
           ),
           keyboardType: TextInputType.phone,
+        );
+      },
+    );
+  }
+}
+
+class _BankAccountInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProfileUpdateCubit, ProfileUpdateState>(
+      buildWhen: (previous, current) => previous.bankInfos != current.bankInfos,
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+             Text(
+              'Ngân hàng',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 16),
+            DropdownMenu(
+              width: 300,
+              menuHeight: 300,
+              dropdownMenuEntries: state.bankInfos.map((e) => DropdownMenuEntry(value: e.shortName, label: '${e.name} (${e.shortName})')).toList(),
+              onSelected: (value) {
+                if (value != null) {
+                  context.read<ProfileUpdateCubit>().bankChanged(value);
+                }
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              key: const Key('profileUpdateForm_bankAccountInput_textField'),
+              onChanged: (accountNumber) => context.read<ProfileUpdateCubit>().bankNumberChanged(accountNumber),
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Số tài khoản',
+              ),
+            ),
+          ],
         );
       },
     );

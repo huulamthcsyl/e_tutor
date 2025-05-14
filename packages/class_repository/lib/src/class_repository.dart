@@ -256,7 +256,7 @@ class ClassRepository {
   }
 
   Future<void> createHomework(String classId, String lessonId, Homework homework) async {
-    final doc = await _firestore.collection('homeworks').doc(homework.id).set({
+    await _firestore.collection('homeworks').doc(homework.id).set({
       'classId': classId,
       'lessonId': lessonId,
       'title': homework.title,
@@ -534,7 +534,6 @@ class ClassRepository {
     final endOfMonth = DateTime(date.year, date.month + 1, 0);
     final snapshot = await _firestore.collection('classes').where('members', arrayContains: userId).get();
     for (var doc in snapshot.docs) {
-      final classData = doc.data();
       final examSnapshot = await _firestore.collection('exams')
         .where('classId', isEqualTo: doc.id)
         .where('startTime', isGreaterThanOrEqualTo: startOfMonth.toIso8601String())

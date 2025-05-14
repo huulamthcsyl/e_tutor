@@ -6,6 +6,7 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notification_repository/notification_repository.dart';
+import 'package:payment_repository/payment_repository.dart';
 import 'package:profile_repository/profile_repository.dart';
 
 class App extends StatelessWidget {
@@ -15,14 +16,16 @@ class App extends StatelessWidget {
       required ClassRepository classRepository,
       required ProfileRepository profileRepository,
       required NotificationRepository notificationRepository,
+      required PaymentRepository paymentRepository,
       super.key
     })
-    : _authenticationRepository = authenticationRepository, _classRepository = classRepository, _profileRepository = profileRepository, _notificationRepository = notificationRepository;
+    : _authenticationRepository = authenticationRepository, _classRepository = classRepository, _profileRepository = profileRepository, _notificationRepository = notificationRepository, _paymentRepository = paymentRepository;
 
   final AuthenticationRepository _authenticationRepository;
   final ClassRepository _classRepository;
   final ProfileRepository _profileRepository;
   final NotificationRepository _notificationRepository;
+  final PaymentRepository _paymentRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +35,7 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: _classRepository),
         RepositoryProvider.value(value: _profileRepository),
         RepositoryProvider.value(value: _notificationRepository),
+        RepositoryProvider.value(value: _paymentRepository),
       ],
       child: BlocProvider(
         create: (_) => AppBloc(

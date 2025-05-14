@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:const_date_time/const_date_time.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:profile_repository/profile_repository.dart';
@@ -17,11 +20,14 @@ class ProfileUpdateCubit extends Cubit<ProfileUpdateState> {
   void initialize() async {
     final user = await _authenticationRepository.user.first;
     final profile = await _profileRepository.getProfile(user.id);
+    final String bankJson = await rootBundle.loadString('assets/bank.json');
+    final List<dynamic> bankInfos = jsonDecode(bankJson);
     emit(state.copyWith(
       name: profile.name,
-      birthDate: profile.birthDate,
       address: profile.address,
       phoneNumber: profile.phoneNumber,
+      birthDate: profile.birthDate,
+      bankInfos: bankInfos.map((e) => BankInfo.fromJson(e)).toList(),
     ));
   }
 
@@ -49,6 +55,18 @@ class ProfileUpdateCubit extends Cubit<ProfileUpdateState> {
     ));
   }
 
+  void bankChanged(String value) {
+    emit(state.copyWith(
+      bankAccount: state.bankAccount.copyWith(bankName: value),
+    ));
+  }
+
+  void bankNumberChanged(String value) {
+    emit(state.copyWith(
+      bankAccount: state.bankAccount.copyWith(accountNumber: value),
+    ));
+  }
+
   void submit() async {
     try {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
@@ -59,6 +77,7 @@ class ProfileUpdateCubit extends Cubit<ProfileUpdateState> {
         birthDate: state.birthDate,
         address: state.address,
         phoneNumber: state.phoneNumber,
+        bankAccount: state.bankAccount,
       );
       _profileRepository.updateProfile(newProfile);
       emit(state.copyWith(status: FormzSubmissionStatus.success));

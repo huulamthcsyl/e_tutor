@@ -1,5 +1,6 @@
 import 'package:class_repository/class_repository.dart';
 import 'package:e_tutor/class_tuition/class_tuition.dart';
+import 'package:e_tutor/payment/view/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:e_tutor/utils/format_time.dart';
@@ -122,7 +123,14 @@ class ClassTuitionView extends StatelessWidget {
                               onPressed: state.selectedLessons.isEmpty
                                   ? null
                                   : () {
-                                      // TODO: Implement checkout
+                                      Navigator.of(context).push(
+                                        PaymentPage.route(
+                                          classId: state.classData?.id ?? '',
+                                          lessons: state.selectedLessons,
+                                          amount: state.totalTuition,
+                                          tutorId: state.classData?.members?.first ?? '',
+                                        ),
+                                      );
                                     },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
