@@ -11,31 +11,35 @@ class ClassPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Lớp học',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.add,
-              color: Colors.white,
+    return BlocProvider(
+      create: (_) => ClassCubit(
+        context.read<ClassRepository>(),
+        context.read<AuthenticationRepository>(),
+      )..getClasses(),
+      child: BlocBuilder<ClassCubit, ClassState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text(
+                'Lớp học',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              actions: [
+                state.user.role == "tutor" ? IconButton(
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => Navigator.of(context).push<void>(
+                    CreateClassPage.route(),
+                  ),
+                ) : const SizedBox(),
+              ],
             ),
-            onPressed: () => Navigator.of(context).push<void>(
-              CreateClassPage.route(),
-            ),
-          ),
-        ],
-      ),
-      body: BlocProvider(
-        create: (_) => ClassCubit(
-          context.read<ClassRepository>(),
-          context.read<AuthenticationRepository>(),
-        )..getClasses(),
-        child: const ClassView(),
+            body: const ClassView()
+          );
+        },
       ),
     );
   }

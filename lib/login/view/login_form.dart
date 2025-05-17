@@ -19,37 +19,35 @@ class LoginForm extends StatelessWidget {
             );
         }
       },
-      child: Expanded(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.sizeOf(context).height * 0.2,),
-                Text(
-                  'Đăng nhập',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.sizeOf(context).height * 0.2,),
+              Text(
+                'Đăng nhập',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-                const SizedBox(height: 16),
-                _EmailInput(),
-                _PasswordInput(),
-                const SizedBox(height: 16),
-                _LoginButton(),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Chưa có tài khoản?', 
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    _SignUpButton(),
-                  ],
-                )
-              ],
-            ),
+              ),
+              const SizedBox(height: 16),
+              _EmailInput(),
+              _PasswordInput(),
+              const SizedBox(height: 16),
+              _LoginButton(),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Chưa có tài khoản?',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  _SignUpButton(),
+                ],
+              )
+            ],
           ),
         ),
       ),

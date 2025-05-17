@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:notification_repository/notification_repository.dart';
+import 'package:payment_repository/payment_repository.dart';
 import 'firebase_options.dart';
 import 'package:profile_repository/profile_repository.dart';
 
@@ -19,11 +20,11 @@ void main() async {
   final classRepository = ClassRepository();
   final profileRepository = ProfileRepository();
   final notificationRepository = NotificationRepository();
-  final user = await authenticationRepository.user.first;
+  final paymentRepository = PaymentRepository();
 
   // Add FCM settings
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
+  await messaging.requestPermission(
     alert: true,
     badge: true,
     provisional: false,
@@ -35,5 +36,6 @@ void main() async {
     classRepository: classRepository,
     profileRepository: profileRepository,
     notificationRepository: notificationRepository,
+    paymentRepository: paymentRepository,
   )));
 }

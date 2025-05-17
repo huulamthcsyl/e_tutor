@@ -256,7 +256,7 @@ class ClassRepository {
   }
 
   Future<void> createHomework(String classId, String lessonId, Homework homework) async {
-    final doc = await _firestore.collection('homeworks').doc(homework.id).set({
+    await _firestore.collection('homeworks').doc(homework.id).set({
       'classId': classId,
       'lessonId': lessonId,
       'title': homework.title,
@@ -534,7 +534,6 @@ class ClassRepository {
     final endOfMonth = DateTime(date.year, date.month + 1, 0);
     final snapshot = await _firestore.collection('classes').where('members', arrayContains: userId).get();
     for (var doc in snapshot.docs) {
-      final classData = doc.data();
       final examSnapshot = await _firestore.collection('exams')
         .where('classId', isEqualTo: doc.id)
         .where('startTime', isGreaterThanOrEqualTo: startOfMonth.toIso8601String())
@@ -634,5 +633,32 @@ class ClassRepository {
     return _firestore.collection('classes').doc(classId).update({
       'members': FieldValue.arrayRemove([memberId])
     });
+  }
+
+  Future<List<Lesson>> getUnpaidLessons(String classId) async {
+    final snapshot = await _firestore.collection('lessons')
+      .where('classId', isEqualTo: classId)
+      .where('isPaid', isEqualTo: false)
+      .where('startTime', isLessThanOrEqualTo: DateTime.now().toIso8601String())
+      .get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return Lesson(
+        id: doc.id,
+        classId: classId,
+        materials: (data['materials'] as List<dynamic>).map((material) {
+          return Material(
+            name: material['name'],
+            url: material['url'],
+          );
+        }).toList(),
+        homeworks: List<String>.from(data['homeworks']),
+        isPaid: data['isPaid'],
+        tutorFeedback: data['tutorFeedback'],
+        studentFeedback: data['studentFeedback'],
+        startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
+        endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
+      );
+    }).toList();
   }
 }

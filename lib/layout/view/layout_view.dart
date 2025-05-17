@@ -37,7 +37,7 @@ class LayoutView extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
-                label: 'Hồ sơ',
+                label: 'Cá nhân',
               ),
             ],
           ),

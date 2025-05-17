@@ -13,7 +13,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Hồ sơ',
+            'Cá nhân',
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Theme.of(context).colorScheme.primary,

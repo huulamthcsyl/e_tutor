@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:profile_repository/src/models/bank_account.dart';
 
 class Profile extends Equatable {
   final String id;
@@ -7,8 +8,10 @@ class Profile extends Equatable {
   final String? address;
   final String? phoneNumber;
   final String? avatarUrl;
-  final List<String>? members;
   final String? role;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final BankAccount? bankAccount;
 
   const Profile({
     required this.id,
@@ -17,10 +20,12 @@ class Profile extends Equatable {
     this.address,
     this.phoneNumber,
     this.avatarUrl,
-    this.members,
     this.role,
+    this.createdAt,
+    this.updatedAt,
+    this.bankAccount,
   });
 
   @override
-  List<Object?> get props => [id, name, birthDate, address, phoneNumber, avatarUrl, members, role];
+  List<Object?> get props => [id, name, birthDate, address, phoneNumber, avatarUrl, role, createdAt, updatedAt, bankAccount];
 }

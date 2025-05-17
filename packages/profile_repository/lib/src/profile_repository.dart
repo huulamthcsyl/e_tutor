@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:profile_repository/src/models/bank_account.dart';
 
 import 'models/profile.dart';
 
@@ -33,8 +34,10 @@ class ProfileRepository {
           address: data['address'],
           phoneNumber: data['phoneNumber'],
           avatarUrl: data['avatarUrl'],
-          members: List<String>.from(data['members']),
           role: data['role'],
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate(),
+          bankAccount: data['bankAccount'] != null ? BankAccount.fromJson(data['bankAccount']) : null,
         );
       }).toList();
     });
@@ -56,8 +59,10 @@ class ProfileRepository {
           address: data['address'],
           phoneNumber: data['phoneNumber'],
           avatarUrl: data['avatarUrl'],
-          members: List<String>.from(data['members']),
           role: data['role'],
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate(),
+          bankAccount: data['bankAccount'] != null ? BankAccount.fromJson(data['bankAccount']) : null,
         );
       }).toList();
     });
@@ -76,8 +81,10 @@ class ProfileRepository {
         address: data['address'],
         phoneNumber: data['phoneNumber'],
         avatarUrl: data['avatarUrl'],
-        members: List<String>.from(data['members']),
         role: data['role'],
+        createdAt: data['createdAt']?.toDate(),
+        updatedAt: data['updatedAt']?.toDate(),
+        bankAccount: data['bankAccount'] != null ? BankAccount.fromJson(data['bankAccount']) : null,
       );
     });
   }
@@ -91,6 +98,9 @@ class ProfileRepository {
       'avatarUrl': profile.avatarUrl,
       'members': [],
       'role': profile.role,
+      'createdAt': DateTime.now(),
+      'updatedAt': DateTime.now(),
+      'bankAccount': profile.bankAccount?.toJson(),
     });
   }
 
@@ -101,8 +111,9 @@ class ProfileRepository {
       'address': profile.address,
       'phoneNumber': profile.phoneNumber,
       'avatarUrl': profile.avatarUrl,
-      'members': profile.members,
-      'role': profile.role,
+      'createdAt': profile.createdAt,
+      'updatedAt': DateTime.now(),
+      'bankAccount': profile.bankAccount?.toJson(),
     });
   }
 

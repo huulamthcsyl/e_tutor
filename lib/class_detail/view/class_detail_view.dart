@@ -2,12 +2,12 @@ import 'package:class_repository/class_repository.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/class_detail/class_detail.dart';
 import 'package:e_tutor/class_exam/class_exam.dart';
-import 'package:e_tutor/create_exam/view/create_exam_page.dart';
 import 'package:e_tutor/utils/format_currency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:profile_repository/profile_repository.dart';
 
+import 'package:e_tutor/class_tuition/class_tuition.dart';
 import '../../class_lesson/view/class_lesson_page.dart';
 import '../../create_class/widgets/add_member/view/add_member_dialog.dart';
 import '../../lesson/view/lesson_page.dart';
@@ -56,6 +56,25 @@ class ClassDetailView extends StatelessWidget {
                 ),
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 iconTheme: const IconThemeData(color: Colors.white),
+                actions: [
+                  PopupMenuButton(
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'class_tuition',
+                        child: Text('Thanh toán học phí'),
+                      ),
+                    ],
+                    onSelected: (value) {
+                      if (value == 'class_tuition') {
+                        Navigator.of(context).push<void>(
+                          ClassTuitionPage.route(
+                            classId: state.classDetail.id!,
+                          ),
+                        );
+                      }
+                    }
+                  )
+                ],
               ),
               body: SingleChildScrollView(
                 child: Padding(
@@ -86,7 +105,7 @@ class ClassDetailView extends StatelessWidget {
 }
 
 class _ClassInfo extends StatelessWidget {
-  const _ClassInfo({super.key, required this.classDetail});
+  const _ClassInfo({required this.classDetail});
 
   final Class classDetail;
 
@@ -138,7 +157,7 @@ class _ClassInfo extends StatelessWidget {
 }
 
 class _ClassSchedules extends StatelessWidget {
-  const _ClassSchedules({super.key, required this.schedules});
+  const _ClassSchedules({required this.schedules});
 
   final List<Schedule>? schedules;
 
@@ -176,7 +195,7 @@ class _ClassSchedules extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Từ ${schedule.startTime.format(context)} đến ${schedule.endTime.format(context)}',
+                    '${schedule.startTime.format(context)}-${schedule.endTime.format(context)}, ${schedule.day.label()} hằng tuần',
                     style: const TextStyle(
                       fontSize: 16,
                     ),
@@ -191,7 +210,7 @@ class _ClassSchedules extends StatelessWidget {
 }
 
 class _ClassMembers extends StatelessWidget {
-  const _ClassMembers({super.key, required this.members, required this.classId, required this.user});
+  const _ClassMembers({required this.members, required this.classId, required this.user});
 
   final List<Profile>? members;
   final String classId;
@@ -312,15 +331,21 @@ class _ClassMembers extends StatelessWidget {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    context.read<ClassDetailCubit>().removeMemberFromClass(classId, member.id!);
-                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop("delete");
                                   },
                                   child: const Text('Xóa'),
                                 ),
                               ],
                             );
                           },
-                        );
+                        ).then((value) {
+                          if (value == "delete") {
+                            context.read<ClassDetailCubit>()
+                              .removeMemberFromClass(classId, member.id);
+                            context.read<ClassDetailCubit>()
+                              .fetchClassDetail(classId);
+                          }
+                        });
                       },
                       icon: const Icon(
                         Icons.delete,
@@ -337,7 +362,7 @@ class _ClassMembers extends StatelessWidget {
 }
 
 class _UpcomingLesson extends StatelessWidget {
-  const _UpcomingLesson({super.key, required this.lesson});
+  const _UpcomingLesson({required this.lesson});
 
   final LessonResponse lesson;
 
@@ -449,7 +474,7 @@ class _UpcomingLesson extends StatelessWidget {
 }
 
 class _RecentExam extends StatelessWidget {
-  const _RecentExam({super.key, required this.exam});
+  const _RecentExam({required this.exam});
 
   final Exam exam;
 
@@ -597,5 +622,26 @@ extension on String {
       default:
         return '';
     }
+  }
+}
+
+extension on DayInWeek {
+  String label() {
+    switch (this) {
+      case DayInWeek.Monday:
+        return 'Thứ hai';
+      case DayInWeek.Tuesday:
+        return 'Thứ ba';
+      case DayInWeek.Wednesday:
+        return 'Thứ tư';
+      case DayInWeek.Thursday:
+        return 'Thứ năm';
+      case DayInWeek.Friday:
+        return 'Thứ sáu';
+      case DayInWeek.Saturday:
+        return 'Thứ bảy';
+      case DayInWeek.Sunday:
+        return 'Chủ nhật';
+      }
   }
 }

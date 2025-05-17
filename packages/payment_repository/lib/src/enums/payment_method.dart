@@ -1,0 +1,4 @@
+enum PaymentMethod {
+  cash,
+  bank
+}

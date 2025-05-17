@@ -41,7 +41,7 @@ class ClassExamView extends StatelessWidget {
                 backgroundColor: Colors.blue,
                 iconTheme: const IconThemeData(color: Colors.white),
                 actions: [
-                  IconButton(
+                  state.user.role == "tutor" ? IconButton(
                     icon: const Icon(Icons.add),
                     onPressed: () {
                       Navigator.of(context).push(
@@ -54,7 +54,7 @@ class ClassExamView extends StatelessWidget {
                         }
                       });
                     },
-                  ),
+                  ) : const SizedBox(),
                 ],
               ),
               body: Padding(
