@@ -111,7 +111,6 @@ class ProfileRepository {
       'address': profile.address,
       'phoneNumber': profile.phoneNumber,
       'avatarUrl': profile.avatarUrl,
-      'role': profile.role,
       'createdAt': profile.createdAt,
       'updatedAt': DateTime.now(),
       'bankAccount': profile.bankAccount?.toJson(),

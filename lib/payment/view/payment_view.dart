@@ -15,7 +15,7 @@ class PaymentView extends StatelessWidget {
     return BlocListener<PaymentCubit, PaymentState>(
       listener: (context, state) {
         if (state.formzStatus == FormzSubmissionStatus.success) {
-          Navigator.of(context).push(ClassDetailPage.route(id: state.classId));
+          Navigator.of(context).pushReplacement(ClassDetailPage.route(id: state.classId));
         }
       },
       child: BlocBuilder<PaymentCubit, PaymentState>(
