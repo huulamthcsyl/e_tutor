@@ -35,6 +35,8 @@ class ProfileUpdateState extends Equatable {
   final FormzSubmissionStatus status;
   final BankAccount bankAccount;
   final List<BankInfo> bankInfos;
+  final String? avatarUrl;
+  final String role;
 
   const ProfileUpdateState({
     this.name = '',
@@ -44,10 +46,12 @@ class ProfileUpdateState extends Equatable {
     this.status = FormzSubmissionStatus.initial,
     this.bankAccount = const BankAccount(id: '', accountNumber: '', bankName: ''),
     this.bankInfos = const [],
+    this.avatarUrl,
+    this.role = '',
   });
 
   @override
-  List<Object> get props => [name, birthDate, address, phoneNumber, status, bankAccount, bankInfos];
+  List<Object?> get props => [name, birthDate, address, phoneNumber, status, bankAccount, bankInfos, avatarUrl, role];
 
   ProfileUpdateState copyWith({
     String? name,
@@ -57,6 +61,8 @@ class ProfileUpdateState extends Equatable {
     FormzSubmissionStatus? status,
     BankAccount? bankAccount,
     List<BankInfo>? bankInfos,
+    String? avatarUrl,
+    String? role,
   }) {
     return ProfileUpdateState(
       name: name ?? this.name,
@@ -66,6 +72,8 @@ class ProfileUpdateState extends Equatable {
       status: status ?? this.status,
       bankAccount: bankAccount ?? this.bankAccount,
       bankInfos: bankInfos ?? this.bankInfos,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      role: role ?? this.role,
     );
   }
 }

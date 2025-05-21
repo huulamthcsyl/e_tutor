@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:const_date_time/const_date_time.dart';
 import 'package:equatable/equatable.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -28,7 +29,33 @@ class ProfileUpdateCubit extends Cubit<ProfileUpdateState> {
       phoneNumber: profile.phoneNumber,
       birthDate: profile.birthDate,
       bankInfos: bankInfos.map((e) => BankInfo.fromJson(e)).toList(),
+      avatarUrl: profile.avatarUrl,
+      role: profile.role,
     ));
+  }
+
+  Future<void> pickAvatar() async {
+    try {
+      final FilePickerResult? file = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        withData: true,
+      );
+      if (file != null) {
+        final fileBytes = file.files.first.bytes;
+        if (fileBytes != null) {
+          final user = await _authenticationRepository.user.first;
+          await _profileRepository.uploadProfileImage(
+            user.id,
+            file.files.first.name,
+            fileBytes,
+          );
+          final profile = await _profileRepository.getProfile(user.id);
+          emit(state.copyWith(avatarUrl: profile.avatarUrl));
+        }
+      }
+    } catch (e) {
+      // Handle error
+    }
   }
 
   void nameChanged(String value) {
@@ -78,6 +105,7 @@ class ProfileUpdateCubit extends Cubit<ProfileUpdateState> {
         address: state.address,
         phoneNumber: state.phoneNumber,
         bankAccount: state.bankAccount,
+        avatarUrl: state.avatarUrl,
       );
       _profileRepository.updateProfile(newProfile);
       emit(state.copyWith(status: FormzSubmissionStatus.success));
