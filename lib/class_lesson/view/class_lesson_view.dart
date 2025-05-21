@@ -142,7 +142,7 @@ class ClassLessonView extends StatelessWidget {
 class _LessonTile extends StatelessWidget {
   final Lesson lesson;
 
-  const _LessonTile({super.key, required this.lesson});
+  const _LessonTile({required this.lesson});
 
   @override
   Widget build(BuildContext context) {
