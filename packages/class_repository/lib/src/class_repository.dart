@@ -223,6 +223,10 @@ class ClassRepository {
     });
   }
 
+  Future<void> cancelLesson(String lessonId) async {
+    await _firestore.collection('lessons').doc(lessonId).delete();
+  }
+
   Future<String> getMaterialUrl(String url) {
     return _storage.ref().child(url).getDownloadURL();
   }

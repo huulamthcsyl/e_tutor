@@ -95,4 +95,14 @@ class LessonCubit extends Cubit<LessonState> {
       await reloadHomeworks(state.classData.id!, state.lessonData.id!);
     }
   }
+
+  Future<void> cancelLesson() async {
+    emit(state.copyWith(status: LessonStatus.loading));
+    try {
+      await _classRepository.cancelLesson(state.lessonData.id!);
+      emit(state.copyWith(isCancelled: true, status: LessonStatus.success));
+    } on ClassFailure {
+      emit(state.copyWith(status: LessonStatus.failure));
+    }
+  }
 }

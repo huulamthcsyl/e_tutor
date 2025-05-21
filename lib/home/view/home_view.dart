@@ -128,12 +128,16 @@ class _LessonList extends StatelessWidget {
           children: [
             for (final lesson in state.lessonsInSelectedDay)
               GestureDetector(
-                onTap: () => Navigator.of(context).push<void>(
+                onTap: () => Navigator.of(context).push<String>(
                   LessonPage.route(
                     classId: lesson.classId,
                     lessonId: lesson.lesson.id
                   ),
-                ),
+                ).then((value) {
+                  if (value == "cancelled") {
+                    context.read<HomeCubit>().getLessonsInMonth(state.selectedDay);
+                  }
+                }),
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   margin: const EdgeInsets.only(bottom: 8),
