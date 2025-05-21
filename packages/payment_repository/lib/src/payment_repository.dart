@@ -24,6 +24,11 @@ class PaymentRepository {
     }
   }
 
+  Future<Payment> getPaymentById(String paymentId) async {
+    final payment = await _firestore.collection('payments').doc(paymentId).get();
+    return Payment.fromJson(payment.data() ?? {});
+  }
+
   Future<String> uploadBillImage(String paymentId, String fileName, Uint8List file) async {
     try {
       final ref = _storage.ref().child('payments/$paymentId/$fileName');
@@ -33,5 +38,18 @@ class PaymentRepository {
     } catch (e) {
       throw Exception('Failed to upload bill image: $e');
     }
+  }
+
+  Future<List<Payment>> getPayments(String userId) async {
+    final payments = await _firestore
+      .collection('payments')
+      .where(
+        Filter.or(
+          Filter('parentId', isEqualTo: userId),
+          Filter('tutorId', isEqualTo: userId),
+        ),
+      )
+      .get();
+    return payments.docs.map((doc) => Payment.fromJson(doc.data())).toList();
   }
 }

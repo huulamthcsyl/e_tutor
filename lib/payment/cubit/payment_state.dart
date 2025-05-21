@@ -1,6 +1,8 @@
 part of 'payment_cubit.dart';
 
 enum PaymentStatus { initial, loading, success, failure }
+
+enum LoadingStatus { initial, loading, success, failure }
 class PaymentState extends Equatable {
   final String classId;
   final PaymentStatus status;
@@ -14,6 +16,7 @@ class PaymentState extends Equatable {
   final String tutorId;
   final FormzSubmissionStatus formzStatus;
   final String paymentId;
+  final LoadingStatus loadingStatus;
 
   const PaymentState({
     this.classId = '',
@@ -28,10 +31,11 @@ class PaymentState extends Equatable {
     this.tutorId = '',
     this.formzStatus = FormzSubmissionStatus.initial,
     this.paymentId = '',
+    this.loadingStatus = LoadingStatus.initial,
   });
 
   @override
-  List<Object> get props => [classId, status, amount, selectedPaymentMethod, note, billImage, errorMessage, lessonIds, tutorBankAccount, tutorId, formzStatus, paymentId];
+  List<Object> get props => [classId, status, amount, selectedPaymentMethod, note, billImage, errorMessage, lessonIds, tutorBankAccount, tutorId, formzStatus, paymentId, loadingStatus];
 
   PaymentState copyWith({
     String? classId,
@@ -46,6 +50,7 @@ class PaymentState extends Equatable {
     String? tutorId,
     FormzSubmissionStatus? formzStatus,
     String? paymentId,
+    LoadingStatus? loadingStatus,
   }) {
     return PaymentState(
       classId: classId ?? this.classId,
@@ -60,6 +65,7 @@ class PaymentState extends Equatable {
       tutorId: tutorId ?? this.tutorId,
       formzStatus: formzStatus ?? this.formzStatus,
       paymentId: paymentId ?? this.paymentId,
+      loadingStatus: loadingStatus ?? this.loadingStatus,
     );
   }
 }
