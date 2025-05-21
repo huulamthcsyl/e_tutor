@@ -1,5 +1,7 @@
 part of 'create_homework_cubit.dart';
 
+enum UploadStatus { initial, uploading, uploaded, failed }
+
 class CreateHomeworkState extends Equatable {
   final String classId;
   final String lessonId;
@@ -10,6 +12,8 @@ class CreateHomeworkState extends Equatable {
   final FormzSubmissionStatus status;
   final bool isValid;
   final String className;
+  final UploadStatus uploadStatus;
+  final bool isCreate;
 
   const CreateHomeworkState({
     this.classId = '',
@@ -21,10 +25,12 @@ class CreateHomeworkState extends Equatable {
     this.status = FormzSubmissionStatus.initial,
     this.isValid = false,
     this.className = '',
+    this.uploadStatus = UploadStatus.initial,
+    this.isCreate = false,
   });
 
   @override
-  List<Object> get props => [classId, lessonId, homeworkId, title, materials, dueDate, status, isValid, className];
+  List<Object> get props => [classId, lessonId, homeworkId, title, materials, dueDate, status, isValid, className, uploadStatus, isCreate];
 
   CreateHomeworkState copyWith({
     String? classId,
@@ -36,6 +42,8 @@ class CreateHomeworkState extends Equatable {
     FormzSubmissionStatus? status,
     bool? isValid,
     String? className,
+    UploadStatus? uploadStatus,
+    bool? isCreate,
   }) {
     return CreateHomeworkState(
       classId: classId ?? this.classId,
@@ -47,6 +55,8 @@ class CreateHomeworkState extends Equatable {
       status: status ?? this.status,
       isValid: isValid ?? this.isValid,
       className: className ?? this.className,
+      uploadStatus: uploadStatus ?? this.uploadStatus,
+      isCreate: isCreate ?? this.isCreate,
     );
   }
 }

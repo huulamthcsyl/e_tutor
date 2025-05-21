@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as date_picker;
+import 'package:loader_overlay/loader_overlay.dart';
 
 import '../../pdf_view/view/pdf_view_page.dart';
 import '../../utils/format_time.dart';
@@ -18,21 +19,28 @@ class CreateHomeworkForm extends StatelessWidget {
         if (state.status == FormzSubmissionStatus.success) {
           Navigator.of(context).pop();
         }
+        if (state.uploadStatus == UploadStatus.uploading) {
+          context.loaderOverlay.show();
+        } else if (state.uploadStatus == UploadStatus.uploaded) {
+          context.loaderOverlay.hide();
+        }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _TitleInput(),
-                const SizedBox(height: 16),
-                _MaterialsInput(),
-                const SizedBox(height: 16),
-                _DueDateInput(),
-                const SizedBox(height: 16),
-                _SubmitButton(),
-              ],
+      child: LoaderOverlay(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _TitleInput(),
+                  const SizedBox(height: 16),
+                  _MaterialsInput(),
+                  const SizedBox(height: 16),
+                  _DueDateInput(),
+                  const SizedBox(height: 16),
+                  _SubmitButton(),
+                ],
+              ),
             ),
           ),
         ),
@@ -115,10 +123,9 @@ class _MaterialsInput extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(height: 8),
                         Text(
                           material.name,
                           style: const TextStyle(
@@ -127,6 +134,12 @@ class _MaterialsInput extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
+                        IconButton(
+                          onPressed: () {
+                            context.read<CreateHomeworkCubit>().deleteMaterial(material);
+                          },
+                          icon: const Icon(Icons.delete),
+                        )
                       ],
                     ),
                   ),

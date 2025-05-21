@@ -1,5 +1,7 @@
 part of 'create_exam_cubit.dart';
 
+enum UploadStatus { initial, uploading, uploaded, failed }
+
 class CreateExamState extends Equatable {
 
   final String classId;
@@ -10,6 +12,7 @@ class CreateExamState extends Equatable {
   final DateTime endTime;
   final bool isValid;
   final FormzSubmissionStatus status;
+  final UploadStatus uploadStatus;
 
   const CreateExamState({
     this.classId = '',
@@ -20,10 +23,11 @@ class CreateExamState extends Equatable {
     this.endTime = const ConstDateTime(0),
     this.isValid = false,
     this.status = FormzSubmissionStatus.initial,
+    this.uploadStatus = UploadStatus.initial,
   });
 
   @override
-  List<Object?> get props => [classId, examId, title, materials, startTime, endTime, isValid, status];
+  List<Object?> get props => [classId, examId, title, materials, startTime, endTime, isValid, status, uploadStatus];
 
   CreateExamState copyWith({
     String? classId,
@@ -34,6 +38,7 @@ class CreateExamState extends Equatable {
     DateTime? endTime,
     bool? isValid,
     FormzSubmissionStatus? status,
+    UploadStatus? uploadStatus,
   }) {
     return CreateExamState(
       classId: classId ?? this.classId,
@@ -44,6 +49,7 @@ class CreateExamState extends Equatable {
       endTime: endTime ?? this.endTime,
       isValid: isValid ?? this.isValid,
       status: status ?? this.status,
+      uploadStatus: uploadStatus ?? this.uploadStatus,
     );
   }
 }

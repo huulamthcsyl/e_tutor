@@ -188,10 +188,9 @@ class _MaterialInfo extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const SizedBox(height: 8),
                               Text(
                                 material.name,
                                 style: const TextStyle(
@@ -200,6 +199,9 @@ class _MaterialInfo extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 8),
+                              IconButton(onPressed: () {
+                                context.read<LessonCubit>().deleteMaterial(material);
+                              }, icon: const Icon(Icons.delete))
                             ],
                           ),
                         ),

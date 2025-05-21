@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as date_picker;
 import 'package:formz/formz.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 import '../../pdf_view/view/pdf_view_page.dart';
 import '../cubit/create_exam_cubit.dart';
@@ -19,20 +20,29 @@ class CreateExamView extends StatelessWidget {
         if (state.status == FormzSubmissionStatus.success) {
           Navigator.of(context).pop('success');
         }
+        if (state.uploadStatus == UploadStatus.uploading) {
+          context.loaderOverlay.show();
+        } else if (state.uploadStatus == UploadStatus.uploaded) {
+          context.loaderOverlay.hide();
+        }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _TitleInput(),
-            const SizedBox(height: 8),
-            const _StartTimeInput(),
-            const _EndTimeInput(),
-            _MaterialsInput(),
-            const SizedBox(height: 16),
-            _SubmitButton()
-          ],
+      child: LoaderOverlay(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _TitleInput(),
+              const SizedBox(height: 8),
+              _StartTimeInput(),
+              const SizedBox(height: 8),
+              _EndTimeInput(),
+              const SizedBox(height: 8),
+              _MaterialsInput(),
+              const SizedBox(height: 16),
+              _SubmitButton()
+            ],
+          ),
         ),
       )
     );
@@ -40,8 +50,6 @@ class CreateExamView extends StatelessWidget {
 }
 
 class _TitleInput extends StatelessWidget {
-  const _TitleInput({super.key});
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateExamCubit, CreateExamState>(
@@ -59,8 +67,6 @@ class _TitleInput extends StatelessWidget {
 }
 
 class _StartTimeInput extends StatelessWidget {
-  const _StartTimeInput({super.key});
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateExamCubit, CreateExamState>(
@@ -95,8 +101,6 @@ class _StartTimeInput extends StatelessWidget {
 }
 
 class _EndTimeInput extends StatelessWidget {
-  const _EndTimeInput({super.key});
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateExamCubit, CreateExamState>(
@@ -169,6 +173,7 @@ class _MaterialsInput extends StatelessWidget {
                     );
                   },
                   child: Container(
+                    width: double.infinity,
                     padding: const EdgeInsets.all(8),
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
@@ -183,10 +188,9 @@ class _MaterialsInput extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(height: 8),
                         Text(
                           material.name,
                           style: const TextStyle(
@@ -195,6 +199,12 @@ class _MaterialsInput extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
+                        IconButton(
+                          onPressed: () {
+                            context.read<CreateExamCubit>().deleteExamMaterial(material);
+                          },
+                          icon: const Icon(Icons.delete),
+                        )
                       ],
                     ),
                   ),

@@ -24,8 +24,9 @@ class CreateHomeworkCubit extends Cubit<CreateHomeworkState> {
       title: homework != null ? RequiredText.dirty(homework.title) : const RequiredText.pure(),
       materials: homework?.materials ?? [],
       dueDate: homework?.dueDate ?? DateTime.now(),
-      isValid: true,
-      className: className
+      isValid: Formz.validate([homework != null ? RequiredText.dirty(homework.title) : const RequiredText.pure()]),
+      className: className,
+      isCreate: homework == null,
     ));
   }
 
@@ -52,6 +53,7 @@ class CreateHomeworkCubit extends Cubit<CreateHomeworkState> {
       withData: true,
     );
     if (file != null) {
+      emit(state.copyWith(uploadStatus: UploadStatus.uploading));
       final path = await _classRepository.uploadHomeworkMaterial(
         state.homeworkId,
         file.files.first.name,
@@ -63,33 +65,49 @@ class CreateHomeworkCubit extends Cubit<CreateHomeworkState> {
       );
       emit(state.copyWith(
         materials: [...state.materials, material],
+        uploadStatus: UploadStatus.uploaded,
       ));
     }
+  }
+
+  void deleteMaterial(Material material) {
+    emit(state.copyWith(materials: state.materials.where((m) => m.url != material.url).toList()));
   }
 
   void submit() async {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
-      await _classRepository.createHomework(
-        state.classId,
-        state.lessonId,
-        Homework(
-          id: state.homeworkId,
-          title: state.title.value,
-          materials: state.materials,
-          dueDate: state.dueDate,
-          createdAt: DateTime.now(),
-        ),
-      );
+      if (state.isCreate) {
+        await _classRepository.createHomework(
+          state.classId,
+          state.lessonId,
+          Homework(
+            id: state.homeworkId,
+            title: state.title.value,
+            materials: state.materials,
+            dueDate: state.dueDate,
+            createdAt: DateTime.now(),
+          ),
+        );
+        await NotificationService().sendNotificationToClass(
+          classId: state.classId,
+          title: 'Bài tập mới',
+          body: 'Bài tập ${state.title.value} đã được thêm cho lớp ${state.className}',
+          documentId: state.homeworkId,
+          documentType: 'homework',
+        );
+      } else {
+        await _classRepository.updateHomework(
+          state.homeworkId,
+          Homework(
+            title: state.title.value,
+            materials: state.materials,
+            dueDate: state.dueDate,
+          ),
+        );
+      }
       emit(state.copyWith(status: FormzSubmissionStatus.success));
-      await NotificationService().sendNotificationToClass(
-        classId: state.classId,
-        title: 'Bài tập mới',
-        body: 'Một bài tập mới đã được thêm cho lớp ${state.className}',
-        documentId: state.homeworkId,
-        documentType: 'homework',
-      );
     } on ClassFailure {
       emit(state.copyWith(status: FormzSubmissionStatus.failure));
     }

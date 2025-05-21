@@ -38,6 +38,7 @@ dependencies:
     path: packages/payment_repository
   image_picker: ^1.1.2
   http: ^1.4.0
+  loader_overlay: ^5.0.0
 
 
 dev_dependencies:

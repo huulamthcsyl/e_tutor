@@ -210,6 +210,19 @@ class ClassRepository {
     });
   }
 
+  Future<void> deleteLessonMaterial(String lessonId, Material material) async {
+    final ref = _storage.ref().child(material.url);
+    await ref.delete();
+    _firestore.collection('lessons').doc(lessonId).update({
+      'materials': FieldValue.arrayRemove([
+        {
+          'name': material.name,
+          'url': material.url,
+        }
+      ])
+    });
+  }
+
   Future<String> getMaterialUrl(String url) {
     return _storage.ref().child(url).getDownloadURL();
   }
@@ -308,6 +321,18 @@ class ClassRepository {
         status: data['status'],
         submittedAt: data['submittedAt'] != null ? DateTime.parse(data['submittedAt']) : null,
       );
+    });
+  }
+
+  Future<void> updateHomework(String homeworkId, Homework homework) async {
+    await _firestore.collection('homeworks').doc(homeworkId).update({
+      'title': homework.title,
+      'materials': homework.materials?.map((material) {
+        return {
+          'name': material.name,
+          'url': material.url,
+        };
+      }).toList(),
     });
   }
 

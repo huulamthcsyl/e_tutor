@@ -78,22 +78,13 @@ class HomeworkView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: (){
-                      if (homework.materials!.isEmpty) {
-                        return const Text('Không có tài liệu');
-                      }
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: homework.materials!.length,
-                        itemBuilder: (context, index) {
-                          final material = homework.materials![index];
-                          return _MaterialView(material: material);
-                        },
-                      );
-                    }(),
-                  ),
+                  homework.materials!.isEmpty
+                    ? const Text('Không có tài liệu')
+                    : Column(
+                      children: [
+                        ...homework.materials!.map((material) => _MaterialView(material: material)),
+                      ]
+                    )
                 ],
               ),
             ),
@@ -125,22 +116,13 @@ class HomeworkView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: (){
-                      if (studentWorks.isEmpty) {
-                        return const Text('Chưa có bài làm');
-                      }
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: studentWorks.length,
-                        itemBuilder: (context, index) {
-                          final studentWork = studentWorks[index];
-                          return _StudentWork(studentWork: studentWork, status: homework.status);
-                        },
-                      );
-                    }(),
-                  ),
+                  homework.studentWorks!.isEmpty
+                    ? const Text('Không có bài làm')
+                    : Column(
+                      children: [
+                        ...homework.studentWorks!.map((studentWork) => _StudentWork(studentWork: studentWork, status: homework.status)),
+                      ]
+                    ),
                   user.role == "student" && homework.status == 'pending'
                     ? GestureDetector(
                       onTap: () {
@@ -194,6 +176,7 @@ class _MaterialView extends StatelessWidget {
         Navigator.of(context).push(PdfViewPage.route(url: material.url));
       },
       child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.all(8),
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(

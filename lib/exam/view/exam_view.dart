@@ -185,7 +185,7 @@ class _ExamMaterial extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(material.name ?? ""),
+                    Text(material.name),
                   ],
                 ),
               ),
@@ -255,7 +255,7 @@ class _StudentWorks extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(work.name ?? ""),
+                        Text(work.name),
                       ],
                     ),
                   ),

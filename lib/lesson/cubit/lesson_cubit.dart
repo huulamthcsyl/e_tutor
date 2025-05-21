@@ -68,6 +68,16 @@ class LessonCubit extends Cubit<LessonState> {
     }
   }
 
+  Future<void> deleteMaterial(Material material) async {
+    emit(state.copyWith(status: LessonStatus.loading));
+    try {
+      await _classRepository.deleteLessonMaterial(state.lessonData.id!, material);
+      await reloadHomeworks(state.classData.id!, state.lessonData.id!);
+    } on ClassFailure {
+      emit(state.copyWith(status: LessonStatus.failure));
+    }
+  }
+
   Future<void> uploadMaterial() async {
     FilePickerResult? file = await FilePicker.platform.pickFiles(
       type: FileType.custom,

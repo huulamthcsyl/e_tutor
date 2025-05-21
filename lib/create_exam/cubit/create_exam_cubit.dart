@@ -51,6 +51,7 @@ class CreateExamCubit extends Cubit<CreateExamState> {
       withData: true,
     );
     if (file != null) {
+      emit(state.copyWith(uploadStatus: UploadStatus.uploading));
       final path = await _classRepository.uploadExamMaterial(
         state.examId,
         file.files.first.name,
@@ -60,8 +61,12 @@ class CreateExamCubit extends Cubit<CreateExamState> {
         name: file.files.first.name,
         url: path,
       );
-      emit(state.copyWith(materials: [...state.materials, material]));
+      emit(state.copyWith(materials: [...state.materials, material], uploadStatus: UploadStatus.uploaded));
     }
+  }
+
+  void deleteExamMaterial(Material material) {
+    emit(state.copyWith(materials: state.materials.where((m) => m.url != material.url).toList()));
   }
 
   void submit() async {
