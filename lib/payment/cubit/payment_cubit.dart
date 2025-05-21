@@ -1,3 +1,4 @@
+import 'package:e_tutor/utils/auth_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -49,6 +50,7 @@ class PaymentCubit extends Cubit<PaymentState> {
         withData: true,
       );
       if (file != null) {
+        emit(state.copyWith(loadingStatus: LoadingStatus.loading));
         final fileBytes = file.files.first.bytes;
         if (fileBytes != null) {
           final imagePath = await _paymentRepository.uploadBillImage(
@@ -62,10 +64,12 @@ class PaymentCubit extends Cubit<PaymentState> {
           ));
         }
       }
+      emit(state.copyWith(loadingStatus: LoadingStatus.success));
     } catch (e) {
       emit(state.copyWith(
         errorMessage: 'Không thể tải lên ảnh. Vui lòng thử lại.',
       ));
+      emit(state.copyWith(loadingStatus: LoadingStatus.failure));
     }
   }
 
@@ -73,9 +77,16 @@ class PaymentCubit extends Cubit<PaymentState> {
     emit(state.copyWith(billImage: null));
   }
 
+  void removeBillImage(String imageUrl) {
+    final updatedImages = List<String>.from(state.billImage)
+      ..remove(imageUrl);
+    emit(state.copyWith(billImage: updatedImages));
+  }
+
   Future<void> submitPayment() async {
     emit(state.copyWith(formzStatus: FormzSubmissionStatus.inProgress));
     try {
+      final parent = await AuthService().getCurrentUserProfile();
       final payment = Payment( 
         id: state.paymentId,
         amount: state.amount,
@@ -84,6 +95,8 @@ class PaymentCubit extends Cubit<PaymentState> {
         billImages: state.billImage,
         createdAt: DateTime.now(),
         lessonIds: state.lessonIds.toList(),
+        tutorId: state.tutorId,
+        parentId: parent.id,
       );
       await _paymentRepository.createPayment(payment);
       emit(state.copyWith(formzStatus: FormzSubmissionStatus.success));

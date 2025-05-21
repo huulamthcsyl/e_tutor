@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:e_tutor/payment_list/payment_list.dart';
 import 'package:e_tutor/profile/cubit/profile_cubit.dart';
 import 'package:e_tutor/profile_update/view/profile_update_page.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,8 @@ class ProfileView extends StatelessWidget {
                       )),
                   const SizedBox(height: 16),
                   const _UpdateProfileButton(),
+                  const SizedBox(height: 16),
+                  const _PaymentListButton(),
                   const Expanded(child: SizedBox()),
                   const _LogoutButton(),
                 ],
@@ -87,6 +90,45 @@ class _UpdateProfileButton extends StatelessWidget {
   }
 }
 
+class _PaymentListButton extends StatelessWidget {
+  const _PaymentListButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => const PaymentListPage(),
+        ));
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.payment,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Lịch sử thanh toán',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 class _LogoutButton extends StatelessWidget {
   const _LogoutButton();
 
