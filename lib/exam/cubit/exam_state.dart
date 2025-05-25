@@ -14,6 +14,12 @@ enum ActionStatus {
   ended,
 }
 
+enum UploadStatus {
+  initial,
+  uploading,
+  uploaded,
+}
+
 class ExamState extends Equatable {
 
   final Exam exam;
@@ -22,6 +28,7 @@ class ExamState extends Equatable {
   final List<Material> studentWorks;
   final FormzSubmissionStatus submissionStatus;
   final Profile user;
+  final UploadStatus uploadStatus;
 
   const ExamState({
     this.exam = const Exam(),
@@ -32,10 +39,11 @@ class ExamState extends Equatable {
     this.user = const Profile(
       id: '',
     ),
+    this.uploadStatus = UploadStatus.initial,
   });
 
   @override
-  List<Object> get props => [exam, status, actionStatus, studentWorks, submissionStatus, user];
+  List<Object> get props => [exam, status, actionStatus, studentWorks, submissionStatus, user, uploadStatus];
 
   ExamState copyWith({
     Exam? exam,
@@ -44,6 +52,7 @@ class ExamState extends Equatable {
     List<Material>? studentWorks,
     FormzSubmissionStatus? submissionStatus,
     Profile? user,
+    UploadStatus? uploadStatus,
   }) {
     return ExamState(
       exam: exam ?? this.exam,
@@ -52,6 +61,7 @@ class ExamState extends Equatable {
       studentWorks: studentWorks ?? this.studentWorks,
       submissionStatus: submissionStatus ?? this.submissionStatus,
       user: user ?? this.user,
+      uploadStatus: uploadStatus ?? this.uploadStatus,
     );
   }
 }

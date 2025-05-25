@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:class_repository/class_repository.dart' as class_repository;
 import 'package:formz/formz.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 import '../../pdf_view/view/pdf_view_page.dart';
 import '../cubit/exam_cubit.dart';
@@ -24,62 +25,69 @@ class ExamView extends StatelessWidget {
             ),
           );
         }
+        if (state.uploadStatus == UploadStatus.uploading) {
+          context.loaderOverlay.show();
+        } else if (state.uploadStatus == UploadStatus.uploaded) {
+          context.loaderOverlay.hide();
+        }
       },
-      child: BlocBuilder<ExamCubit, ExamState>(
-        builder: (context, state) {
-          if (state.status == ExamStatus.loading) {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Bài kiểm tra'),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                iconTheme: const IconThemeData(color: Colors.white),
-                foregroundColor: Colors.white,
-              ),
-              body: const Center(child: CircularProgressIndicator()),
-            );
-          } else if (state.status == ExamStatus.failure) {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Bài kiểm tra'),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                iconTheme: const IconThemeData(color: Colors.white),
-                foregroundColor: Colors.white,
-              ),
-              body: const Center(child: Text('Không thể tải danh sách bài kiểm tra')),
-            );
-          } else {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Bài kiểm tra'),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                iconTheme: const IconThemeData(color: Colors.white),
-                foregroundColor: Colors.white,
-              ),
-              body: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    _ExamInfo(exam: state.exam),
-                    if (state.actionStatus == ActionStatus.inProgress) ...[
-                      const SizedBox(height: 16),
-                      _ExamMaterial(materials: state.exam.materials!)
-                    ],
-                    if (state.actionStatus != ActionStatus.todo) ...[
-                      const SizedBox(height: 16),
-                      const _StudentWorks()
-                    ],
-                    if (state.exam.status == "graded") ...[
-                      const SizedBox(height: 16),
-                      const _GradeInfo()
-                    ],
-                    const SizedBox(height: 16),
-                    const _ActionButton(),
-                  ],
+      child: LoaderOverlay(
+        child: BlocBuilder<ExamCubit, ExamState>(
+          builder: (context, state) {
+            if (state.status == ExamStatus.loading) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('Bài kiểm tra'),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  iconTheme: const IconThemeData(color: Colors.white),
+                  foregroundColor: Colors.white,
                 ),
-              )
-            );
-          }
-        },
+                body: const Center(child: CircularProgressIndicator()),
+              );
+            } else if (state.status == ExamStatus.failure) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('Bài kiểm tra'),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  iconTheme: const IconThemeData(color: Colors.white),
+                  foregroundColor: Colors.white,
+                ),
+                body: const Center(child: Text('Không thể tải bài kiểm tra')),
+              );
+            } else {
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('Bài kiểm tra'),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  iconTheme: const IconThemeData(color: Colors.white),
+                  foregroundColor: Colors.white,
+                ),
+                body: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      _ExamInfo(exam: state.exam),
+                      if (state.actionStatus == ActionStatus.inProgress) ...[
+                        const SizedBox(height: 16),
+                        _ExamMaterial(materials: state.exam.materials!)
+                      ],
+                      if (state.actionStatus != ActionStatus.todo) ...[
+                        const SizedBox(height: 16),
+                        const _StudentWorks()
+                      ],
+                      if (state.exam.status == "graded") ...[
+                        const SizedBox(height: 16),
+                        const _GradeInfo()
+                      ],
+                      const SizedBox(height: 16),
+                      const _ActionButton(),
+                    ],
+                  ),
+                )
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -202,7 +210,7 @@ class _StudentWorks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ExamCubit, ExamState>(
-      buildWhen: (previous, current) => previous.studentWorks != current.studentWorks,
+      buildWhen: (previous, current) => previous.studentWorks != current.studentWorks || previous.actionStatus != current.actionStatus,
       builder: (context, state) {
         return Container(
           padding: const EdgeInsets.all(8),
@@ -252,10 +260,24 @@ class _StudentWorks extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(work.name),
+                        Expanded(
+                          child: Text(
+                            work.name,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        state.actionStatus == ActionStatus.inProgress ? IconButton(
+                          onPressed: () {
+                            context.read<ExamCubit>().deleteStudentWork(work);
+                          },
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                        ) : const SizedBox(),
                       ],
                     ),
                   ),
@@ -277,7 +299,7 @@ class _StudentWorks extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Upload tài liệu',
+                        'Upload bài làm',
                         style: TextStyle(
                           fontSize: 16,
                           color: Theme.of(context).colorScheme.primary,
@@ -340,65 +362,81 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ExamCubit, ExamState>(
+      buildWhen: (previous, current) => 
+        previous.submissionStatus != current.submissionStatus ||
+        previous.actionStatus != current.actionStatus ||
+        previous.exam.status != current.exam.status,
       builder: (context, state) {
         return ElevatedButton(
-          onPressed: () async {
-            if (state.user.role == "tutor" && state.exam.status == "submitted") {
-              await showDialog(
-                context: context,
-                builder: (_) => GradeExamDialog(exam: state.exam),
-              ).then((value) {
-                context.read<ExamCubit>().initialize(state.exam.id!);
-              });
-              return;
-            } else if (state.actionStatus == ActionStatus.todo) {
-              context.read<ExamCubit>().startExam();
-            } else if (state.actionStatus == ActionStatus.inProgress) {
-              context.read<ExamCubit>().submitExam();
-            } else {
-              return;
-            }
-          },
+          onPressed: state.submissionStatus == FormzSubmissionStatus.inProgress ? null :
+            () async {
+              if (state.user.role == "tutor" && state.exam.status == "submitted") {
+                await showDialog(
+                  context: context,
+                  builder: (_) => GradeExamDialog(exam: state.exam),
+                ).then((value) {
+                  context.read<ExamCubit>().initialize(state.exam.id!);
+                });
+                return;
+              } else if (state.actionStatus == ActionStatus.todo) {
+                context.read<ExamCubit>().startExam();
+              } else if (state.actionStatus == ActionStatus.inProgress) {
+                context.read<ExamCubit>().submitExam();
+              } else {
+                return;
+              }
+            },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,
             padding: const EdgeInsets.all(12),
+            minimumSize: const Size(double.infinity, 50),
           ),
-          child: state.submissionStatus == FormzSubmissionStatus.inProgress ?
-            const Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
-              ),
-            ) : state.user.role == "tutor" ?
-              state.exam.status == 'pending' ? const Text(
-                "Chưa làm bài",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
-              ) :
-            state.exam.status == 'submitted' ? const Text(
-              "Chấm điểm",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ) :  const Text(
-              "Đã chấm điểm",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ) :
-            Text(
-              state.actionStatus == ActionStatus.notStarted ? "Chưa đến thời gian làm bài"
-                : state.actionStatus == ActionStatus.todo ? "Bắt đầu làm bài"
-                : state.actionStatus == ActionStatus.inProgress ? "Nộp bài"
-                : "Đã kết thúc",
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
+          child: state.submissionStatus == FormzSubmissionStatus.inProgress
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : state.user.role == "tutor"
+                  ? state.exam.status == 'pending'
+                      ? const Text(
+                          "Chưa làm bài",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        )
+                      : state.exam.status == 'submitted'
+                          ? const Text(
+                              "Chấm điểm",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text(
+                              "Đã chấm điểm",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            )
+                  : Text(
+                      state.actionStatus == ActionStatus.notStarted
+                          ? "Chưa đến thời gian làm bài"
+                          : state.actionStatus == ActionStatus.todo
+                              ? "Bắt đầu làm bài"
+                              : state.actionStatus == ActionStatus.inProgress
+                                  ? "Nộp bài"
+                                  : "Đã kết thúc",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
         );
       },
     );

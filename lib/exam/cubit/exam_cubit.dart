@@ -57,6 +57,7 @@ class ExamCubit extends Cubit<ExamState> {
   }
 
   void uploadStudentWork() async {
+    emit(state.copyWith(uploadStatus: UploadStatus.uploading));
     FilePickerResult? file = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
@@ -72,7 +73,24 @@ class ExamCubit extends Cubit<ExamState> {
         name: file.files.first.name,
         url: path,
       );
-      emit(state.copyWith(studentWorks: [...state.studentWorks, studentWork]));
+      emit(state.copyWith(
+        studentWorks: [...state.studentWorks, studentWork],
+        uploadStatus: UploadStatus.uploaded,
+      ));
+    } else {
+      emit(state.copyWith(uploadStatus: UploadStatus.initial));
+    }
+  }
+
+  void deleteStudentWork(Material work) async {
+    emit(state.copyWith(uploadStatus: UploadStatus.uploading));
+    try {
+      emit(state.copyWith(
+        studentWorks: state.studentWorks.where((w) => w.url != work.url).toList(),
+        uploadStatus: UploadStatus.uploaded,
+      ));
+    } catch (e) {
+      emit(state.copyWith(uploadStatus: UploadStatus.initial));
     }
   }
 

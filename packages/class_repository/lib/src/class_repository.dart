@@ -459,7 +459,7 @@ class ClassRepository {
   }
 
   Future<void> createExam(String classId, Exam exam) async {
-    await _firestore.collection('exams').add({
+    await _firestore.collection('exams').doc(exam.id).set({
       'classId': classId,
       'title': exam.title,
       'materials': exam.materials?.map((material) {
@@ -475,6 +475,7 @@ class ClassRepository {
       'endTime': exam.endTime?.toIso8601String(),
       'returnTime': exam.returnTime?.toIso8601String(),
       'status': 'pending',
+      'createdAt': DateTime.now().toIso8601String(),
     });
   }
 
@@ -515,6 +516,7 @@ class ClassRepository {
       startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
       endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
       returnTime: data['returnTime'] != null ? DateTime.parse(data['returnTime']) : null,
+      createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
     );
   }
 
@@ -553,6 +555,7 @@ class ClassRepository {
         startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
         endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
         returnTime: data['returnTime'] != null ? DateTime.parse(data['returnTime']) : null,
+        createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
       );
     }).toList();
   }
@@ -591,6 +594,7 @@ class ClassRepository {
           startTime: examData['startTime'] != null ? DateTime.parse(examData['startTime']) : null,
           endTime: examData['endTime'] != null ? DateTime.parse(examData['endTime']) : null,
           returnTime: examData['returnTime'] != null ? DateTime.parse(examData['returnTime']) : null,
+          createdAt: examData['createdAt'] != null ? DateTime.parse(examData['createdAt']) : null,
         ));
       }
     }
@@ -626,6 +630,7 @@ class ClassRepository {
         returnTime: data['returnTime'] != null ? DateTime.parse(data['returnTime']) : null,
         status: data['status'],
         submittedAt: data['submittedAt'] != null ? DateTime.parse(data['submittedAt']) : null,
+        createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
       );
     });
   }

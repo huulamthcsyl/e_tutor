@@ -248,6 +248,8 @@ class _SubmitButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isValid = context.select<CreateExamCubit, bool>((cubit) => cubit.state.isValid);
     return BlocBuilder<CreateExamCubit, CreateExamState>(
+      buildWhen: (previous, current) => 
+        previous.status != current.status || previous.isValid != current.isValid,
       builder: (context, state) {
         return ElevatedButton(
           style: ButtonStyle(
@@ -260,15 +262,26 @@ class _SubmitButton extends StatelessWidget {
               return const Size(double.infinity, 50);
             }),
           ),
-          onPressed: isValid ? () {
-            context.read<CreateExamCubit>().submit();
-          } : null,
-          child: const Text(
-            'Xác nhận',
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
+          onPressed: isValid && state.status != FormzSubmissionStatus.inProgress
+              ? () {
+                  context.read<CreateExamCubit>().submit();
+                }
+              : null,
+          child: state.status == FormzSubmissionStatus.inProgress
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : const Text(
+                  'Xác nhận',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
         );
       },
     );

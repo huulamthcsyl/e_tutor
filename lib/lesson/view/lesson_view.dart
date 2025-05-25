@@ -199,9 +199,9 @@ class _MaterialInfo extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              IconButton(onPressed: () {
+                              state.user.role == "tutor" ? IconButton(onPressed: () {
                                 context.read<LessonCubit>().deleteMaterial(material);
-                              }, icon: const Icon(Icons.delete))
+                              }, icon: const Icon(Icons.delete)) : const SizedBox(width: 20)
                             ],
                           ),
                         ),
