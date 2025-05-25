@@ -129,6 +129,7 @@ class ClassRepository {
         'materials': [],
         'homeworks': [],
         'isPaid': false,
+        'createdAt': DateTime.now().toIso8601String(),
       });
     }
   }
@@ -165,6 +166,7 @@ class ClassRepository {
             studentFeedback: lessonData['studentFeedback'],
             startTime: lessonData['startTime'] != null ? DateTime.parse(lessonData['startTime']) : null,
             endTime: lessonData['endTime'] != null ? DateTime.parse(lessonData['endTime']) : null,
+            createdAt: lessonData['createdAt'] != null ? DateTime.parse(lessonData['createdAt']) : null,
           )
         ));
       }
@@ -193,6 +195,7 @@ class ClassRepository {
         studentFeedback: data['studentFeedback'],
         startTime: data['startTime'] != null ? DateTime.parse(data['startTime']) : null,
         endTime: data['endTime'] != null ? DateTime.parse(data['endTime']) : null,
+        createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
       );
     });
   }

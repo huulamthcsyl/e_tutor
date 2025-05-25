@@ -11,6 +11,7 @@ class Lesson extends Equatable {
   final String? studentFeedback;
   final DateTime? startTime;
   final DateTime? endTime;
+  final DateTime? createdAt;
 
   const Lesson({
     this.id,
@@ -22,8 +23,9 @@ class Lesson extends Equatable {
     this.studentFeedback,
     this.startTime,
     this.endTime,
+    this.createdAt,
   });
 
   @override
-  List<Object?> get props => [id, classId, materials, homeworks, isPaid, tutorFeedback, studentFeedback, startTime, endTime];
+  List<Object?> get props => [id, classId, materials, homeworks, isPaid, tutorFeedback, studentFeedback, startTime, endTime, createdAt];
 }
