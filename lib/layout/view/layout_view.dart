@@ -1,6 +1,6 @@
-import 'package:e_tutor/class/class.dart';
+import 'package:e_tutor/class/class_list/class_list.dart';
 import 'package:e_tutor/home/home.dart';
-import 'package:e_tutor/profile/view/profile_page.dart';
+import 'package:e_tutor/profile/profile_page/view/profile_page_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:e_tutor/layout/layout.dart';

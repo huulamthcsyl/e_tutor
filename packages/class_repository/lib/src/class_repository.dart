@@ -87,7 +87,8 @@ class ClassRepository {
       'exams': [],
       'isActive': true,
       'startDate': newClass.startDate!.toIso8601String(),
-      'endDate': newClass.endDate!.toIso8601String()
+      'endDate': newClass.endDate!.toIso8601String(),
+      'createdAt': DateTime.now().toIso8601String(),
     });
     await createLessonSchedule(createdClass.id);
   }

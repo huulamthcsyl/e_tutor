@@ -23,6 +23,7 @@ class ProfileRepository {
   Stream<List<Profile>> getProfiles() {
     return _firestore
         .collection('profiles')
+        .where('role', isNotEqualTo: 'admin')
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -48,6 +49,7 @@ class ProfileRepository {
         .collection('profiles')
         .where('name', isGreaterThanOrEqualTo: query)
         .where('name', isLessThan: '${query}z')
+        .where('role', isNotEqualTo: 'admin')
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {

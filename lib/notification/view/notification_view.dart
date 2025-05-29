@@ -2,9 +2,9 @@ import 'package:e_tutor/utils/format_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../class_detail/class_detail.dart';
-import '../../exam/view/exam_page.dart';
-import '../../homework/homework.dart';
+import '../../class/class_detail/class_detail.dart';
+import '../../exam/exam_detail/view/exam_detail_page.dart';
+import '../../homework/homework_detail/homework_detail.dart';
 import '../cubit/notification_cubit.dart';
 
 class NotificationView extends StatelessWidget {
