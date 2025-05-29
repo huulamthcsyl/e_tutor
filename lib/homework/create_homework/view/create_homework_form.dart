@@ -233,17 +233,26 @@ class _SubmitButton extends StatelessWidget {
               return const Size(double.infinity, 50);
             }),
           ),
-          onPressed: isValid
+          onPressed: isValid && state.status != FormzSubmissionStatus.inProgress
               ? () {
                   context.read<CreateHomeworkCubit>().submit();
                 }
               : null,
-          child: const Text(
-            'Xác nhận',
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
+          child: state.status == FormzSubmissionStatus.inProgress
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : const Text(
+                  'Xác nhận',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
         );
       },
     );

@@ -36,8 +36,8 @@ class ProfileRepository {
           phoneNumber: data['phoneNumber'],
           avatarUrl: data['avatarUrl'],
           role: data['role'],
-          createdAt: data['createdAt']?.toDate(),
-          updatedAt: data['updatedAt']?.toDate(),
+          createdAt: DateTime.parse(data['createdAt']),
+          updatedAt: DateTime.parse(data['updatedAt']),
           bankAccount: data['bankAccount'] != null ? BankAccount.fromJson(data['bankAccount']) : null,
         );
       }).toList();
@@ -62,8 +62,8 @@ class ProfileRepository {
           phoneNumber: data['phoneNumber'],
           avatarUrl: data['avatarUrl'],
           role: data['role'],
-          createdAt: data['createdAt']?.toDate(),
-          updatedAt: data['updatedAt']?.toDate(),
+          createdAt: DateTime.parse(data['createdAt']),
+          updatedAt: DateTime.parse(data['updatedAt']),
           bankAccount: data['bankAccount'] != null ? BankAccount.fromJson(data['bankAccount']) : null,
         );
       }).toList();
@@ -84,8 +84,8 @@ class ProfileRepository {
         phoneNumber: data['phoneNumber'],
         avatarUrl: data['avatarUrl'],
         role: data['role'],
-        createdAt: data['createdAt']?.toDate(),
-        updatedAt: data['updatedAt']?.toDate(),
+        createdAt: DateTime.parse(data['createdAt']),
+        updatedAt: DateTime.parse(data['updatedAt']),
         bankAccount: data['bankAccount'] != null ? BankAccount.fromJson(data['bankAccount']) : null,
       );
     });
@@ -100,8 +100,8 @@ class ProfileRepository {
       'avatarUrl': profile.avatarUrl,
       'members': [],
       'role': profile.role,
-      'createdAt': DateTime.now(),
-      'updatedAt': DateTime.now(),
+      'createdAt': DateTime.now().toIso8601String(),
+      'updatedAt': DateTime.now().toIso8601String(),
       'bankAccount': profile.bankAccount?.toJson(),
     });
   }
@@ -114,7 +114,7 @@ class ProfileRepository {
       'phoneNumber': profile.phoneNumber,
       'avatarUrl': profile.avatarUrl,
       'createdAt': profile.createdAt,
-      'updatedAt': DateTime.now(),
+      'updatedAt': DateTime.now().toIso8601String(),
       'bankAccount': profile.bankAccount?.toJson(),
     });
   }
