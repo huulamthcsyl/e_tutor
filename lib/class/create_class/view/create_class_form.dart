@@ -365,19 +365,43 @@ class _ClassMembers extends StatelessWidget {
 class _CreateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final isInProgress = context
-        .select((CreateClassCubit cubit) => cubit.state.status.isInProgress);
-
-    if (isInProgress) return const CircularProgressIndicator();
-
     final isValid =
         context.select((CreateClassCubit cubit) => cubit.state.isValid &&
             cubit.state.members.isNotEmpty &&
             cubit.state.schedules.isNotEmpty);
-    return ElevatedButton(
-      onPressed:
-          isValid ? () => context.read<CreateClassCubit>().createClass() : null,
-      child: const Text('Tạo lớp học'),
+    return BlocBuilder<CreateClassCubit, CreateClassState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith((states) {
+              return isValid
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.primary.withOpacity(0.5);
+            }),
+            minimumSize: MaterialStateProperty.resolveWith((states) {
+              return const Size(double.infinity, 50);
+            }),
+          ),
+          onPressed: isValid && state.status != FormzSubmissionStatus.inProgress
+              ? () => context.read<CreateClassCubit>().createClass()
+              : null,
+          child: state.status == FormzSubmissionStatus.inProgress
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : const Text(
+                  'Tạo lớp học',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+        );
+      },
     );
   }
 }
