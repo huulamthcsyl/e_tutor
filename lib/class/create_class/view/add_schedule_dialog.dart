@@ -1,7 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:class_repository/class_repository.dart';
 import 'package:e_tutor/class/create_class/create_class.dart';
-import 'package:e_tutor/utils/get_day_name.dart';
+import 'package:e_tutor/utils/day_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:profile_repository/profile_repository.dart';

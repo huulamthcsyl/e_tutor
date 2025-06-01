@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as date_picker;
 import 'package:formz/formz.dart';
 
-import '../../../../../utils/format_time.dart';
+import '../../../../../utils/time_util.dart';
 import '../cubit/create_lesson_cubit.dart';
 
 class CreateLessonDialog extends StatelessWidget {

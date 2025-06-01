@@ -2,7 +2,7 @@ import 'package:class_repository/class_repository.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/class/class_detail/class_detail.dart';
 import 'package:e_tutor/class/class_exam/class_exam.dart';
-import 'package:e_tutor/utils/format_currency.dart';
+import 'package:e_tutor/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:profile_repository/profile_repository.dart';
@@ -11,7 +11,7 @@ import 'package:e_tutor/payment/class_tuition/class_tuition.dart';
 import '../../../lesson/class_lesson/view/class_lesson_page.dart';
 import '../../create_class/widgets/add_member/view/add_member_dialog.dart';
 import '../../../lesson/lesson_detail/view/lesson_detail_page.dart';
-import '../../../utils/format_time.dart';
+import '../../../utils/time_util.dart';
 
 class ClassDetailView extends StatelessWidget {
   const ClassDetailView({super.key});

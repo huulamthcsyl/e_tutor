@@ -1,7 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/class/create_class/create_class.dart';
-import 'package:e_tutor/utils/format_time.dart';
-import 'package:e_tutor/utils/get_day_name.dart';
+import 'package:e_tutor/utils/time_util.dart';
+import 'package:e_tutor/utils/day_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';

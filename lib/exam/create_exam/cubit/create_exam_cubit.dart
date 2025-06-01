@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:class_repository/class_repository.dart';
 import 'package:const_date_time/const_date_time.dart';
-import 'package:e_tutor/utils/notification_service.dart';
+import 'package:e_tutor/utils/notification_util.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:form_inputs/form_inputs.dart';

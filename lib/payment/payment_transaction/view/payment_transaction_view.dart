@@ -1,6 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:e_tutor/utils/format_currency.dart';
+import 'package:e_tutor/utils/currency_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:e_tutor/payment/payment_transaction/cubit/payment_transaction_cubit.dart';
 import 'package:formz/formz.dart';

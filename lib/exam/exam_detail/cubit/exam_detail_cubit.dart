@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:class_repository/class_repository.dart';
-import 'package:e_tutor/utils/auth_service.dart';
+import 'package:e_tutor/utils/auth_util.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:formz/formz.dart';

@@ -1,4 +1,4 @@
-import 'package:e_tutor/utils/auth_service.dart';
+import 'package:e_tutor/utils/auth_util.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';

@@ -1,6 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:class_repository/class_repository.dart';
-import 'package:e_tutor/utils/notification_service.dart';
+import 'package:e_tutor/utils/notification_util.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

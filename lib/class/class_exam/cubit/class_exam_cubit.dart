@@ -4,7 +4,7 @@ import 'package:const_date_time/const_date_time.dart';
 import 'package:equatable/equatable.dart';
 import 'package:profile_repository/profile_repository.dart';
 
-import '../../../utils/auth_service.dart';
+import '../../../utils/auth_util.dart';
 
 part 'class_exam_state.dart';
 

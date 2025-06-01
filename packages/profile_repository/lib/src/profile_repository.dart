@@ -36,8 +36,8 @@ class ProfileRepository {
           phoneNumber: data['phoneNumber'],
           avatarUrl: data['avatarUrl'],
           role: data['role'],
-          createdAt: DateTime.parse(data['createdAt']),
-          updatedAt: DateTime.parse(data['updatedAt']),
+          createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
+          updatedAt: data['updatedAt'] != null ? DateTime.parse(data['updatedAt']) : null,
           bankAccount: data['bankAccount'] != null ? BankAccount.fromJson(data['bankAccount']) : null,
         );
       }).toList();
@@ -84,8 +84,8 @@ class ProfileRepository {
         phoneNumber: data['phoneNumber'],
         avatarUrl: data['avatarUrl'],
         role: data['role'],
-        createdAt: DateTime.parse(data['createdAt']),
-        updatedAt: DateTime.parse(data['updatedAt']),
+        createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
+        updatedAt: data['updatedAt'] != null ? DateTime.parse(data['updatedAt']) : null,
         bankAccount: data['bankAccount'] != null ? BankAccount.fromJson(data['bankAccount']) : null,
       );
     });

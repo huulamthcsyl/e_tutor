@@ -1,5 +1,5 @@
 import 'package:e_tutor/exam/create_exam/view/create_exam_page.dart';
-import 'package:e_tutor/utils/format_time.dart';
+import 'package:e_tutor/utils/time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

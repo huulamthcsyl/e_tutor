@@ -1,7 +1,7 @@
 import 'package:class_repository/class_repository.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/exam/exam_detail/widgets/grade_exam/grade_exam.dart';
-import 'package:e_tutor/utils/format_time.dart';
+import 'package:e_tutor/utils/time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:class_repository/class_repository.dart' as class_repository;

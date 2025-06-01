@@ -1,7 +1,7 @@
 import 'package:e_tutor/payment/payment_detail/payment_detail.dart';
 import 'package:e_tutor/payment/payment_list/payment_list.dart';
-import 'package:e_tutor/utils/format_currency.dart';
-import 'package:e_tutor/utils/format_time.dart';
+import 'package:e_tutor/utils/currency_util.dart';
+import 'package:e_tutor/utils/time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payment_repository/payment_repository.dart';

@@ -4,7 +4,7 @@ import 'package:e_tutor/homework/create_homework/view/create_homework_page.dart'
 import 'package:e_tutor/homework/homework_detail/view/homework_detail_page.dart';
 import 'package:e_tutor/lesson/lesson_detail/lesson_detail.dart';
 import 'package:e_tutor/pdf_view/view/pdf_view_page.dart';
-import 'package:e_tutor/utils/format_time.dart';
+import 'package:e_tutor/utils/time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:profile_repository/profile_repository.dart';

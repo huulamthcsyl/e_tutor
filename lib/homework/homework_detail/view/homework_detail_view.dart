@@ -2,7 +2,7 @@ import 'package:class_repository/class_repository.dart' as class_repo;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_tutor/homework/homework_detail/widgets/grade_homework/views/grade_homework_dialog.dart';
 import 'package:e_tutor/pdf_view/view/pdf_view_page.dart';
-import 'package:e_tutor/utils/format_time.dart';
+import 'package:e_tutor/utils/time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

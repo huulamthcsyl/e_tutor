@@ -1,6 +1,6 @@
 import 'package:e_tutor/class/class_list/class_list.dart';
 import 'package:e_tutor/class/class_detail/class_detail.dart';
-import 'package:e_tutor/utils/format_currency.dart';
+import 'package:e_tutor/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
