@@ -58,3 +58,4 @@ flutter:
 
   assets:
     - assets/bank.json
+    - assets/icon/icon.png

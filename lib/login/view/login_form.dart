@@ -25,6 +25,7 @@ class LoginForm extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.2,),
+              Image.asset('assets/icon/icon.png', width: 100, height: 100,),
               Text(
                 'Đăng nhập',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
