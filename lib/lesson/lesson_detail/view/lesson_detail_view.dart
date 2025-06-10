@@ -8,33 +8,57 @@ import 'package:e_tutor/utils/time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:profile_repository/profile_repository.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class LessonView extends StatelessWidget {
   const LessonView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LessonCubit, LessonState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case LessonStatus.loading:
-            return const Center(child: CircularProgressIndicator());
-          case LessonStatus.success:
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ClassInfo(classData: state.classData, lesson: state.lessonData),
-                  _MaterialInfo(lesson: state.lessonData, user: state.user,),
-                  _HomeworkInfo(lesson: state.lessonData, user: state.user,),
-                ],
-              ),
-            );
-          default:
-            return const SizedBox();
+    return BlocListener<LessonCubit, LessonState>(
+      listener: (context, state) {
+        if (state.uploadStatus == UploadStatus.failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Upload tài liệu thất bại')),
+          );
+        }
+        if (state.uploadStatus == UploadStatus.loading) {
+          context.loaderOverlay.show();
+        } else if (state.uploadStatus == UploadStatus.success || state.uploadStatus == UploadStatus.failure) {
+          context.loaderOverlay.hide();
         }
       },
+      child: LoaderOverlay(
+        child: BlocBuilder<LessonCubit, LessonState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case LessonStatus.loading:
+                return const Center(child: CircularProgressIndicator());
+              case LessonStatus.success:
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _ClassInfo(
+                          classData: state.classData, lesson: state.lessonData),
+                      _MaterialInfo(
+                        lesson: state.lessonData,
+                        user: state.user,
+                      ),
+                      _HomeworkInfo(
+                        lesson: state.lessonData,
+                        user: state.user,
+                      ),
+                    ],
+                  ),
+                );
+              default:
+                return const SizedBox();
+            }
+          },
+        ),
+      ),
     );
   }
 }
@@ -144,14 +168,13 @@ class _MaterialInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Tài liệu',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                )
-              ),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )),
               SizedBox(
                 width: double.infinity,
-                child: (){
+                child: () {
                   if (state.lessonData.materials.isEmpty) {
                     return const Text(
                       'Chưa có tài liệu',
@@ -164,48 +187,54 @@ class _MaterialInfo extends StatelessWidget {
                   return Column(
                     children: [
                       for (final material in state.lessonData.materials)
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push<void>(
-                            PdfViewPage.route(
-                              url: material.url,
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 1,
-                                blurRadius: 7,
-                                offset: const Offset(0, 3),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push<void>(
+                              PdfViewPage.route(
+                                url: material.url,
                               ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                material.name,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  overflow: TextOverflow.ellipsis,
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 1,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 3),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              state.user.role == "tutor" ? IconButton(onPressed: () {
-                                context.read<LessonCubit>().deleteMaterial(material);
-                              }, icon: const Icon(Icons.delete)) : const SizedBox(width: 20)
-                            ],
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  material.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                state.user.role == "tutor"
+                                    ? IconButton(
+                                        onPressed: () {
+                                          context
+                                              .read<LessonCubit>()
+                                              .deleteMaterial(material);
+                                        },
+                                        icon: const Icon(Icons.delete))
+                                    : const SizedBox(width: 20)
+                              ],
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   );
                 }(),
@@ -214,26 +243,27 @@ class _MaterialInfo extends StatelessWidget {
                 onTap: () {
                   context.read<LessonCubit>().uploadMaterial();
                 },
-                child: user.role == "tutor" ? DottedBorder(
-                  padding: const EdgeInsets.all(8),
-                  color: Theme.of(context).colorScheme.primary,
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.file_upload,
-                        color: Colors.blue,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Upload tài liệu',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ],
-                  )
-                ) : const SizedBox(),
+                child: user.role == "tutor"
+                    ? DottedBorder(
+                        padding: const EdgeInsets.all(8),
+                        color: Theme.of(context).colorScheme.primary,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.file_upload,
+                              color: Colors.blue,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Upload tài liệu',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ],
+                        ))
+                    : const SizedBox(),
               )
             ],
           ),
@@ -273,14 +303,13 @@ class _HomeworkInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Bài tập',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                )
-              ),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )),
               SizedBox(
                 width: double.infinity,
-                child: (){
+                child: () {
                   if (state.homeworks.isEmpty) {
                     return const Text(
                       'Chưa có bài tập',
@@ -293,7 +322,7 @@ class _HomeworkInfo extends StatelessWidget {
                   return Column(
                     children: [
                       for (final homework in state.homeworks)
-                      _HomeworkCard(homework: homework),
+                        _HomeworkCard(homework: homework),
                       const SizedBox(height: 8),
                     ],
                   );
@@ -304,36 +333,36 @@ class _HomeworkInfo extends StatelessWidget {
                   Navigator.of(context)
                       .push<void>(
                     CreateHomeworkPage.route(
-                      classId: lesson.classId,
-                      lessonId: lesson.id,
-                      className: state.classData.name
-                    ),
+                        classId: lesson.classId,
+                        lessonId: lesson.id,
+                        className: state.classData.name),
                   )
                       .then((value) {
                     context.read<LessonCubit>().reloadHomeworks(
                         state.lessonData.classId, state.lessonData.id!);
                   });
                 },
-                child: user.role == "tutor" ? DottedBorder(
-                  padding: const EdgeInsets.all(8),
-                  color: Theme.of(context).colorScheme.primary,
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.add_circle,
-                        color: Colors.blue,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Tạo bài tập',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ],
-                  )
-                ) : const SizedBox(),
+                child: user.role == "tutor"
+                    ? DottedBorder(
+                        padding: const EdgeInsets.all(8),
+                        color: Theme.of(context).colorScheme.primary,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.add_circle,
+                              color: Colors.blue,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Tạo bài tập',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ],
+                        ))
+                    : const SizedBox(),
               )
             ],
           ),

@@ -79,20 +79,31 @@ class LessonCubit extends Cubit<LessonState> {
   }
 
   Future<void> uploadMaterial() async {
-    FilePickerResult? file = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-      withData: true,
-    );
-    emit(state.copyWith(status: LessonStatus.loading));
-    if (file != null) {
-      await _classRepository.uploadLessonMaterial(
-        state.classData.id!,
-        state.lessonData,
-        file.files.first.name,
-        file.files.first.bytes!,
+    try {
+      FilePickerResult? file = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+        withData: true,
       );
-      await reloadHomeworks(state.classData.id!, state.lessonData.id!);
+      if (file != null && file.files.isNotEmpty) {
+        emit(state.copyWith(uploadStatus: UploadStatus.loading));
+        try {
+          await _classRepository.uploadLessonMaterial(
+            state.classData.id!,
+            state.lessonData,
+            file.files.first.name,
+            file.files.first.bytes!,
+          );
+          emit(state.copyWith(uploadStatus: UploadStatus.success));
+          await reloadHomeworks(state.classData.id!, state.lessonData.id!);
+        } on Exception {
+          emit(state.copyWith(uploadStatus: UploadStatus.failure));
+        }
+      } else {
+        emit(state.copyWith(uploadStatus: UploadStatus.failure));
+      }
+    } on Exception {
+      emit(state.copyWith(uploadStatus: UploadStatus.failure));
     }
   }
 

@@ -34,7 +34,13 @@ class LessonPage extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Thông tin buổi học'),
+              title: const Text(
+                'Thông tin buổi học',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               backgroundColor: Theme.of(context).colorScheme.primary,
               iconTheme: const IconThemeData(color: Colors.white),
               foregroundColor: Colors.white,
