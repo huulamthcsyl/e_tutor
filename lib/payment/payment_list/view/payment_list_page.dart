@@ -15,7 +15,7 @@ class PaymentListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Danh sách thanh toán'),
+        title: const Text('Lịch sử thanh toán', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
