@@ -39,77 +39,84 @@ class HomeView extends StatelessWidget {
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
           ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  TableCalendar(
-                    firstDay: DateTime.utc(2010, 1, 1),
-                    lastDay: DateTime.utc(2030, 12, 31),
-                    focusedDay: state.selectedDay,
-                    selectedDayPredicate: (day) {
-                      return isSameDay(state.selectedDay, day);
-                    },
-                    onDaySelected: (selectedDay, focusedDay) {
-                      context.read<HomeCubit>().selectedDayChanged(selectedDay);
-                    },
-                    calendarFormat: state.calendarFormat,
-                    onFormatChanged: (format) {
-                      context.read<HomeCubit>().calendarFormatChanged(format);
-                    },
-                    locale: 'vi_VN',
-                    availableCalendarFormats: const {
-                      CalendarFormat.month: 'Tháng',
-                      CalendarFormat.week: 'Tuần',
-                      CalendarFormat.twoWeeks: '2 Tuần',
-                    },
-                    startingDayOfWeek: StartingDayOfWeek.monday,
-                    calendarStyle: CalendarStyle(
-                      todayDecoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
-                        shape: BoxShape.circle,
+          body: RefreshIndicator(
+            onRefresh: () async {
+              await context.read<HomeCubit>().getLessonsInMonth(state.selectedDay);
+              await context.read<HomeCubit>().getExamsInMonth(state.selectedDay);
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    TableCalendar(
+                      firstDay: DateTime.utc(2010, 1, 1),
+                      lastDay: DateTime.utc(2030, 12, 31),
+                      focusedDay: state.selectedDay,
+                      selectedDayPredicate: (day) {
+                        return isSameDay(state.selectedDay, day);
+                      },
+                      onDaySelected: (selectedDay, focusedDay) {
+                        context.read<HomeCubit>().selectedDayChanged(selectedDay);
+                      },
+                      calendarFormat: state.calendarFormat,
+                      onFormatChanged: (format) {
+                        context.read<HomeCubit>().calendarFormatChanged(format);
+                      },
+                      locale: 'vi_VN',
+                      availableCalendarFormats: const {
+                        CalendarFormat.month: 'Tháng',
+                        CalendarFormat.week: 'Tuần',
+                        CalendarFormat.twoWeeks: '2 Tuần',
+                      },
+                      startingDayOfWeek: StartingDayOfWeek.monday,
+                      calendarStyle: CalendarStyle(
+                        todayDecoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.secondary,
+                          shape: BoxShape.circle,
+                        ),
+                        selectedDecoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        markerDecoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        todayTextStyle: const TextStyle(color: Colors.white),
+                        selectedTextStyle: const TextStyle(color: Colors.white),
+                        outsideDaysVisible: false,
                       ),
-                      selectedDecoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      markerDecoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      todayTextStyle: const TextStyle(color: Colors.white),
-                      selectedTextStyle: const TextStyle(color: Colors.white),
-                      outsideDaysVisible: false,
+                      eventLoader: (day) {
+                        final List<Object> events = [];
+                        if (state.exams.isNotEmpty) {
+                          events.addAll(state.exams
+                              .where((exam) => isSameDay(exam.startTime, day))
+                              .toList());
+                        }
+                        if (state.lessons.isNotEmpty) {
+                          events.addAll(state.lessons
+                              .where((lesson) => isSameDay(lesson.lesson.startTime, day))
+                              .toList());
+                        }
+                        return events;
+                      },
+                      onPageChanged: (focusedDay) {
+                        context.read<HomeCubit>().selectedDayChanged(focusedDay);
+                        context.read<HomeCubit>().getLessonsInMonth(focusedDay);
+                        context.read<HomeCubit>().getExamsInMonth(focusedDay);
+                      },
                     ),
-                    eventLoader: (day) {
-                      final List<Object> events = [];
-                      if (state.exams.isNotEmpty) {
-                        events.addAll(state.exams
-                            .where((exam) => isSameDay(exam.startTime, day))
-                            .toList());
-                      }
-                      if (state.lessons.isNotEmpty) {
-                        events.addAll(state.lessons
-                            .where((lesson) => isSameDay(lesson.lesson.startTime, day))
-                            .toList());
-                      }
-                      return events;
-                    },
-                    onPageChanged: (focusedDay) {
-                      context.read<HomeCubit>().selectedDayChanged(focusedDay);
-                      context.read<HomeCubit>().getLessonsInMonth(focusedDay);
-                      context.read<HomeCubit>().getExamsInMonth(focusedDay);
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  Column(
-                    children: [
-                      _LessonList(),
-                      _ExamList(),
-                    ],
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    Column(
+                      children: [
+                        _LessonList(),
+                        _ExamList(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
