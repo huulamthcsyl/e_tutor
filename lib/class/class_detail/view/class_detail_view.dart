@@ -56,7 +56,7 @@ class ClassDetailView extends StatelessWidget {
                 ),
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 iconTheme: const IconThemeData(color: Colors.white),
-                actions: [
+                actions: state.user.role == 'parent' ? [
                   PopupMenuButton(
                     itemBuilder: (context) => [
                       const PopupMenuItem(
@@ -74,7 +74,7 @@ class ClassDetailView extends StatelessWidget {
                       }
                     }
                   )
-                ],
+                ] : null,
               ),
               body: SingleChildScrollView(
                 child: Padding(
