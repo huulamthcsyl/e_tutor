@@ -18,16 +18,18 @@ class PaymentListView extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           case PaymentListStatus.success:
             return Padding(
-              padding: const EdgeInsets.all(16), 
-              child: Column(
-                children: [
-                  for (var payment in state.payments)
-                    PaymentItem(payment: payment),
-                ],
-              ),
+              padding: const EdgeInsets.all(16),
+              child: state.payments.isEmpty
+                  ? const Center(child: Text('Bạn chưa có thanh toán nào'))
+                  : Column(
+                      children: [
+                        for (var payment in state.payments)
+                          PaymentItem(payment: payment),
+                      ],
+                    ),
             );
           case PaymentListStatus.failure:
-            return const Center(child: Text('Failed to fetch payments'));
+            return const Center(child: Text('Lỗi khi lấy danh sách thanh toán'));
           default:
             return const SizedBox.shrink();
         }
@@ -44,55 +46,56 @@ class PaymentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push<void>( 
-          PaymentDetailPage.route(id: payment.id),
-        );
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.grey,
-              spreadRadius: 1,
-              blurRadius: 7,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.money, color: Theme.of(context).colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(
-                  '${FormatCurrency.format(payment.amount)}đ', 
-                  style: const TextStyle(
-                    fontSize: 18, 
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
+        onTap: () {
+          Navigator.of(context).push<void>(
+            PaymentDetailPage.route(id: payment.id),
+          );
+        },
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.grey,
+                spreadRadius: 1,
+                blurRadius: 7,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.money,
+                      color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${FormatCurrency.format(payment.amount)}đ',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.calendar_month, color: Theme.of(context).colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(FormatTime.formatDateTime(payment.createdAt)),
-              ],
-            ),
-          ],
-        ),
-      )
-    );
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.calendar_month,
+                      color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Text(FormatTime.formatDateTime(payment.createdAt)),
+                ],
+              ),
+            ],
+          ),
+        ));
   }
 }

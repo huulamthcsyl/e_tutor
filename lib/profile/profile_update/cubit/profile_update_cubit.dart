@@ -31,6 +31,7 @@ class ProfileUpdateCubit extends Cubit<ProfileUpdateState> {
       bankInfos: bankInfos.map((e) => BankInfo.fromJson(e)).toList(),
       avatarUrl: profile.avatarUrl,
       role: profile.role,
+      bankAccount: profile.bankAccount,
     ));
   }
 

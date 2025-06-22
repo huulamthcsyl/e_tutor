@@ -29,6 +29,8 @@ class PaymentView extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Thanh toán'),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
             ),
             body: LoaderOverlay(
               child: SingleChildScrollView(

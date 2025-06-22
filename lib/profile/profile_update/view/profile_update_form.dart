@@ -285,6 +285,7 @@ class _BankAccountInput extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             DropdownMenu(
+              initialSelection: state.bankAccount.bankName,
               width: double.infinity,
               menuHeight: 300,
               dropdownMenuEntries: state.bankInfos
@@ -300,6 +301,7 @@ class _BankAccountInput extends StatelessWidget {
             const SizedBox(height: 16),
             TextFormField(
               key: const Key('profileUpdateForm_bankAccountInput_textField'),
+              controller: TextEditingController(text: state.bankAccount.accountNumber),
               onChanged: (accountNumber) => context
                   .read<ProfileUpdateCubit>()
                   .bankNumberChanged(accountNumber),
